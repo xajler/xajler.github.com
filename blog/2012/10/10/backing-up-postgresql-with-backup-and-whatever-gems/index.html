@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Learn-a-holic Geek Notes</title>
+  <title>Backing up PostgreSQL with backup and whatever gems on VPS - Learn-a-holic Geek Notes</title>
   <meta name="author" content="Kornelije Sajler">
 
   
@@ -19,7 +19,7 @@ that essentially stores guests and keeping track of accommodations &hellip;">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://xajler.github.com/">
+  <link rel="canonical" href="http://xajler.github.com/blog/2012/10/10/backing-up-postgresql-with-backup-and-whatever-gems/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -63,15 +63,12 @@ that essentially stores guests and keeping track of accommodations &hellip;">
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2012/10/10/backing-up-postgresql-with-backup-and-whatever-gems/">Backing Up PostgreSQL With Backup and Whatever Gems on VPS</a></h1>
+      <h1 class="entry-title">Backing Up PostgreSQL With Backup and Whatever Gems on VPS</h1>
     
     
       <p class="meta">
@@ -94,7 +91,7 @@ that essentially stores guests and keeping track of accommodations &hellip;">
   </header>
 
 
-  <div class="entry-content"><h2>Mission</h2>
+<div class="entry-content"><h2>Mission</h2>
 
 <p>A few months ago I&#8217;ve created a <a href="https://github.com/xajler/mi-guest">simple Rails app</a> (after 6 years!!!)
 that essentially stores guests and keeping track of accommodations for my friend&#8217;s villa.</p>
@@ -446,22 +443,16 @@ writing and deploying cron jobs. And this is what I need to schedule the backups
 </ul>
 
 </div>
-  
-  
 
 
-    </article>
-  
-  
-    <article>
+  <footer>
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/10/10/installing-nginx-in-mac-os-x-mountain-lion/">Installing Nginx in Mac OS X Mountain Lion With Homebrew</a></h1>
-    
-    
-      <p class="meta">
-        
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Kornelije Sajler</span></span>
+
+      
 
 
 
@@ -473,193 +464,38 @@ writing and deploying cron jobs. And this is what I need to schedule the backups
   
 
 
-<time datetime="2012-10-10T03:45:00+02:00" pubdate data-updated="true">Oct 10<span>th</span>, 2012</time>
-        
-      </p>
+<time datetime="2012-10-10T07:12:00+02:00" pubdate data-updated="true">Oct 10<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/backup/'>backup</a>, <a class='category' href='/blog/categories/gem/'>gem</a>, <a class='category' href='/blog/categories/postgresql/'>postgresql</a>, <a class='category' href='/blog/categories/vps/'>vps</a>, <a class='category' href='/blog/categories/whatever/'>whatever</a>
+  
+</span>
+
+
+    </p>
     
-  </header>
-
-
-  <div class="entry-content"><h2>Install with brew</h2>
-
-<p>Use <code>brew</code> to install the <code>nginx</code> with command:</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>brew install nginx
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>After install run:</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>sudo nginx
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Testing</h2>
-
-<p>Test it by going to URL:</p>
-
-<pre><code>http://localhost:8080
-</code></pre>
-
-<h2>Configuration</h2>
-
-<p>The default place of <code>nginx.conf</code> on Mac after installing with <code>brew</code> is:</p>
-
-<pre><code>/usr/local/etc/nginx/nginx.conf
-</code></pre>
-
-<h3>Changing the default port</h3>
-
-<p>The nginx default port is 8080, we shall change it to 80. First stop the nginx server if it is running by:</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>sudo nginx -s stop
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Then open <code>nginx.conf</code> with:</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>vim /usr/local/etc/nginx/nginx.conf
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>and change the:</p>
-
-<figure class='code'><figcaption><span>/usr/local/etc/nginx/nginx.conf  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='nginx'><span class='line'><span class="k">server</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kn">listen</span>       <span class="mi">8080</span><span class="p">;</span>
-</span><span class='line'>    <span class="kn">server_name</span>  <span class="s">localhost</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">#access_log  logs/host.access.log  main;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kn">location</span> <span class="s">/</span> <span class="p">{</span>
-</span><span class='line'>        <span class="kn">root</span>   <span class="s">html</span><span class="p">;</span>
-</span><span class='line'>        <span class="kn">index</span>  <span class="s">index.html</span> <span class="s">index.htm</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>to:</p>
-
-<figure class='code'><figcaption><span>/usr/local/etc/nginx/nginx.conf  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='nginx'><span class='line'><span class="k">server</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kn">listen</span>       <span class="mi">80</span><span class="p">;</span>
-</span><span class='line'>    <span class="kn">server_name</span>  <span class="s">localhost</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">#access_log  logs/host.access.log  main;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kn">location</span> <span class="s">/</span> <span class="p">{</span>
-</span><span class='line'>        <span class="kn">root</span>   <span class="s">html</span><span class="p">;</span>
-</span><span class='line'>        <span class="kn">index</span>  <span class="s">index.html</span> <span class="s">index.htm</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Save configuration and start nginx by</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>sudo nginx
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Changing the path of defualt web location</h2>
-
-<p>The nginx html folder (brew install only) is by the defult in:</p>
-
-<pre><code>/usr/local/Cellar/nginx/1.2.3/html
-</code></pre>
-
-<p><strong>Note</strong>: change <code>1.2.3</code> to your nginx version.</p>
-
-<p>The defualt path configuration:</p>
-
-<figure class='code'><figcaption><span>/usr/local/etc/nginx/nginx.conf  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='nginx'><span class='line'><span class="k">server</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kn">listen</span>       <span class="mi">80</span><span class="p">;</span>
-</span><span class='line'>    <span class="kn">server_name</span>  <span class="s">localhost</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">#access_log  logs/host.access.log  main;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kn">location</span> <span class="s">/</span> <span class="p">{</span>
-</span><span class='line'>        <span class="kn">root</span>   <span class="s">html</span><span class="p">;</span>
-</span><span class='line'>        <span class="kn">index</span>  <span class="s">index.html</span> <span class="s">index.htm</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>To let say <code>Users/xajler/www</code>:</p>
-
-<figure class='code'><figcaption><span>/usr/local/etc/nginx/nginx.conf  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='nginx'><span class='line'><span class="k">server</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kn">listen</span>       <span class="mi">80</span><span class="p">;</span>
-</span><span class='line'>    <span class="kn">server_name</span>  <span class="s">localhost</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">#access_log  logs/host.access.log  main;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kn">location</span> <span class="s">/</span> <span class="p">{</span>
-</span><span class='line'>        <span class="kn">root</span>   <span class="s">/Users/xajler/www</span><span class="p">;</span>
-</span><span class='line'>        <span class="kn">index</span>  <span class="s">index.html</span> <span class="s">index.htm</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>After change stop and start nginix server and nginx is now serving pages from your custom folder!</p>
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://xajler.github.com/blog/2012/10/10/backing-up-postgresql-with-backup-and-whatever-gems/" data-via="xajler" data-counturl="http://xajler.github.com/blog/2012/10/10/backing-up-postgresql-with-backup-and-whatever-gems/" >Tweet</a>
+  
+  
+  
 </div>
-  
-  
 
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2012/10/10/installing-nginx-in-mac-os-x-mountain-lion/" title="Previous Post: Installing nginx in Mac OS X Mountain Lion with homebrew">&laquo; Installing nginx in Mac OS X Mountain Lion with homebrew</a>
+      
+      
+    </p>
+  </footer>
+</article>
 
-    </article>
-  
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
 </div>
+
 <aside class="sidebar">
   
     <section>
@@ -680,7 +516,7 @@ writing and deploying cron jobs. And this is what I need to schedule the backups
 <section>
   <h1>GitHub Repos</h1>
   <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   
   <a href="https://github.com/xajler">@xajler</a> on GitHub
@@ -710,7 +546,7 @@ writing and deploying cron jobs. And this is what I need to schedule the backups
 <section>
   <h1>Latest Tweets</h1>
   <ul id="tweets">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   <script type="text/javascript">
     $.domReady(function(){
@@ -729,6 +565,7 @@ writing and deploying cron jobs. And this is what I need to schedule the backups
 
   
 </aside>
+
 
     </div>
   </div>
