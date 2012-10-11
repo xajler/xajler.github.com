@@ -27,18 +27,17 @@ that essentially stores guests and keeping track of accommodations &hellip;">
   <script src="/javascripts/octopress.js" type="text/javascript"></script>
   <link href="/atom.xml" rel="alternate" title="Learn-a-holic Geek Notes" type="application/atom+xml">
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
-<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic' rel='stylesheet' type='text/css'>
 
   
 
 </head>
 
-<body   >
+<body    class="collapse-sidebar sidebar-footer" >
   <header role="banner"><hgroup>
   <h1><a href="/">Learn-a-holic Geek Notes</a></h1>
   
-    <h2>Human compiled Brainwork.</h2>
+    <h2>Human compiled Brainwork by Kornelije Sajler.</h2>
   
 </hgroup>
 
@@ -57,7 +56,7 @@ that essentially stores guests and keeping track of accommodations &hellip;">
   
 <ul class="main-navigation">
   <li><a href="/">Blog</a></li>
-  <li><a href="/blog/archives">Archives</a></li>
+  <!-- <li><a href="/blog/archives">Archives</a></li> -->
 </ul>
 
 </nav>
@@ -97,23 +96,24 @@ that essentially stores guests and keeping track of accommodations &hellip;">
 that essentially stores guests and keeping track of accommodations for my friend&#8217;s villa.</p>
 
 <p>After a month in production I&#8217;ve started thinking about backup of the database. Code is on
-the Github so I have only need to worry about database.</p>
+the <a href="http://github.com">Github</a> so I have only need to worry about database.</p>
 
-<p>My first initial thoughts were on Dropbox, I&#8217;ve installed the Dropbox client on my no GUI
-Ubunte Server, but when I ran the Dropbox the memory usage got doubled and I remove it all together!</p>
+<p>My first initial thoughts were on <a href="http://dropbox.com">Dropbox</a>, I&#8217;ve installed the <a href="http://dropbox.com">Dropbox</a> client on my no GUI
+Ubuntu Server, but when I ran the <a href="http://dropbox.com">Dropbox</a> the memory usage got doubled and I remove it all together!</p>
 
 <p>Then I started thinking about good old FTP backup, I was sure that I want backup somewhere else
-than the VPS the database is running. I have one  account at <a href="http://arvixe.com">Arvixe</a> Unlimited Linux hosting
-and I&#8217;ve created the FTP user and even found <a href="https://github.com/meskyanichi/backup">backup gem</a> back then
+than the VPS where the database is running. I have one  account at <a href="http://arvixe.com">Arvixe</a>, Unlimited Linux hosting
+and I&#8217;ve created the FTP user and even found this <a href="https://github.com/meskyanichi/backup">backup gem</a> back then
 but I just drop all together until today.</p>
 
-<p>I have VPS at <a href="http://buyvm.net">BuyVM (ex Frantech)</a> and they were offering a free storage
-VPS of 5Gb which is more than enough for my backup. I get one account and idea came again to use
+<p>I have VPS at <a href="http://buyvm.net">BuyVM (ex Frantech)</a> and they are offering a free storage
+VPS of 5Gb which is more than enough for my backup. I signed for an account and idea came again to use
 it as backup&#8230;</p>
 
-<p>&#8230;and the idea expanded with every day schedule of backup.</p>
+<p>&#8230;and the idea expanded to include every day schedule of backup.</p>
 
-<p>Incidentally, to day I finally get started my Octopress blog deployed via Github Pages, so I&#8217;m
+<p>Incidentally, to day I finally get started my <a href="http://octopress.org">Octopress</a> blog
+deployed via <a href="http://pages.github.com">Github Pages</a>, so I&#8217;m
 writting all the steps as notes for futre usage, or if someone can be useful&#8230;</p>
 
 <h2>backup Gem</h2>
@@ -167,7 +167,7 @@ backup options like databases, storages, compressions, encrypt-ors,&#8230;</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Generates a Backup model file</p>
+<h3>Generate a Backup model file</h3>
 
 <p>Let&#8217;s create simple config file with backup generator:</p>
 
@@ -237,63 +237,63 @@ backup options like databases, storages, compressions, encrypt-ors,&#8230;</p>
 <span class='line-number'>50</span>
 <span class='line-number'>51</span>
 <span class='line-number'>52</span>
-</pre></td><td class='code'><pre><code class='rb'><span class='line'>    <span class="c1"># encoding: utf-8</span>
+</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class="c1"># encoding: utf-8</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">##</span>
-</span><span class='line'>    <span class="c1"># Backup Generated: miguest_backup</span>
-</span><span class='line'>    <span class="c1"># Once configured, you can run the backup with the following command:</span>
-</span><span class='line'>    <span class="c1">#</span>
-</span><span class='line'>    <span class="c1"># $ backup perform -t miguest_backup [-c &lt;path_to_configuration_file&gt;]</span>
-</span><span class='line'>    <span class="c1">#</span>
-</span><span class='line'>    <span class="no">Backup</span><span class="o">::</span><span class="no">Model</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:miguest_backup</span><span class="p">,</span> <span class="s1">&#39;Description for miguest_backup&#39;</span><span class="p">)</span> <span class="k">do</span>
-</span><span class='line'>      <span class="c1">##</span>
-</span><span class='line'>      <span class="c1"># Split [Splitter]</span>
-</span><span class='line'>      <span class="c1">#</span>
-</span><span class='line'>      <span class="c1"># Split the backup file in to chunks of 250 megabytes</span>
-</span><span class='line'>      <span class="c1"># if the backup file size exceeds 250 megabytes</span>
-</span><span class='line'>      <span class="c1">#</span>
-</span><span class='line'>      <span class="n">split_into_chunks_of</span> <span class="mi">250</span>
+</span><span class='line'><span class="c1">##</span>
+</span><span class='line'><span class="c1"># Backup Generated: miguest_backup</span>
+</span><span class='line'><span class="c1"># Once configured, you can run the backup with the following command:</span>
+</span><span class='line'><span class="c1">#</span>
+</span><span class='line'><span class="c1"># $ backup perform -t miguest_backup [-c &lt;path_to_configuration_file&gt;]</span>
+</span><span class='line'><span class="c1">#</span>
+</span><span class='line'><span class="no">Backup</span><span class="o">::</span><span class="no">Model</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">:miguest_backup</span><span class="p">,</span> <span class="s1">&#39;Description for miguest_backup&#39;</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>  <span class="c1">##</span>
+</span><span class='line'>  <span class="c1"># Split [Splitter]</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="c1"># Split the backup file in to chunks of 250 megabytes</span>
+</span><span class='line'>  <span class="c1"># if the backup file size exceeds 250 megabytes</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="n">split_into_chunks_of</span> <span class="mi">250</span>
 </span><span class='line'>
-</span><span class='line'>      <span class="c1">##</span>
-</span><span class='line'>      <span class="c1"># PostgreSQL [Database]</span>
-</span><span class='line'>      <span class="c1">#</span>
-</span><span class='line'>      <span class="n">database</span> <span class="no">PostgreSQL</span> <span class="k">do</span> <span class="o">|</span><span class="n">db</span><span class="o">|</span>
-</span><span class='line'>        <span class="n">db</span><span class="o">.</span><span class="n">name</span>               <span class="o">=</span> <span class="s2">&quot;my_database_name&quot;</span>
-</span><span class='line'>        <span class="n">db</span><span class="o">.</span><span class="n">username</span>           <span class="o">=</span> <span class="s2">&quot;my_username&quot;</span>
-</span><span class='line'>        <span class="n">db</span><span class="o">.</span><span class="n">password</span>           <span class="o">=</span> <span class="s2">&quot;my_password&quot;</span>
-</span><span class='line'>        <span class="n">db</span><span class="o">.</span><span class="n">host</span>               <span class="o">=</span> <span class="s2">&quot;localhost&quot;</span>
-</span><span class='line'>        <span class="n">db</span><span class="o">.</span><span class="n">port</span>               <span class="o">=</span> <span class="mi">5432</span>
-</span><span class='line'>        <span class="c1"># db.socket             = &quot;/tmp/pg.sock&quot;</span>
-</span><span class='line'>        <span class="c1"># db.additional_options = [&quot;-xc&quot;, &quot;-E=utf8&quot;]</span>
-</span><span class='line'>        <span class="c1"># Optional: Use to set the location of this utility</span>
-</span><span class='line'>        <span class="c1">#   if it cannot be found by name in your $PATH</span>
-</span><span class='line'>        <span class="c1"># db.pg_dump_utility = &quot;/opt/local/bin/pg_dump&quot;</span>
-</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>  <span class="c1">##</span>
+</span><span class='line'>  <span class="c1"># PostgreSQL [Database]</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="n">database</span> <span class="no">PostgreSQL</span> <span class="k">do</span> <span class="o">|</span><span class="n">db</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">db</span><span class="o">.</span><span class="n">name</span>               <span class="o">=</span> <span class="s2">&quot;my_database_name&quot;</span>
+</span><span class='line'>    <span class="n">db</span><span class="o">.</span><span class="n">username</span>           <span class="o">=</span> <span class="s2">&quot;my_username&quot;</span>
+</span><span class='line'>    <span class="n">db</span><span class="o">.</span><span class="n">password</span>           <span class="o">=</span> <span class="s2">&quot;my_password&quot;</span>
+</span><span class='line'>    <span class="n">db</span><span class="o">.</span><span class="n">host</span>               <span class="o">=</span> <span class="s2">&quot;localhost&quot;</span>
+</span><span class='line'>    <span class="n">db</span><span class="o">.</span><span class="n">port</span>               <span class="o">=</span> <span class="mi">5432</span>
+</span><span class='line'>    <span class="c1"># db.socket             = &quot;/tmp/pg.sock&quot;</span>
+</span><span class='line'>    <span class="c1"># db.additional_options = [&quot;-xc&quot;, &quot;-E=utf8&quot;]</span>
+</span><span class='line'>    <span class="c1"># Optional: Use to set the location of this utility</span>
+</span><span class='line'>    <span class="c1">#   if it cannot be found by name in your $PATH</span>
+</span><span class='line'>    <span class="c1"># db.pg_dump_utility = &quot;/opt/local/bin/pg_dump&quot;</span>
+</span><span class='line'>  <span class="k">end</span>
 </span><span class='line'>
-</span><span class='line'>      <span class="c1">##</span>
-</span><span class='line'>      <span class="c1"># FTP (File Transfer Protocol) [Storage]</span>
-</span><span class='line'>      <span class="c1">#</span>
-</span><span class='line'>      <span class="n">store_with</span> <span class="no">FTP</span> <span class="k">do</span> <span class="o">|</span><span class="n">server</span><span class="o">|</span>
-</span><span class='line'>        <span class="n">server</span><span class="o">.</span><span class="n">username</span>     <span class="o">=</span> <span class="s2">&quot;my_username&quot;</span>
-</span><span class='line'>        <span class="n">server</span><span class="o">.</span><span class="n">password</span>     <span class="o">=</span> <span class="s2">&quot;my_password&quot;</span>
-</span><span class='line'>        <span class="n">server</span><span class="o">.</span><span class="n">ip</span>           <span class="o">=</span> <span class="s2">&quot;1.2.3.4&quot;</span>
-</span><span class='line'>        <span class="n">server</span><span class="o">.</span><span class="n">port</span>         <span class="o">=</span> <span class="mi">21</span>
-</span><span class='line'>        <span class="n">server</span><span class="o">.</span><span class="n">path</span>         <span class="o">=</span> <span class="s2">&quot;~/backups/&quot;</span>
-</span><span class='line'>        <span class="n">server</span><span class="o">.</span><span class="n">keep</span>         <span class="o">=</span> <span class="mi">5</span>
-</span><span class='line'>        <span class="n">server</span><span class="o">.</span><span class="n">passive_mode</span> <span class="o">=</span> <span class="kp">false</span>
-</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>  <span class="c1">##</span>
+</span><span class='line'>  <span class="c1"># FTP (File Transfer Protocol) [Storage]</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="n">store_with</span> <span class="no">FTP</span> <span class="k">do</span> <span class="o">|</span><span class="n">server</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">server</span><span class="o">.</span><span class="n">username</span>     <span class="o">=</span> <span class="s2">&quot;my_username&quot;</span>
+</span><span class='line'>    <span class="n">server</span><span class="o">.</span><span class="n">password</span>     <span class="o">=</span> <span class="s2">&quot;my_password&quot;</span>
+</span><span class='line'>    <span class="n">server</span><span class="o">.</span><span class="n">ip</span>           <span class="o">=</span> <span class="s2">&quot;1.2.3.4&quot;</span>
+</span><span class='line'>    <span class="n">server</span><span class="o">.</span><span class="n">port</span>         <span class="o">=</span> <span class="mi">21</span>
+</span><span class='line'>    <span class="n">server</span><span class="o">.</span><span class="n">path</span>         <span class="o">=</span> <span class="s2">&quot;~/backups/&quot;</span>
+</span><span class='line'>    <span class="n">server</span><span class="o">.</span><span class="n">keep</span>         <span class="o">=</span> <span class="mi">5</span>
+</span><span class='line'>    <span class="n">server</span><span class="o">.</span><span class="n">passive_mode</span> <span class="o">=</span> <span class="kp">false</span>
+</span><span class='line'>  <span class="k">end</span>
 </span><span class='line'>
-</span><span class='line'>      <span class="c1">##</span>
-</span><span class='line'>      <span class="c1"># Bzip2 [Compressor]</span>
-</span><span class='line'>      <span class="c1">#</span>
-</span><span class='line'>      <span class="n">compress_with</span> <span class="no">Bzip2</span>
+</span><span class='line'>  <span class="c1">##</span>
+</span><span class='line'>  <span class="c1"># Bzip2 [Compressor]</span>
+</span><span class='line'>  <span class="c1">#</span>
+</span><span class='line'>  <span class="n">compress_with</span> <span class="no">Bzip2</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Fairly straight forward refinement are needed, usernames, passwords,&#8230; After adding all
-the secret stuff, the backup can be called as easy as:</p>
+<p>Fairly straight forward refinements are needed, usernames, passwords,&#8230; After adding all
+the secret stuff, the backup can be run as easy as:</p>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -331,6 +331,10 @@ the secret stuff, the backup can be called as easy as:</p>
 </span><span class='line'><span class="o">[</span>2012/10/10 12:21:29<span class="o">][</span>warning<span class="o">]</span> Backup <span class="k">for</span> <span class="s1">&#39;Description for miguest_backup (miguest_backup)&#39;</span> Completed Successfully <span class="o">(</span>with Warnings<span class="o">)</span> in 00:00:03
 </span></code></pre></td></tr></table></div></figure>
 
+
+<p>And after the connecting to the storage server via FTP, there is backup:</p>
+
+<p><img src="https://pbs.twimg.com/media/A44syBuCEAELa98.png:large"></p>
 
 <h3>But there is more to backup gem</h3>
 
@@ -442,6 +446,16 @@ writing and deploying cron jobs. And this is what I need to schedule the backups
 <li>Scheduled backup every day at 4:30 am.</li>
 </ul>
 
+
+<h2>Update</h2>
+
+<p>The scheduled backups are working and here is the picture as proof!</p>
+
+<p><img src="http://i47.tinypic.com/xndh7r.png"></p>
+
+<p>Note that servers are not in same Time Zone hence offset of two hours. I know that one
+is in Chicago, and second is in California or New York, but either way the scheduled backup
+works!</p>
 </div>
 
 
@@ -490,9 +504,17 @@ writing and deploying cron jobs. And this is what I need to schedule the backups
         <a class="basic-alignment left" href="/blog/2012/10/10/installing-nginx-in-mac-os-x-mountain-lion/" title="Previous Post: Installing nginx in Mac OS X Mountain Lion with homebrew">&laquo; Installing nginx in Mac OS X Mountain Lion with homebrew</a>
       
       
+        <a class="basic-alignment right" href="/blog/2012/10/10/deploying-octopress-to-github-pages-and-setting-custom-subdomain-cname/" title="Next Post: Deploying Octopress to Github Pages and setting custom subdomain CNAME">Deploying Octopress to Github Pages and setting custom subdomain CNAME &raquo;</a>
+      
     </p>
   </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -501,6 +523,10 @@ writing and deploying cron jobs. And this is what I need to schedule the backups
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/10/10/deploying-octopress-to-github-pages-and-setting-custom-subdomain-cname/">Deploying Octopress to Github Pages and setting custom subdomain CNAME</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2012/10/10/backing-up-postgresql-with-backup-and-whatever-gems/">Backing up PostgreSQL with backup and whatever gems on VPS</a>
@@ -560,9 +586,6 @@ writing and deploying cron jobs. And this is what I need to schedule the backups
 </section>
 
 
-
-
-
   
 </aside>
 
@@ -576,6 +599,22 @@ writing and deploying cron jobs. And this is what I need to schedule the backups
 
 </footer>
   
+
+<script type="text/javascript">
+      var disqus_shortname = 'metaintellect-blog';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://xajler.github.com/blog/2012/10/10/backing-up-postgresql-with-backup-and-whatever-gems/';
+        var disqus_url = 'http://xajler.github.com/blog/2012/10/10/backing-up-postgresql-with-backup-and-whatever-gems/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
 
 
 
