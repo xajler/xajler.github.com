@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: octopress | Learn-a-holic Geek Notes]]></title>
-  <link href="http://xajler.github.com/blog/categories/octopress/atom.xml" rel="self"/>
-  <link href="http://xajler.github.com/"/>
-  <updated>2012-10-12T13:31:57+02:00</updated>
-  <id>http://xajler.github.com/</id>
+  <link href="http://blog.metaintellect.com/blog/categories/octopress/atom.xml" rel="self"/>
+  <link href="http://blog.metaintellect.com/"/>
+  <updated>2012-10-12T14:38:08+02:00</updated>
+  <id>http://blog.metaintellect.com/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
     <email><![CDATA[xajler@gmail.com]]></email>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Deploying Octopress to Github Pages and setting custom subdomain CNAME]]></title>
-    <link href="http://xajler.github.com/blog/2012/10/10/deploying-octopress-to-github-pages-and-setting-custom-subdomain-cname/"/>
+    <link href="http://blog.metaintellect.com/blog/2012/10/10/deploying-octopress-to-github-pages-and-setting-custom-subdomain-cname/"/>
     <updated>2012-10-10T23:49:00+02:00</updated>
-    <id>http://xajler.github.com/blog/2012/10/10/deploying-octopress-to-github-pages-and-setting-custom-subdomain-cname</id>
+    <id>http://blog.metaintellect.com/blog/2012/10/10/deploying-octopress-to-github-pages-and-setting-custom-subdomain-cname</id>
     <content type="html"><![CDATA[<p>Blogging was really never easy task for me, I started in 2006 with <a href="http://wordpress.com">WordPress</a> but with short life.
 The more about my blogging history can be read in my blog post
 <a href="http://www.learnaholic.me/2009/04/26/hello-world/">and finally comes time for Blogging!</a> on my

@@ -2,34 +2,34 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>
-            http://xajler.github.com/blog/2012/10/10/installing-nginx-in-mac-os-x-mountain-lion/
+            http://blog.metaintellect.com/blog/2012/10/10/installing-nginx-in-mac-os-x-mountain-lion/
         </loc>
         <lastmod>2012-10-12T13:31:41+02:00</lastmod>
     </url>
     <url>
         <loc>
-            http://xajler.github.com/blog/2012/10/10/backing-up-postgresql-with-backup-and-whatever-gems/
+            http://blog.metaintellect.com/blog/2012/10/10/backing-up-postgresql-with-backup-and-whatever-gems/
         </loc>
         <lastmod>2012-10-12T13:31:41+02:00</lastmod>
     </url>
     <url>
         <loc>
-            http://xajler.github.com/blog/2012/10/10/deploying-octopress-to-github-pages-and-setting-custom-subdomain-cname/
+            http://blog.metaintellect.com/blog/2012/10/10/deploying-octopress-to-github-pages-and-setting-custom-subdomain-cname/
         </loc>
         <lastmod>2012-10-12T13:31:41+02:00</lastmod>
     </url>
     <url>
         <loc>
-            http://xajler.github.com/blog/2012/10/12/make-powershell-and-git-suck-less-on-windows/
+            http://blog.metaintellect.com/blog/2012/10/12/make-powershell-and-git-suck-less-on-windows/
         </loc>
-        <lastmod>2012-10-12T13:31:41+02:00</lastmod>
+        <lastmod>2012-10-12T14:37:36+02:00</lastmod>
     </url>
     <url>
-        <loc>http://xajler.github.com/blog/archives/</loc>
-        <lastmod>2012-10-12T13:31:41+02:00</lastmod>
+        <loc>http://blog.metaintellect.com/blog/archives/</loc>
+        <lastmod>2012-10-12T14:37:36+02:00</lastmod>
     </url>
     <url>
-        <loc>http://xajler.github.com/</loc>
-        <lastmod>2012-10-12T13:31:41+02:00</lastmod>
+        <loc>http://blog.metaintellect.com/</loc>
+        <lastmod>2012-10-12T14:37:36+02:00</lastmod>
     </url>
 </urlset>

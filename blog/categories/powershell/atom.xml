@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: powershell | Learn-a-holic Geek Notes]]></title>
-  <link href="http://xajler.github.com/blog/categories/powershell/atom.xml" rel="self"/>
-  <link href="http://xajler.github.com/"/>
-  <updated>2012-10-12T13:31:57+02:00</updated>
-  <id>http://xajler.github.com/</id>
+  <link href="http://blog.metaintellect.com/blog/categories/powershell/atom.xml" rel="self"/>
+  <link href="http://blog.metaintellect.com/"/>
+  <updated>2012-10-12T14:38:08+02:00</updated>
+  <id>http://blog.metaintellect.com/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
     <email><![CDATA[xajler@gmail.com]]></email>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Make Powershell, SSH Github and git suck less on Windows]]></title>
-    <link href="http://xajler.github.com/blog/2012/10/12/make-powershell-and-git-suck-less-on-windows/"/>
+    <link href="http://blog.metaintellect.com/blog/2012/10/12/make-powershell-and-git-suck-less-on-windows/"/>
     <updated>2012-10-12T03:41:00+02:00</updated>
-    <id>http://xajler.github.com/blog/2012/10/12/make-powershell-and-git-suck-less-on-windows</id>
+    <id>http://blog.metaintellect.com/blog/2012/10/12/make-powershell-and-git-suck-less-on-windows</id>
     <content type="html"><![CDATA[<p>There are two Terminals in Windows <em>Command Prompt</em> and <em>Powershell</em>, and they both suck by far.
 I can understand that <em>Command Prompt</em> is no good, but why the <em>Powershell</em> wasn't done better?!</p>
 
@@ -34,7 +34,7 @@ I can understand that <em>Command Prompt</em> is no good, but why the <em>Powers
 
 
 <p>Maybe to most Windows users this is strange because this kind of stuff is never used, but if
-your coming from <em>Linux</em> or <em>Mac</em> then the frustration is certain. Because <em>Linux</em> or <em>Mac</em> are
+you're coming from <em>Linux</em> or <em>Mac</em> then the frustration is certain. Because <em>Linux</em> or <em>Mac</em> are
 having great Terminal and working in them is just a joy.</p>
 
 <p>The aim of post is to install <em>git</em> on Windowns and then configure it.
