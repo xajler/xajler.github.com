@@ -4,7 +4,7 @@
   <title><![CDATA[Category: backup | Learn-a-holic Geek Notes]]></title>
   <link href="http://xajler.github.com/blog/categories/backup/atom.xml" rel="self"/>
   <link href="http://xajler.github.com/"/>
-  <updated>2012-10-12T03:29:51+02:00</updated>
+  <updated>2012-10-12T13:20:08+02:00</updated>
   <id>http://xajler.github.com/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -53,63 +53,43 @@ backup options like databases, storages, compressions, encrypt-ors,...</p>
 
 <p>Installation is a straight forward like any Ruby Gem:</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gem install backup
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p><code>bash
+$ gem install backup
+</code></p>
 
 <h3>Backup Model Generator</h3>
 
 <p>backup gem have its own backup "model" generator that creates backup config files, this is a comprehensive usage:</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>Usage:
-</span><span class='line'>  backup generate:model --trigger<span class="o">=</span>TRIGGER&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;Options:
-</span><span class='line'>  --trigger<span class="o">=</span>TRIGGER
-</span><span class='line'>  <span class="o">[</span>--config-path<span class="o">=</span>CONFIG_PATH<span class="o">]</span>  <span class="c"># Path to your Backup configuration directory</span>
-</span><span class='line'>  <span class="o">[</span>--databases<span class="o">=</span>DATABASES<span class="o">]</span>      <span class="c"># (mongodb, mysql, postgresql, redis, riak)</span>
-</span><span class='line'>  <span class="o">[</span>--storages<span class="o">=</span>STORAGES<span class="o">]</span>        <span class="c"># (cloudfiles, dropbox, ftp, local, ninefold, rsync, s3, scp, sftp)</span>
-</span><span class='line'>  <span class="o">[</span>--syncers<span class="o">=</span>SYNCERS<span class="o">]</span>          <span class="c"># (cloud_files, rsync_local, rsync_pull, rsync_push, s3)</span>
-</span><span class='line'>  <span class="o">[</span>--encryptors<span class="o">=</span>ENCRYPTORS<span class="o">]</span>    <span class="c"># (gpg, openssl)</span>
-</span><span class='line'>  <span class="o">[</span>--compressors<span class="o">=</span>COMPRESSORS<span class="o">]</span>  <span class="c"># (bzip2, gzip, lzma, pbzip2)</span>
-</span><span class='line'>  <span class="o">[</span>--notifiers<span class="o">=</span>NOTIFIERS<span class="o">]</span>      <span class="c"># (campfire, hipchat, mail, presently, prowl, twitter)</span>
-</span><span class='line'>  <span class="o">[</span>--archives<span class="o">]</span>
-</span><span class='line'>  <span class="o">[</span>--splitter<span class="o">]</span>                 <span class="c"># use &lt;code&gt;--no-splitter&lt;/code&gt; to disable&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'>&lt;pre&gt;&lt;code&gt;                          <span class="c"># Default: true</span>
-</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>``` bash
+Usage:
+  backup generate:model --trigger=TRIGGER</p>
+
+<p>Options:
+  --trigger=TRIGGER
+  [--config-path=CONFIG_PATH]  # Path to your Backup configuration directory
+  [--databases=DATABASES]      # (mongodb, mysql, postgresql, redis, riak)
+  [--storages=STORAGES]        # (cloudfiles, dropbox, ftp, local, ninefold, rsync, s3, scp, sftp)
+  [--syncers=SYNCERS]          # (cloud_files, rsync_local, rsync_pull, rsync_push, s3)
+  [--encryptors=ENCRYPTORS]    # (gpg, openssl)
+  [--compressors=COMPRESSORS]  # (bzip2, gzip, lzma, pbzip2)
+  [--notifiers=NOTIFIERS]      # (campfire, hipchat, mail, presently, prowl, twitter)
+  [--archives]
+  [--splitter]                 # use <code>--no-splitter</code> to disable</p>
+
+<pre><code>                          # Default: true
+</code></pre>
+
+<p>```</p>
 
 <h3>Generate a Backup model file</h3>
 
 <p>Let's create simple config file with backup generator:</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>backup generate:model --trigger miguest_backup --databases<span class="o">=</span><span class="s2">&quot;postgresql&quot;</span> <span class="se">\</span>
-</span><span class='line'>  --storages<span class="o">=</span><span class="s2">&quot;ftp&quot;</span> --compressors<span class="o">=</span><span class="s2">&quot;bzip2&quot;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p><code>bash
+$ backup generate:model --trigger miguest_backup --databases="postgresql" \
+  --storages="ftp" --compressors="bzip2"
+</code></p>
 
 <p>This will create a <code>config.rb</code> and <code>models/miguest_backup.rb</code> files in <code>~/Backup</code> folder.</p>
 
@@ -117,177 +97,95 @@ backup options like databases, storages, compressions, encrypt-ors,...</p>
 
 <p>Backup generator will create boilerplate model template needing more refinement. It looks something like this:</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>Boilerplate backup model template - miguest_backup.rb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class="o">&lt;</span><span class="sr">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="sr">&lt;h1&gt;encoding: utf-8&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="c1">#&lt;/h1&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="no">Backup</span> <span class="no">Generated</span><span class="p">:</span> <span class="n">miguest_backup</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="sr">&lt;h1&gt;Once configured, you can run the backup with the following command:&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="c1">#&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="err">$</span> <span class="n">backup</span> <span class="n">perform</span> <span class="o">-</span><span class="n">t</span> <span class="n">miguest_backup</span> <span class="o">[-</span><span class="n">c</span> <span class="o">&lt;</span><span class="n">path_to_configuration_file</span><span class="o">&gt;]&lt;</span><span class="sr">/h1&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="sr">&lt;p&gt;#</span>
-</span><span class='line'><span class="sr">Backup::Model.new(:miguest_backup, &#39;Description for miguest_backup&#39;) do</span>
-</span><span class='line'><span class="sr">  ##</span>
-</span><span class='line'><span class="sr">  # Split [Splitter]</span>
-</span><span class='line'><span class="sr">  #</span>
-</span><span class='line'><span class="sr">  # Split the backup file in to chunks of 250 megabytes</span>
-</span><span class='line'><span class="sr">  # if the backup file size exceeds 250 megabytes</span>
-</span><span class='line'><span class="sr">  #</span>
-</span><span class='line'><span class="sr">  split_into_chunks_of 250&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span>  <span class="c1">##</span>
-</span><span class='line'>  <span class="c1"># PostgreSQL [Database]</span>
-</span><span class='line'>  <span class="c1">#</span>
-</span><span class='line'>  <span class="n">database</span> <span class="no">PostgreSQL</span> <span class="k">do</span> <span class="o">|</span><span class="n">db</span><span class="o">|&lt;</span><span class="sr">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt;db.name               = &quot;my_database_name&quot;</span>
-</span><span class='line'><span class="sr">db.username           = &quot;my_username&quot;</span>
-</span><span class='line'><span class="sr">db.password           = &quot;my_password&quot;</span>
-</span><span class='line'><span class="sr">db.host               = &quot;localhost&quot;</span>
-</span><span class='line'><span class="sr">db.port               = 5432</span>
-</span><span class='line'><span class="sr"># db.socket             = &quot;/</span><span class="n">tmp</span><span class="o">/</span><span class="n">pg</span><span class="o">.</span><span class="n">sock</span><span class="s2">&quot;</span>
-</span><span class='line'><span class="s2"># db.additional_options = [&quot;</span><span class="o">-</span><span class="n">xc</span><span class="s2">&quot;, &quot;</span><span class="o">-</span><span class="n">E</span><span class="o">=</span><span class="n">utf8</span><span class="s2">&quot;]</span>
-</span><span class='line'><span class="s2"># Optional: Use to set the location of this utility</span>
-</span><span class='line'><span class="s2">#   if it cannot be found by name in your $PATH</span>
-</span><span class='line'><span class="s2"># db.pg_dump_utility = &quot;</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">pg_dump</span><span class="s2">&quot;</span>
-</span><span class='line'><span class="s2">&lt;/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="s2">&lt;p&gt;  end&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="s2">&lt;p&gt;  ##</span>
-</span><span class='line'><span class="s2">  # FTP (File Transfer Protocol) [Storage]</span>
-</span><span class='line'><span class="s2">  #</span>
-</span><span class='line'><span class="s2">  store_with FTP do |server|&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="s2">&lt;pre&gt;&lt;code&gt;server.username     = &quot;</span><span class="n">my_username</span><span class="s2">&quot;</span>
-</span><span class='line'><span class="s2">server.password     = &quot;</span><span class="n">my_password</span><span class="s2">&quot;</span>
-</span><span class='line'><span class="s2">server.ip           = &quot;</span><span class="mi">1</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">3</span><span class="o">.</span><span class="mi">4</span><span class="s2">&quot;</span>
-</span><span class='line'><span class="s2">server.port         = 21</span>
-</span><span class='line'><span class="s2">server.path         = &quot;</span><span class="o">~</span><span class="sr">/backups/</span><span class="s2">&quot;</span>
-</span><span class='line'><span class="s2">server.keep         = 5</span>
-</span><span class='line'><span class="s2">server.passive_mode = false</span>
-</span><span class='line'><span class="s2">&lt;/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="s2">&lt;p&gt;  end&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="s2">&lt;p&gt;  ##</span>
-</span><span class='line'><span class="s2">  # Bzip2 [Compressor]</span>
-</span><span class='line'><span class="s2">  #</span>
-</span><span class='line'><span class="s2">  compress_with Bzip2&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="s2">&lt;p&gt;end</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>``` ruby Boilerplate backup model template - miguest_backup.rb</p>
+
+<h1>encoding: utf-8</h1>
+
+<h1>#</h1>
+
+<h1>Backup Generated: miguest_backup</h1>
+
+<h1>Once configured, you can run the backup with the following command:</h1>
+
+<p>#</p>
+
+<h1>$ backup perform -t miguest_backup [-c <path_to_configuration_file>]</h1>
+
+<p>#
+Backup::Model.new(:miguest_backup, 'Description for miguest_backup') do
+  ##
+  # Split [Splitter]
+  #
+  # Split the backup file in to chunks of 250 megabytes
+  # if the backup file size exceeds 250 megabytes
+  #
+  split_into_chunks_of 250</p>
+
+<p>  ##
+  # PostgreSQL [Database]
+  #
+  database PostgreSQL do |db|</p>
+
+<pre><code>db.name               = "my_database_name"
+db.username           = "my_username"
+db.password           = "my_password"
+db.host               = "localhost"
+db.port               = 5432
+# db.socket             = "/tmp/pg.sock"
+# db.additional_options = ["-xc", "-E=utf8"]
+# Optional: Use to set the location of this utility
+#   if it cannot be found by name in your $PATH
+# db.pg_dump_utility = "/opt/local/bin/pg_dump"
+</code></pre>
+
+<p>  end</p>
+
+<p>  ##
+  # FTP (File Transfer Protocol) [Storage]
+  #
+  store_with FTP do |server|</p>
+
+<pre><code>server.username     = "my_username"
+server.password     = "my_password"
+server.ip           = "1.2.3.4"
+server.port         = 21
+server.path         = "~/backups/"
+server.keep         = 5
+server.passive_mode = false
+</code></pre>
+
+<p>  end</p>
+
+<p>  ##
+  # Bzip2 [Compressor]
+  #
+  compress_with Bzip2</p>
+
+<p>end
+```</p>
 
 <p>Fairly straight forward refinements are needed, usernames, passwords,... After adding all
 the secret stuff, the backup can be run as easy as:</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>backup perform --trigger miguest_backup
-</span><span class='line'><span class="o">[</span>2012/10/10 12:21:26<span class="o">][</span>message<span class="o">]</span> Performing Backup <span class="k">for</span> <span class="s1">&#39;Description for miguest_backup (miguest_backup)&#39;</span>!
-</span><span class='line'><span class="o">[</span>2012/10/10 12:21:26<span class="o">][</span>message<span class="o">]</span> <span class="o">[</span> backup 3.0.25 : ruby 1.9.3p194 <span class="o">(</span>2012-04-20 revision 35410<span class="o">)</span> <span class="o">[</span>x86_64-linux<span class="o">]</span> <span class="o">]</span>
-</span><span class='line'><span class="o">[</span>2012/10/10 12:21:26<span class="o">][</span>message<span class="o">]</span> Database::PostgreSQL started dumping and archiving <span class="s1">&#39;miguest&#39;</span>.
-</span><span class='line'><span class="o">[</span>2012/10/10 12:21:26<span class="o">][</span>message<span class="o">]</span> Using Compressor::Bzip2 <span class="k">for </span>compression.
-</span><span class='line'><span class="o">[</span>2012/10/10 12:21:26<span class="o">][</span>message<span class="o">]</span>   Command: <span class="s1">&#39;/bin/bzip2&#39;</span>
-</span><span class='line'><span class="o">[</span>2012/10/10 12:21:26<span class="o">][</span>message<span class="o">]</span>   Ext: <span class="s1">&#39;.bz2&#39;</span>
-</span><span class='line'><span class="o">[</span>2012/10/10 12:21:28<span class="o">][</span>message<span class="o">]</span> Database::PostgreSQL Complete!
-</span><span class='line'><span class="o">[</span>2012/10/10 12:21:28<span class="o">][</span>message<span class="o">]</span> Packaging the backup files...
-</span><span class='line'><span class="o">[</span>2012/10/10 12:21:28<span class="o">][</span>message<span class="o">]</span> Splitter configured with a chunk size of 250MB.
-</span><span class='line'><span class="o">[</span>2012/10/10 12:21:28<span class="o">][</span>message<span class="o">]</span> Packaging Complete!
-</span><span class='line'><span class="o">[</span>2012/10/10 12:21:28<span class="o">][</span>message<span class="o">]</span> Cleaning up the temporary files...
-</span><span class='line'><span class="o">[</span>2012/10/10 12:21:29<span class="o">][</span>message<span class="o">]</span> Storage::FTP started transferring <span class="s1">&#39;2012.10.10.12.21.26.miguest_backup.tar&#39;</span> to <span class="s1">&#39;ftp.services.buyvm.net&#39;</span>.
-</span><span class='line'><span class="o">[</span>2012/10/10 12:21:29<span class="o">][</span>message<span class="o">]</span> Storage::FTP: Cycling Started...
-</span><span class='line'><span class="o">[</span>2012/10/10 12:21:29<span class="o">][</span>message<span class="o">]</span> Storage::FTP: Cycling Complete!
-</span><span class='line'><span class="o">[</span>2012/10/10 12:21:29<span class="o">][</span>message<span class="o">]</span> Cleaning up the package files...
-</span><span class='line'><span class="o">[</span>2012/10/10 12:21:29<span class="o">][</span>warning<span class="o">]</span> Backup <span class="k">for</span> <span class="s1">&#39;Description for miguest_backup (miguest_backup)&#39;</span> Completed Successfully <span class="o">(</span>with Warnings<span class="o">)</span> in 00:00:03
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p><code>bash
+$ backup perform --trigger miguest_backup
+[2012/10/10 12:21:26][message] Performing Backup for 'Description for miguest_backup (miguest_backup)'!
+[2012/10/10 12:21:26][message] [ backup 3.0.25 : ruby 1.9.3p194 (2012-04-20 revision 35410) [x86_64-linux] ]
+[2012/10/10 12:21:26][message] Database::PostgreSQL started dumping and archiving 'miguest'.
+[2012/10/10 12:21:26][message] Using Compressor::Bzip2 for compression.
+[2012/10/10 12:21:26][message]   Command: '/bin/bzip2'
+[2012/10/10 12:21:26][message]   Ext: '.bz2'
+[2012/10/10 12:21:28][message] Database::PostgreSQL Complete!
+[2012/10/10 12:21:28][message] Packaging the backup files...
+[2012/10/10 12:21:28][message] Splitter configured with a chunk size of 250MB.
+[2012/10/10 12:21:28][message] Packaging Complete!
+[2012/10/10 12:21:28][message] Cleaning up the temporary files...
+[2012/10/10 12:21:29][message] Storage::FTP started transferring '2012.10.10.12.21.26.miguest_backup.tar' to 'ftp.services.buyvm.net'.
+[2012/10/10 12:21:29][message] Storage::FTP: Cycling Started...
+[2012/10/10 12:21:29][message] Storage::FTP: Cycling Complete!
+[2012/10/10 12:21:29][message] Cleaning up the package files...
+[2012/10/10 12:21:29][warning] Backup for 'Description for miguest_backup (miguest_backup)' Completed Successfully (with Warnings) in 00:00:03
+</code></p>
 
 <p>And after the connecting to the storage server via FTP, there is backup:</p>
 
@@ -325,74 +223,60 @@ writing and deploying cron jobs. And this is what I need to schedule the backups
 
 <h3>Install</h3>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gem install whenever
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p><code>bash
+$ gem install whenever
+</code></p>
 
 <h3>Configure (Wheneverize)</h3>
 
 <p>Configure the whenever, but first make sure that we are in backup folder <code>~/Backup</code></p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span><span class="nb">cd</span> ~/Backup
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p><code>bash
+$ cd ~/Backup
+</code></p>
 
 <p>Then create config folder:</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>mkdir config
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p><code>bash
+$ mkdir config
+</code></p>
 
 <p>And then run the command:</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>wheneverize .
-</span><span class='line'>~ <span class="o">[</span>add<span class="o">]</span> writing <span class="s1">&#39;./config/schedule.rb&#39;</span>
-</span><span class='line'>~ <span class="o">[</span><span class="k">done</span><span class="o">]</span> wheneverized!
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p><code>bash
+$ wheneverize .
+~ [add] writing './config/schedule.rb'
+~ [done] wheneverized!
+</code></p>
 
 <p>Open the <code>config/schedule.rb</code> file and add the following:</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>whenever schedule config - config/schedule.rb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class="n">every</span> <span class="mi">1</span><span class="o">.</span><span class="n">day</span><span class="p">,</span> <span class="ss">:at</span> <span class="o">=&gt;</span> <span class="s1">&#39;4:30 am&#39;</span> <span class="k">do</span>
-</span><span class='line'>  <span class="n">command</span> <span class="s2">&quot;backup perform --trigger miguest_backup&quot;</span>
-</span><span class='line'><span class="k">end</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p><code>ruby whenever schedule config - config/schedule.rb
+every 1.day, :at =&gt; '4:30 am' do
+  command "backup perform --trigger miguest_backup"
+end
+</code></p>
 
 <h3>Schedule to crontab</h3>
 
 <p>Run <code>whenever</code> with no arguments see the <code>crontab</code> entry this will create:</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>whenever
-</span><span class='line'>30 4 * * * /bin/bash -l -c <span class="s1">&#39;backup perform --trigger miguest_backup&#39;</span>&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h2&gt;<span class="o">[</span>message<span class="o">]</span> Above is your schedule file converted to cron syntax; your crontab file was not updated.&lt;/h2&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h2&gt;<span class="o">[</span>message<span class="o">]</span> Run <span class="sb">`</span>whenever --help<span class="err">&#39;</span> <span class="k">for </span>more options.&lt;/h2&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>``` bash
+$ whenever
+30 4 * * * /bin/bash -l -c 'backup perform --trigger miguest_backup'</p>
+
+<h2>[message] Above is your schedule file converted to cron syntax; your crontab file was not updated.</h2>
+
+<h2>[message] Run `whenever --help' for more options.</h2>
+
+<p>```</p>
 
 <p>To write (or update) this job in your <code>crontab</code>, use:</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>whenever --update-crontab
-</span><span class='line'>~ <span class="o">[</span>write<span class="o">]</span> crontab file written
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p><code>bash
+$ whenever --update-crontab
+~ [write] crontab file written
+</code></p>
 
 <p>And that's it, so what is included:</p>
 

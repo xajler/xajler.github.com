@@ -96,14 +96,14 @@ $ sudo nginx Testing Test it by going to &hellip;">
 
 <p>Use <code>brew</code> to install the <code>nginx</code> with command:</p>
 
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>brew install nginx
 </span></code></pre></td></tr></table></div></figure>
 
 
 <p>After install run:</p>
 
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>sudo nginx
 </span></code></pre></td></tr></table></div></figure>
 
@@ -126,22 +126,21 @@ $ sudo nginx Testing Test it by going to &hellip;">
 
 <p>The nginx default port is 8080, we shall change it to 80. First stop the nginx server if it is running by:</p>
 
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>sudo nginx -s stop
 </span></code></pre></td></tr></table></div></figure>
 
 
 <p>Then open <code>nginx.conf</code> with:</p>
 
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>vim /usr/local/etc/nginx/nginx.conf
 </span></code></pre></td></tr></table></div></figure>
 
 
 <p>and change the:</p>
 
-<figure class='code'><figcaption><span>/usr/local/etc/nginx/nginx.conf  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>/usr/local/etc/nginx/nginx.conf</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -166,8 +165,7 @@ $ sudo nginx Testing Test it by going to &hellip;">
 
 <p>to:</p>
 
-<figure class='code'><figcaption><span>/usr/local/etc/nginx/nginx.conf  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>/usr/local/etc/nginx/nginx.conf</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -192,7 +190,7 @@ $ sudo nginx Testing Test it by going to &hellip;">
 
 <p>Save configuration and start nginx by</p>
 
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>sudo nginx
 </span></code></pre></td></tr></table></div></figure>
 
@@ -208,8 +206,7 @@ $ sudo nginx Testing Test it by going to &hellip;">
 
 <p>The defualt path configuration:</p>
 
-<figure class='code'><figcaption><span>/usr/local/etc/nginx/nginx.conf  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>/usr/local/etc/nginx/nginx.conf</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -234,8 +231,7 @@ $ sudo nginx Testing Test it by going to &hellip;">
 
 <p>To let say <code>Users/xajler/www</code>:</p>
 
-<figure class='code'><figcaption><span>/usr/local/etc/nginx/nginx.conf  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>/usr/local/etc/nginx/nginx.conf</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -324,6 +320,10 @@ $ sudo nginx Testing Test it by going to &hellip;">
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/10/12/make-powershell-and-git-suck-less-on-windows/">Make Powershell, SSH Github and git suck less on Windows</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2012/10/10/deploying-octopress-to-github-pages-and-setting-custom-subdomain-cname/">Deploying Octopress to Github Pages and setting custom subdomain CNAME</a>

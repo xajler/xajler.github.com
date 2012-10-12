@@ -4,7 +4,7 @@
   <title><![CDATA[Category: nginx | Learn-a-holic Geek Notes]]></title>
   <link href="http://xajler.github.com/blog/categories/nginx/atom.xml" rel="self"/>
   <link href="http://xajler.github.com/"/>
-  <updated>2012-10-12T03:29:51+02:00</updated>
+  <updated>2012-10-12T13:20:08+02:00</updated>
   <id>http://xajler.github.com/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -22,15 +22,15 @@
 
 <p>Use <code>brew</code> to install the <code>nginx</code> with command:</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>brew install nginx
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p><code>bash
+$ brew install nginx
+</code></p>
 
 <p>After install run:</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>sudo nginx
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p><code>bash
+$ sudo nginx
+</code></p>
 
 <h2>Testing</h2>
 
@@ -50,87 +50,57 @@
 
 <p>The nginx default port is 8080, we shall change it to 80. First stop the nginx server if it is running by:</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>sudo nginx -s stop
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p><code>bash
+$ sudo nginx -s stop
+</code></p>
 
 <p>Then open <code>nginx.conf</code> with:</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>vim /usr/local/etc/nginx/nginx.conf
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p><code>bash
+$ vim /usr/local/etc/nginx/nginx.conf
+</code></p>
 
 <p>and change the:</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>/usr/local/etc/nginx/nginx.conf  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='nginx'><span class='line'><span class="k">server</span> <span class="p">{</span><span class="kn">&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="s">&lt;pre&gt;&lt;code&gt;listen</span>       <span class="mi">8080</span><span class="p">;</span>
-</span><span class='line'><span class="kn">server_name</span>  <span class="s">localhost</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">#access_log  logs/host.access.log  main;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kn">location</span> <span class="s">/</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kn">root</span>   <span class="s">html</span><span class="p">;</span>
-</span><span class='line'>    <span class="kn">index</span>  <span class="s">index.html</span> <span class="s">index.htm</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="kn">&lt;/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="s">&lt;p&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>``` nginx /usr/local/etc/nginx/nginx.conf
+server {</p>
+
+<pre><code>listen       8080;
+server_name  localhost;
+
+#access_log  logs/host.access.log  main;
+
+location / {
+    root   html;
+    index  index.html index.htm;
+}
+</code></pre>
+
+<p>```</p>
 
 <p>to:</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>/usr/local/etc/nginx/nginx.conf  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='nginx'><span class='line'><span class="k">server</span> <span class="p">{</span><span class="kn">&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="s">&lt;pre&gt;&lt;code&gt;listen</span>       <span class="mi">80</span><span class="p">;</span>
-</span><span class='line'><span class="kn">server_name</span>  <span class="s">localhost</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">#access_log  logs/host.access.log  main;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kn">location</span> <span class="s">/</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kn">root</span>   <span class="s">html</span><span class="p">;</span>
-</span><span class='line'>    <span class="kn">index</span>  <span class="s">index.html</span> <span class="s">index.htm</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="kn">&lt;/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="s">&lt;p&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>``` nginx /usr/local/etc/nginx/nginx.conf
+server {</p>
+
+<pre><code>listen       80;
+server_name  localhost;
+
+#access_log  logs/host.access.log  main;
+
+location / {
+    root   html;
+    index  index.html index.htm;
+}
+</code></pre>
+
+<p>```</p>
 
 <p>Save configuration and start nginx by</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>sudo nginx
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p><code>bash
+$ sudo nginx
+</code></p>
 
 <h2>Changing the path of defualt web location</h2>
 
@@ -143,69 +113,39 @@
 
 <p>The defualt path configuration:</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>/usr/local/etc/nginx/nginx.conf  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='nginx'><span class='line'><span class="k">server</span> <span class="p">{</span><span class="kn">&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="s">&lt;pre&gt;&lt;code&gt;listen</span>       <span class="mi">80</span><span class="p">;</span>
-</span><span class='line'><span class="kn">server_name</span>  <span class="s">localhost</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">#access_log  logs/host.access.log  main;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kn">location</span> <span class="s">/</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kn">root</span>   <span class="s">html</span><span class="p">;</span>
-</span><span class='line'>    <span class="kn">index</span>  <span class="s">index.html</span> <span class="s">index.htm</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="kn">&lt;/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="s">&lt;p&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>``` nginx /usr/local/etc/nginx/nginx.conf
+server {</p>
+
+<pre><code>listen       80;
+server_name  localhost;
+
+#access_log  logs/host.access.log  main;
+
+location / {
+    root   html;
+    index  index.html index.htm;
+}
+</code></pre>
+
+<p>```</p>
 
 <p>To let say <code>Users/xajler/www</code>:</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>/usr/local/etc/nginx/nginx.conf  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='nginx'><span class='line'><span class="k">server</span> <span class="p">{</span><span class="kn">&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="s">&lt;pre&gt;&lt;code&gt;listen</span>       <span class="mi">80</span><span class="p">;</span>
-</span><span class='line'><span class="kn">server_name</span>  <span class="s">localhost</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">#access_log  logs/host.access.log  main;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kn">location</span> <span class="s">/</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kn">root</span>   <span class="s">/Users/xajler/www</span><span class="p">;</span>
-</span><span class='line'>    <span class="kn">index</span>  <span class="s">index.html</span> <span class="s">index.htm</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="kn">&lt;/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="s">&lt;p&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>``` nginx /usr/local/etc/nginx/nginx.conf
+server {</p>
+
+<pre><code>listen       80;
+server_name  localhost;
+
+#access_log  logs/host.access.log  main;
+
+location / {
+    root   /Users/xajler/www;
+    index  index.html index.htm;
+}
+</code></pre>
+
+<p>```</p>
 
 <p>After change stop and start nginix server and nginx is now serving pages from your custom folder!</p>
 ]]></content>

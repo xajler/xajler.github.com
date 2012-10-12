@@ -126,7 +126,7 @@ backup options like databases, storages, compressions, encrypt-ors,&#8230;</p>
 
 <p>Installation is a straight forward like any Ruby Gem:</p>
 
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gem install backup
 </span></code></pre></td></tr></table></div></figure>
 
@@ -135,7 +135,7 @@ backup options like databases, storages, compressions, encrypt-ors,&#8230;</p>
 
 <p>backup gem have its own backup &#8220;model&#8221; generator that creates backup config files, this is a comprehensive usage:</p>
 
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -172,7 +172,7 @@ backup options like databases, storages, compressions, encrypt-ors,&#8230;</p>
 
 <p>Let&#8217;s create simple config file with backup generator:</p>
 
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>backup generate:model --trigger miguest_backup --databases<span class="o">=</span><span class="s2">&quot;postgresql&quot;</span> <span class="se">\</span>
 </span><span class='line'>  --storages<span class="o">=</span><span class="s2">&quot;ftp&quot;</span> --compressors<span class="o">=</span><span class="s2">&quot;bzip2&quot;</span>
@@ -185,8 +185,7 @@ backup options like databases, storages, compressions, encrypt-ors,&#8230;</p>
 
 <p>Backup generator will create boilerplate model template needing more refinement. It looks something like this:</p>
 
-<figure class='code'><figcaption><span>Boilerplate backup model template - miguest_backup.rb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>Boilerplate backup model template - miguest_backup.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -238,7 +237,7 @@ backup options like databases, storages, compressions, encrypt-ors,&#8230;</p>
 <span class='line-number'>50</span>
 <span class='line-number'>51</span>
 <span class='line-number'>52</span>
-</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class="c1"># encoding: utf-8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># encoding: utf-8</span>
 </span><span class='line'>
 </span><span class='line'><span class="c1">##</span>
 </span><span class='line'><span class="c1"># Backup Generated: miguest_backup</span>
@@ -296,7 +295,7 @@ backup options like databases, storages, compressions, encrypt-ors,&#8230;</p>
 <p>Fairly straight forward refinements are needed, usernames, passwords,&#8230; After adding all
 the secret stuff, the backup can be run as easy as:</p>
 
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -369,7 +368,7 @@ writing and deploying cron jobs. And this is what I need to schedule the backups
 
 <h3>Install</h3>
 
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>gem install whenever
 </span></code></pre></td></tr></table></div></figure>
 
@@ -378,21 +377,21 @@ writing and deploying cron jobs. And this is what I need to schedule the backups
 
 <p>Configure the whenever, but first make sure that we are in backup folder <code>~/Backup</code></p>
 
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span><span class="nb">cd</span> ~/Backup
 </span></code></pre></td></tr></table></div></figure>
 
 
 <p>Then create config folder:</p>
 
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>mkdir config
 </span></code></pre></td></tr></table></div></figure>
 
 
 <p>And then run the command:</p>
 
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>wheneverize .
@@ -403,11 +402,10 @@ writing and deploying cron jobs. And this is what I need to schedule the backups
 
 <p>Open the <code>config/schedule.rb</code> file and add the following:</p>
 
-<figure class='code'><figcaption><span>whenever schedule config - config/schedule.rb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>whenever schedule config - config/schedule.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class="n">every</span> <span class="mi">1</span><span class="o">.</span><span class="n">day</span><span class="p">,</span> <span class="ss">:at</span> <span class="o">=&gt;</span> <span class="s1">&#39;4:30 am&#39;</span> <span class="k">do</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">every</span> <span class="mi">1</span><span class="o">.</span><span class="n">day</span><span class="p">,</span> <span class="ss">:at</span> <span class="o">=&gt;</span> <span class="s1">&#39;4:30 am&#39;</span> <span class="k">do</span>
 </span><span class='line'>  <span class="n">command</span> <span class="s2">&quot;backup perform --trigger miguest_backup&quot;</span>
 </span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
@@ -417,7 +415,7 @@ writing and deploying cron jobs. And this is what I need to schedule the backups
 
 <p>Run <code>whenever</code> with no arguments see the <code>crontab</code> entry this will create:</p>
 
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -432,7 +430,7 @@ writing and deploying cron jobs. And this is what I need to schedule the backups
 
 <p>To write (or update) this job in your <code>crontab</code>, use:</p>
 
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>whenever --update-crontab
 </span><span class='line'>~ <span class="o">[</span>write<span class="o">]</span> crontab file written
@@ -524,6 +522,10 @@ works!</p>
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/10/12/make-powershell-and-git-suck-less-on-windows/">Make Powershell, SSH Github and git suck less on Windows</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2012/10/10/deploying-octopress-to-github-pages-and-setting-custom-subdomain-cname/">Deploying Octopress to Github Pages and setting custom subdomain CNAME</a>
