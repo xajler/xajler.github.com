@@ -4,7 +4,7 @@
   <title><![CDATA[Learn-a-holic Geek Notes]]></title>
   <link href="http://blog.metaintellect.com/atom.xml" rel="self"/>
   <link href="http://blog.metaintellect.com/"/>
-  <updated>2012-10-12T14:38:08+02:00</updated>
+  <updated>2012-10-12T15:25:16+02:00</updated>
   <id>http://blog.metaintellect.com/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -204,7 +204,8 @@ are probably still dating from &#8216;95 and selecting, copy, pasting is awkward
 <h4>Options Tab</h4>
 
 <p>In <code>Edit Options</code> check the <code>QuickEdit Mode</code>. Quick edit mode enables selecting text from
-anywhere in <em>Powershell</em> and on single right-click pastes the text where the blinking cursor
+anywhere in <em>Powershell</em> and with right-click it will copy the selected content.
+Also with single right-click pastes the text where the blinking cursor
 currently is, similar to <em>putty</em>.</p>
 
 <p>This option really boosts the productivity in <em>Powershell</em>, it is too bad that this is
