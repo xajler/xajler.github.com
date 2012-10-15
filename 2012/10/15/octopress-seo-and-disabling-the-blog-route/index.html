@@ -1,0 +1,507 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Octopress SEO and disabling the blog route - Learn-a-holic Geek Notes</title>
+  <meta name="author" content="Kornelije Sajler">
+
+  
+  <meta name="description" content="Better Octopress SEO with per page keywords and on home page. Redirect to single domain. Removing Octopress default /blog route.">
+  <meta name="keywords" content="octopress, seo">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://learnaholic.me/2012/10/15/octopress-seo-and-disabling-the-blog-route/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Learn-a-holic Geek Notes" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic' rel='stylesheet' type='text/css'>
+
+  
+
+</head>
+
+<body    class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Learn-a-holic Geek Notes</a></h1>
+  
+    <h2>Human compiled Brainwork by Kornelije Sajler.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:learnaholic.me" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Home</a></li>
+  <li><a href="http://metaintellect.com" target="_blank">Metaintellect</a></li>
+  <li><a href="http://caribou.arvixe.com/~ksajler" target="_blank">Old Blog</a></li>
+  <!-- <li><a href="/blog/archives">Archives</a></li> -->
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Octopress SEO and Disabling the Blog Route</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-15T08:36:00+02:00" pubdate data-updated="true">Oct 15<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>The SEO on Octopress by default is moderate, but it can be better, too bad that the <code>rake new_post</code>
+doesn&#8217;t generate <em>Meta description</em> and the <em>keywords</em>. The other problem is
+redirect to single page which is broken since there is <em>learnaholic.me</em> and <em>www.learnaholic.me</em>
+which can affect site ranking.</p>
+
+<p>The third problem is that Octopress by default has a <code>&lt;domain&gt;/blog</code> route path which is awkward
+and unnecessary, domain is sufficient enough without <code>/blog</code>.</p>
+
+<p>The most SEO fixes are from the <a href="http://www.yatishmehta.in/seo-for-octopress">SEO for Octopress,Heroku</a>
+post by Yatish Mehta.</p>
+
+<h2>Keywords and Description for every page</h2>
+
+<p>The provided <em>keywords</em> and <em>description</em> should be a goal for each page, the problem is
+that <code>rake new_post</code> doesn&#8217;t generate <em>keywords</em> and <em>description</em>, so it should be added
+manually.</p>
+
+<p>I&#8217;ve added the <em>keywords</em> and <em>description</em> to all my posts created in this few days
+and the post Octopress metadata looks like this:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>---
+</span><span class='line'>layout: post
+</span><span class='line'>title: "Make Powershell, SSH Github and git suck less on Windows"
+</span><span class='line'>date: 2012-10-12 03:41
+</span><span class='line'>comments: true
+</span><span class='line'>categories: [powershell, git, github]
+</span><span class='line'>keywords: powershell, git, github, windows, ssh key, posh-git, msysgit
+</span><span class='line'>description: Installing the msysgit, configuring git, creating SSH keys for Github, customize the Powershell, installing posh-git. Windows suck less after.
+</span><span class='line'>---</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Home page Keywords and Description</h2>
+
+<p>The Octopress by default shows latest post as home page, I choose not to go this way, my
+default home page is archive list. So there is no post from where it should include the
+<em>keywords</em> and <em>description</em>.</p>
+
+<h3>Setting Keywords and Description for Home page in _config.yml</h3>
+
+<p>Open the <code>_config.yml</code> and add the <em>kewords</em> and <em>description</em> keys:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>description: Kornelije Sajler (xajler) Learn-a-holic Geek Notes. Human compiled Brainwork by Kornelije Sajler (xajler).
+</span><span class='line'>keywords: Kornelije Sajler, xajler, metaintellect, learnaholic, learn-a-holic, coding, programming, Ruby, Ruby On Rails, RSpec TDD, cucumber, jasmine, bacbone.js, postgresql, mongodb</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Change head.html template to be aware of Home page SEO</h3>
+
+<p>In <code>.themes/classic/source/_includes/head.html</code> after meta tag for <code>author</code> replace the
+current <em>description</em>/<em>keywords</em> code with this one:</p>
+
+<div><script src='https://gist.github.com/2460469.js?file='></script>
+<noscript><pre><code>&lt;meta name=&quot;author&quot; content=&quot;{{ site.author }}&quot;&gt;
+{% capture description %}{% if page.description %}{{ page.description }}{% elsif site.description %}{{ site.description }}{%else%}{{ content | raw_content }}{% endif %}{% endcapture %}
+&lt;meta name=&quot;description&quot; content=&quot;{{ description | strip_html | condense_spaces | truncate:150 }}&quot;&gt;
+{% if page.keywords %}&lt;meta name=&quot;keywords&quot; content=&quot;{{ page.keywords }}&quot;&gt;{%else%}&lt;meta name=&quot;keywords&quot; content=&quot;{{ site.keywords }}&quot;&gt;{% endif %}
+</code></pre></noscript></div>
+
+
+<h2>Single domain rewrite</h2>
+
+<p>To make sure that there is no differnce between <em>learnaholic.me</em> and <em>www.learnaholic.me</em>
+request, we shall include rewriting with <em>gem rack-rewrite</em>.</p>
+
+<p>To Octopress <em>Gemfile</em> add:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>gem 'rack-rewrite'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>To top of <code>config.ru</code> (before <code>SinatraStaticServer</code>) add:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;RACK_ENV&#39;</span><span class="o">]</span> <span class="o">||=</span> <span class="s1">&#39;development&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;SITE_URL&#39;</span><span class="o">]</span> <span class="o">||=</span> <span class="s1">&#39;www.learnaholic.me&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">use</span> <span class="no">Rack</span><span class="o">::</span><span class="no">Rewrite</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">r301</span> <span class="sr">%r{.*}</span><span class="p">,</span> <span class="s2">&quot;http://</span><span class="si">#{</span><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;SITE_URL&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">$&amp;&quot;</span><span class="p">,</span> <span class="ss">:if</span> <span class="o">=&gt;</span> <span class="no">Proc</span><span class="o">.</span><span class="n">new</span> <span class="p">{</span> <span class="o">|</span><span class="n">rack_env</span><span class="o">|</span>
+</span><span class='line'>      <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;RACK_ENV&#39;</span><span class="o">]</span> <span class="o">==</span> <span class="s1">&#39;production&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">rack_env</span><span class="o">[</span><span class="s1">&#39;SERVER_NAME&#39;</span><span class="o">]</span> <span class="o">!=</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;SITE_URL&#39;</span><span class="o">]</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="n">r301</span> <span class="sr">%r{^(.+)/$}</span><span class="p">,</span> <span class="s1">&#39;$1&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Don&#8217;t forget to add a require on the top of the <code>config.ru</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;rack-rewrite&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Complete <code>config.ru</code> should look like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;bundler/setup&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;sinatra/base&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;rack-rewrite&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># The project root directory</span>
+</span><span class='line'><span class="vg">$root</span> <span class="o">=</span> <span class="o">::</span><span class="no">File</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">__FILE__</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;RACK_ENV&#39;</span><span class="o">]</span> <span class="o">||=</span> <span class="s1">&#39;development&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;SITE_URL&#39;</span><span class="o">]</span> <span class="o">||=</span> <span class="s1">&#39;www.learnaholic.me&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">use</span> <span class="no">Rack</span><span class="o">::</span><span class="no">Rewrite</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">r301</span> <span class="sr">%r{.*}</span><span class="p">,</span> <span class="s2">&quot;http://</span><span class="si">#{</span><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;SITE_URL&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">$&amp;&quot;</span><span class="p">,</span> <span class="ss">:if</span> <span class="o">=&gt;</span> <span class="no">Proc</span><span class="o">.</span><span class="n">new</span> <span class="p">{</span> <span class="o">|</span><span class="n">rack_env</span><span class="o">|</span>
+</span><span class='line'>      <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;RACK_ENV&#39;</span><span class="o">]</span> <span class="o">==</span> <span class="s1">&#39;production&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">rack_env</span><span class="o">[</span><span class="s1">&#39;SERVER_NAME&#39;</span><span class="o">]</span> <span class="o">!=</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;SITE_URL&#39;</span><span class="o">]</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="n">r301</span> <span class="sr">%r{^(.+)/$}</span><span class="p">,</span> <span class="s1">&#39;$1&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">SinatraStaticServer</span> <span class="o">&lt;</span> <span class="no">Sinatra</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">get</span><span class="p">(</span><span class="sr">/.+/</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">send_sinatra_file</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">path</span><span class="p">)</span> <span class="p">{</span><span class="mi">404</span><span class="p">}</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">not_found</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">send_sinatra_file</span><span class="p">(</span><span class="s1">&#39;404.html&#39;</span><span class="p">)</span> <span class="p">{</span><span class="s2">&quot;Sorry, I cannot find </span><span class="si">#{</span><span class="n">request</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">send_sinatra_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">missing_file_block</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">file_path</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="no">File</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">__FILE__</span><span class="p">),</span> <span class="s1">&#39;public&#39;</span><span class="p">,</span>  <span class="n">path</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">file_path</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;index.html&#39;</span><span class="p">)</span> <span class="k">unless</span> <span class="n">file_path</span> <span class="o">=~</span> <span class="sr">/\.[a-z]+$/i</span>
+</span><span class='line'>    <span class="no">File</span><span class="o">.</span><span class="n">exist?</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span> <span class="p">?</span> <span class="n">send_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span> <span class="p">:</span> <span class="n">missing_file_block</span><span class="o">.</span><span class="n">call</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">run</span> <span class="no">SinatraStaticServer</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Set the route without unnecessary /blog route path</h2>
+
+<p>The Octopres by defult has a weird <em>&lt;domain&gt;/blog/2012/10&#8230;</em> route path, the <code>blog</code>
+part of URL is totally unnecessary, so I removed it all together.</p>
+
+<p>In <code>_config.yml</code> change:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">permalink</span><span class="p">:</span> <span class="sr">/blog/</span><span class="ss">:year</span><span class="o">/</span><span class="ss">:month</span><span class="o">/</span><span class="ss">:day</span><span class="o">/</span><span class="ss">:title</span><span class="o">/</span>
+</span><span class='line'><span class="n">category_dir</span><span class="p">:</span> <span class="n">blog</span><span class="o">/</span><span class="n">categories</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>to:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">permalink</span><span class="p">:</span> <span class="sr">/:year/</span><span class="ss">:month</span><span class="o">/</span><span class="ss">:day</span><span class="o">/</span><span class="ss">:title</span><span class="o">/</span>
+</span><span class='line'><span class="n">category_dir</span><span class="p">:</span> <span class="n">categories</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Conclusion</h2>
+
+<p>Improved SEO of the Octopress site:</p>
+
+<ul>
+<li>Including the <em>keywords</em> and <em>description</em> to each post.</li>
+<li>Home page is now with <em>keywords</em> and <em>description</em>, generic for the whole site.</li>
+<li>Redirect to single domain. The <em>www.learnholic.me</em> request will be redirected to <em>learnaholic.me</em>.</li>
+</ul>
+
+
+<p>The cleaner site path by removing the unnecessary <code>/blog</code> from the URL route.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Kornelije Sajler</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-15T08:36:00+02:00" pubdate data-updated="true">Oct 15<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/categories/octopress/'>octopress</a>, <a class='category' href='/categories/seo/'>seo</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://learnaholic.me/2012/10/15/octopress-seo-and-disabling-the-blog-route/" data-via="xajler" data-counturl="http://learnaholic.me/2012/10/15/octopress-seo-and-disabling-the-blog-route/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/2012/10/12/make-powershell-and-git-suck-less-on-windows/" title="Previous Post: Make Powershell, SSH Github and git suck less on Windows">&laquo; Make Powershell, SSH Github and git suck less on Windows</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/2012/10/15/octopress-seo-and-disabling-the-blog-route/">Octopress SEO and disabling the blog route</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2012/10/12/make-powershell-and-git-suck-less-on-windows/">Make Powershell, SSH Github and git suck less on Windows</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2012/10/10/deploying-octopress-to-github-pages-and-setting-custom-subdomain-cname/">Deploying Octopress to Github Pages and setting custom subdomain CNAME</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2012/10/10/backing-up-postgresql-with-backup-and-whatever-gems/">Backing up PostgreSQL with backup and whatever gems on VPS</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2012/10/10/installing-nginx-in-mac-os-x-mountain-lion/">Installing nginx in Mac OS X Mountain Lion with homebrew</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/xajler">@xajler</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'xajler',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("xajler", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/xajler" class="twitter-follow-button" data-show-count="false">Follow @xajler</a>
+  
+</section>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Kornelije Sajler -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'metaintellect-blog';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://learnaholic.me/2012/10/15/octopress-seo-and-disabling-the-blog-route/';
+        var disqus_url = 'http://learnaholic.me/2012/10/15/octopress-seo-and-disabling-the-blog-route/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

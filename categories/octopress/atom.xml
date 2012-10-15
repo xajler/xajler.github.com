@@ -4,7 +4,7 @@
   <title><![CDATA[Category: octopress | Learn-a-holic Geek Notes]]></title>
   <link href="http://learnaholic.me/categories/octopress/atom.xml" rel="self"/>
   <link href="http://learnaholic.me/"/>
-  <updated>2012-10-15T06:56:55+02:00</updated>
+  <updated>2012-10-15T10:23:34+02:00</updated>
   <id>http://learnaholic.me/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -12,6 +12,195 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Octopress SEO and disabling the blog route]]></title>
+    <link href="http://learnaholic.me/2012/10/15/octopress-seo-and-disabling-the-blog-route/"/>
+    <updated>2012-10-15T08:36:00+02:00</updated>
+    <id>http://learnaholic.me/2012/10/15/octopress-seo-and-disabling-the-blog-route</id>
+    <content type="html"><![CDATA[<p>The SEO on Octopress by default is moderate, but it can be better, too bad that the <code>rake new_post</code>
+doesn't generate <em>Meta description</em> and the <em>keywords</em>. The other problem is
+redirect to single page which is broken since there is <em>learnaholic.me</em> and <em>www.learnaholic.me</em>
+which can affect site ranking.</p>
+
+<p>The third problem is that Octopress by default has a <code>&lt;domain&gt;/blog</code> route path which is awkward
+and unnecessary, domain is sufficient enough without <code>/blog</code>.</p>
+
+<p>The most SEO fixes are from the <a href="http://www.yatishmehta.in/seo-for-octopress">SEO for Octopress,Heroku</a>
+post by Yatish Mehta.</p>
+
+<h2>Keywords and Description for every page</h2>
+
+<p>The provided <em>keywords</em> and <em>description</em> should be a goal for each page, the problem is
+that <code>rake new_post</code> doesn't generate <em>keywords</em> and <em>description</em>, so it should be added
+manually.</p>
+
+<p>I've added the <em>keywords</em> and <em>description</em> to all my posts created in this few days
+and the post Octopress metadata looks like this:</p>
+
+<h2>```</h2>
+
+<p>layout: post
+title: "Make Powershell, SSH Github and git suck less on Windows"
+date: 2012-10-12 03:41
+comments: true
+categories: [powershell, git, github]
+keywords: powershell, git, github, windows, ssh key, posh-git, msysgit</p>
+
+<h2>description: Installing the msysgit, configuring git, creating SSH keys for Github, customize the Powershell, installing posh-git. Windows suck less after.</h2>
+
+<p>```</p>
+
+<h2>Home page Keywords and Description</h2>
+
+<p>The Octopress by default shows latest post as home page, I choose not to go this way, my
+default home page is archive list. So there is no post from where it should include the
+<em>keywords</em> and <em>description</em>.</p>
+
+<h3>Setting Keywords and Description for Home page in _config.yml</h3>
+
+<p>Open the <code>_config.yml</code> and add the <em>kewords</em> and <em>description</em> keys:</p>
+
+<p><code>
+description: Kornelije Sajler (xajler) Learn-a-holic Geek Notes. Human compiled Brainwork by Kornelije Sajler (xajler).
+keywords: Kornelije Sajler, xajler, metaintellect, learnaholic, learn-a-holic, coding, programming, Ruby, Ruby On Rails, RSpec TDD, cucumber, jasmine, bacbone.js, postgresql, mongodb
+</code></p>
+
+<h3>Change head.html template to be aware of Home page SEO</h3>
+
+<p>In <code>.themes/classic/source/_includes/head.html</code> after meta tag for <code>author</code> replace the
+current <em>description</em>/<em>keywords</em> code with this one:</p>
+
+<p><div><script src='https://gist.github.com/2460469.js?file='></script>
+<noscript><pre><code>&lt;meta name=&quot;author&quot; content=&quot;{{ site.author }}&quot;&gt;
+{% capture description %}{% if page.description %}{{ page.description }}{% elsif site.description %}{{ site.description }}{%else%}{{ content | raw_content }}{% endif %}{% endcapture %}
+&lt;meta name=&quot;description&quot; content=&quot;{{ description | strip_html | condense_spaces | truncate:150 }}&quot;&gt;
+{% if page.keywords %}&lt;meta name=&quot;keywords&quot; content=&quot;{{ page.keywords }}&quot;&gt;{%else%}&lt;meta name=&quot;keywords&quot; content=&quot;{{ site.keywords }}&quot;&gt;{% endif %}
+</code></pre></noscript></div>
+</p>
+
+<h2>Single domain rewrite</h2>
+
+<p>To make sure that there is no differnce between <em>learnaholic.me</em> and <em>www.learnaholic.me</em>
+request, we shall include rewriting with <em>gem rack-rewrite</em>.</p>
+
+<p>To Octopress <em>Gemfile</em> add:</p>
+
+<p><code>
+gem 'rack-rewrite'
+</code></p>
+
+<p>To top of <code>config.ru</code> (before <code>SinatraStaticServer</code>) add:</p>
+
+<p>```ruby
+ENV['RACK_ENV'] ||= 'development'</p>
+
+<p>ENV['SITE_URL'] ||= 'www.learnaholic.me'</p>
+
+<p>use Rack::Rewrite do
+  r301 %r{.*}, "http://#{ENV['SITE_URL']}$&amp;", :if => Proc.new { |rack_env|</p>
+
+<pre><code>  ENV['RACK_ENV'] == 'production' &amp;&amp; rack_env['SERVER_NAME'] != ENV['SITE_URL']
+}
+</code></pre>
+
+<p>  r301 %r{<sup>(.+)/$},</sup> '$1'
+end
+```</p>
+
+<p>Don't forget to add a require on the top of the <code>config.ru</code>:</p>
+
+<p><code>ruby
+require 'rack-rewrite'
+</code>
+Complete <code>config.ru</code> should look like this:</p>
+
+<p>```ruby
+require 'bundler/setup'
+require 'sinatra/base'
+require 'rack-rewrite'</p>
+
+<h1>The project root directory</h1>
+
+<p>$root = ::File.dirname(<strong>FILE</strong>)</p>
+
+<p>ENV['RACK_ENV'] ||= 'development'</p>
+
+<p>ENV['SITE_URL'] ||= 'www.learnaholic.me'</p>
+
+<p>use Rack::Rewrite do
+  r301 %r{.*}, "http://#{ENV['SITE_URL']}$&amp;", :if => Proc.new { |rack_env|</p>
+
+<pre><code>  ENV['RACK_ENV'] == 'production' &amp;&amp; rack_env['SERVER_NAME'] != ENV['SITE_URL']
+}
+</code></pre>
+
+<p>  r301 %r{<sup>(.+)/$},</sup> '$1'
+end</p>
+
+<p>class SinatraStaticServer &lt; Sinatra::Base</p>
+
+<p>  get(/.+/) do</p>
+
+<pre><code>send_sinatra_file(request.path) {404}
+</code></pre>
+
+<p>  end</p>
+
+<p>  not_found do</p>
+
+<pre><code>send_sinatra_file('404.html') {"Sorry, I cannot find #{request.path}"}
+</code></pre>
+
+<p>  end</p>
+
+<p>  def send_sinatra_file(path, &amp;missing_file_block)</p>
+
+<pre><code>file_path = File.join(File.dirname(__FILE__), 'public',  path)
+file_path = File.join(file_path, 'index.html') unless file_path =~ /\.[a-z]+$/i
+File.exist?(file_path) ? send_file(file_path) : missing_file_block.call
+</code></pre>
+
+<p>  end</p>
+
+<p>end</p>
+
+<p>run SinatraStaticServer
+```</p>
+
+<h2>Set the route without unnecessary /blog route path</h2>
+
+<p>The Octopres by defult has a weird <em>&lt;domain&gt;/blog/2012/10...</em> route path, the <code>blog</code>
+part of URL is totally unnecessary, so I removed it all together.</p>
+
+<p>In <code>_config.yml</code> change:</p>
+
+<p><code>
+permalink: /blog/:year/:month/:day/:title/
+category_dir: blog/categories
+</code></p>
+
+<p>to:</p>
+
+<p><code>
+permalink: /:year/:month/:day/:title/
+category_dir: categories
+</code></p>
+
+<h2>Conclusion</h2>
+
+<p>Improved SEO of the Octopress site:</p>
+
+<ul>
+<li>Including the <em>keywords</em> and <em>description</em> to each post.</li>
+<li>Home page is now with <em>keywords</em> and <em>description</em>, generic for the whole site.</li>
+<li>Redirect to single domain. The <em>www.learnholic.me</em> request will be redirected to <em>learnaholic.me</em>.</li>
+</ul>
+
+
+<p>The cleaner site path by removing the unnecessary <code>/blog</code> from the URL route.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Deploying Octopress to Github Pages and setting custom subdomain CNAME]]></title>

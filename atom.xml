@@ -4,7 +4,7 @@
   <title><![CDATA[Learn-a-holic Geek Notes]]></title>
   <link href="http://learnaholic.me/atom.xml" rel="self"/>
   <link href="http://learnaholic.me/"/>
-  <updated>2012-10-15T06:56:55+02:00</updated>
+  <updated>2012-10-15T10:23:34+02:00</updated>
   <id>http://learnaholic.me/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -12,6 +12,240 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Octopress SEO and disabling the blog route]]></title>
+    <link href="http://learnaholic.me/2012/10/15/octopress-seo-and-disabling-the-blog-route/"/>
+    <updated>2012-10-15T08:36:00+02:00</updated>
+    <id>http://learnaholic.me/2012/10/15/octopress-seo-and-disabling-the-blog-route</id>
+    <content type="html"><![CDATA[<p>The SEO on Octopress by default is moderate, but it can be better, too bad that the <code>rake new_post</code>
+doesn&#8217;t generate <em>Meta description</em> and the <em>keywords</em>. The other problem is
+redirect to single page which is broken since there is <em>learnaholic.me</em> and <em>www.learnaholic.me</em>
+which can affect site ranking.</p>
+
+<p>The third problem is that Octopress by default has a <code>&lt;domain&gt;/blog</code> route path which is awkward
+and unnecessary, domain is sufficient enough without <code>/blog</code>.</p>
+
+<p>The most SEO fixes are from the <a href="http://www.yatishmehta.in/seo-for-octopress">SEO for Octopress,Heroku</a>
+post by Yatish Mehta.</p>
+
+<h2>Keywords and Description for every page</h2>
+
+<p>The provided <em>keywords</em> and <em>description</em> should be a goal for each page, the problem is
+that <code>rake new_post</code> doesn&#8217;t generate <em>keywords</em> and <em>description</em>, so it should be added
+manually.</p>
+
+<p>I&#8217;ve added the <em>keywords</em> and <em>description</em> to all my posts created in this few days
+and the post Octopress metadata looks like this:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>---
+</span><span class='line'>layout: post
+</span><span class='line'>title: "Make Powershell, SSH Github and git suck less on Windows"
+</span><span class='line'>date: 2012-10-12 03:41
+</span><span class='line'>comments: true
+</span><span class='line'>categories: [powershell, git, github]
+</span><span class='line'>keywords: powershell, git, github, windows, ssh key, posh-git, msysgit
+</span><span class='line'>description: Installing the msysgit, configuring git, creating SSH keys for Github, customize the Powershell, installing posh-git. Windows suck less after.
+</span><span class='line'>---</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Home page Keywords and Description</h2>
+
+<p>The Octopress by default shows latest post as home page, I choose not to go this way, my
+default home page is archive list. So there is no post from where it should include the
+<em>keywords</em> and <em>description</em>.</p>
+
+<h3>Setting Keywords and Description for Home page in _config.yml</h3>
+
+<p>Open the <code>_config.yml</code> and add the <em>kewords</em> and <em>description</em> keys:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>description: Kornelije Sajler (xajler) Learn-a-holic Geek Notes. Human compiled Brainwork by Kornelije Sajler (xajler).
+</span><span class='line'>keywords: Kornelije Sajler, xajler, metaintellect, learnaholic, learn-a-holic, coding, programming, Ruby, Ruby On Rails, RSpec TDD, cucumber, jasmine, bacbone.js, postgresql, mongodb</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Change head.html template to be aware of Home page SEO</h3>
+
+<p>In <code>.themes/classic/source/_includes/head.html</code> after meta tag for <code>author</code> replace the
+current <em>description</em>/<em>keywords</em> code with this one:</p>
+
+<div><script src='https://gist.github.com/2460469.js?file='></script>
+<noscript><pre><code>&lt;meta name=&quot;author&quot; content=&quot;{{ site.author }}&quot;&gt;
+{% capture description %}{% if page.description %}{{ page.description }}{% elsif site.description %}{{ site.description }}{%else%}{{ content | raw_content }}{% endif %}{% endcapture %}
+&lt;meta name=&quot;description&quot; content=&quot;{{ description | strip_html | condense_spaces | truncate:150 }}&quot;&gt;
+{% if page.keywords %}&lt;meta name=&quot;keywords&quot; content=&quot;{{ page.keywords }}&quot;&gt;{%else%}&lt;meta name=&quot;keywords&quot; content=&quot;{{ site.keywords }}&quot;&gt;{% endif %}
+</code></pre></noscript></div>
+
+
+<h2>Single domain rewrite</h2>
+
+<p>To make sure that there is no differnce between <em>learnaholic.me</em> and <em>www.learnaholic.me</em>
+request, we shall include rewriting with <em>gem rack-rewrite</em>.</p>
+
+<p>To Octopress <em>Gemfile</em> add:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>gem 'rack-rewrite'</span></code></pre></td></tr></table></div></figure>
+
+
+<p>To top of <code>config.ru</code> (before <code>SinatraStaticServer</code>) add:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;RACK_ENV&#39;</span><span class="o">]</span> <span class="o">||=</span> <span class="s1">&#39;development&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;SITE_URL&#39;</span><span class="o">]</span> <span class="o">||=</span> <span class="s1">&#39;www.learnaholic.me&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">use</span> <span class="no">Rack</span><span class="o">::</span><span class="no">Rewrite</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">r301</span> <span class="sr">%r{.*}</span><span class="p">,</span> <span class="s2">&quot;http://</span><span class="si">#{</span><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;SITE_URL&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">$&amp;&quot;</span><span class="p">,</span> <span class="ss">:if</span> <span class="o">=&gt;</span> <span class="no">Proc</span><span class="o">.</span><span class="n">new</span> <span class="p">{</span> <span class="o">|</span><span class="n">rack_env</span><span class="o">|</span>
+</span><span class='line'>      <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;RACK_ENV&#39;</span><span class="o">]</span> <span class="o">==</span> <span class="s1">&#39;production&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">rack_env</span><span class="o">[</span><span class="s1">&#39;SERVER_NAME&#39;</span><span class="o">]</span> <span class="o">!=</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;SITE_URL&#39;</span><span class="o">]</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="n">r301</span> <span class="sr">%r{^(.+)/$}</span><span class="p">,</span> <span class="s1">&#39;$1&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Don&#8217;t forget to add a require on the top of the <code>config.ru</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;rack-rewrite&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Complete <code>config.ru</code> should look like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;bundler/setup&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;sinatra/base&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;rack-rewrite&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># The project root directory</span>
+</span><span class='line'><span class="vg">$root</span> <span class="o">=</span> <span class="o">::</span><span class="no">File</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">__FILE__</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;RACK_ENV&#39;</span><span class="o">]</span> <span class="o">||=</span> <span class="s1">&#39;development&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;SITE_URL&#39;</span><span class="o">]</span> <span class="o">||=</span> <span class="s1">&#39;www.learnaholic.me&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">use</span> <span class="no">Rack</span><span class="o">::</span><span class="no">Rewrite</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">r301</span> <span class="sr">%r{.*}</span><span class="p">,</span> <span class="s2">&quot;http://</span><span class="si">#{</span><span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;SITE_URL&#39;</span><span class="o">]</span><span class="si">}</span><span class="s2">$&amp;&quot;</span><span class="p">,</span> <span class="ss">:if</span> <span class="o">=&gt;</span> <span class="no">Proc</span><span class="o">.</span><span class="n">new</span> <span class="p">{</span> <span class="o">|</span><span class="n">rack_env</span><span class="o">|</span>
+</span><span class='line'>      <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;RACK_ENV&#39;</span><span class="o">]</span> <span class="o">==</span> <span class="s1">&#39;production&#39;</span> <span class="o">&amp;&amp;</span> <span class="n">rack_env</span><span class="o">[</span><span class="s1">&#39;SERVER_NAME&#39;</span><span class="o">]</span> <span class="o">!=</span> <span class="no">ENV</span><span class="o">[</span><span class="s1">&#39;SITE_URL&#39;</span><span class="o">]</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="n">r301</span> <span class="sr">%r{^(.+)/$}</span><span class="p">,</span> <span class="s1">&#39;$1&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">SinatraStaticServer</span> <span class="o">&lt;</span> <span class="no">Sinatra</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">get</span><span class="p">(</span><span class="sr">/.+/</span><span class="p">)</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">send_sinatra_file</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">path</span><span class="p">)</span> <span class="p">{</span><span class="mi">404</span><span class="p">}</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">not_found</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">send_sinatra_file</span><span class="p">(</span><span class="s1">&#39;404.html&#39;</span><span class="p">)</span> <span class="p">{</span><span class="s2">&quot;Sorry, I cannot find </span><span class="si">#{</span><span class="n">request</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">send_sinatra_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">missing_file_block</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">file_path</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="no">File</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">__FILE__</span><span class="p">),</span> <span class="s1">&#39;public&#39;</span><span class="p">,</span>  <span class="n">path</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">file_path</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;index.html&#39;</span><span class="p">)</span> <span class="k">unless</span> <span class="n">file_path</span> <span class="o">=~</span> <span class="sr">/\.[a-z]+$/i</span>
+</span><span class='line'>    <span class="no">File</span><span class="o">.</span><span class="n">exist?</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span> <span class="p">?</span> <span class="n">send_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span> <span class="p">:</span> <span class="n">missing_file_block</span><span class="o">.</span><span class="n">call</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">run</span> <span class="no">SinatraStaticServer</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Set the route without unnecessary /blog route path</h2>
+
+<p>The Octopres by defult has a weird <em>&lt;domain&gt;/blog/2012/10&#8230;</em> route path, the <code>blog</code>
+part of URL is totally unnecessary, so I removed it all together.</p>
+
+<p>In <code>_config.yml</code> change:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">permalink</span><span class="p">:</span> <span class="sr">/blog/</span><span class="ss">:year</span><span class="o">/</span><span class="ss">:month</span><span class="o">/</span><span class="ss">:day</span><span class="o">/</span><span class="ss">:title</span><span class="o">/</span>
+</span><span class='line'><span class="n">category_dir</span><span class="p">:</span> <span class="n">blog</span><span class="o">/</span><span class="n">categories</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>to:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">permalink</span><span class="p">:</span> <span class="sr">/:year/</span><span class="ss">:month</span><span class="o">/</span><span class="ss">:day</span><span class="o">/</span><span class="ss">:title</span><span class="o">/</span>
+</span><span class='line'><span class="n">category_dir</span><span class="p">:</span> <span class="n">categories</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Conclusion</h2>
+
+<p>Improved SEO of the Octopress site:</p>
+
+<ul>
+<li>Including the <em>keywords</em> and <em>description</em> to each post.</li>
+<li>Home page is now with <em>keywords</em> and <em>description</em>, generic for the whole site.</li>
+<li>Redirect to single domain. The <em>www.learnholic.me</em> request will be redirected to <em>learnaholic.me</em>.</li>
+</ul>
+
+
+<p>The cleaner site path by removing the unnecessary <code>/blog</code> from the URL route.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Make Powershell, SSH Github and git suck less on Windows]]></title>
