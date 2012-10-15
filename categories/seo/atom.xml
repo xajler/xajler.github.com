@@ -4,7 +4,7 @@
   <title><![CDATA[Category: seo | Learn-a-holic Geek Notes]]></title>
   <link href="http://learnaholic.me/categories/seo/atom.xml" rel="self"/>
   <link href="http://learnaholic.me/"/>
-  <updated>2012-10-15T10:33:27+02:00</updated>
+  <updated>2012-10-15T10:35:00+02:00</updated>
   <id>http://learnaholic.me/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -189,11 +189,13 @@ category_dir: categories
 
 <p>Now the url should look like this:</p>
 
-<p>  http://learnaholic.me/2012/10/15/octopress-seo-and-disabling-the-blog-route/</p>
+<pre><code>http://learnaholic.me/2012/10/15/octopress-seo-and-disabling-the-blog-route/
+</code></pre>
 
 <p>But by default it would be:</p>
 
-<p>  http://learnaholic.me/blog/2012/10/15/octopress-seo-and-disabling-the-blog-route/</p>
+<pre><code>http://learnaholic.me/blog/2012/10/15/octopress-seo-and-disabling-the-blog-route/
+</code></pre>
 
 <h2>Conclusion</h2>
 
