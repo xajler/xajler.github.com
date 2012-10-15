@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: git | Learn-a-holic Geek Notes]]></title>
+  <link href="http://learnaholic.me/categories/git/atom.xml" rel="self"/>
+  <link href="http://learnaholic.me/"/>
+  <updated>2012-10-15T06:19:33+02:00</updated>
+  <id>http://learnaholic.me/</id>
+  <author>
+    <name><![CDATA[Kornelije Sajler]]></name>
+    <email><![CDATA[xajler@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Make Powershell, SSH Github and git suck less on Windows]]></title>
+    <link href="http://learnaholic.me/2012/10/12/make-powershell-and-git-suck-less-on-windows/"/>
+    <updated>2012-10-12T03:41:00+02:00</updated>
+    <id>http://learnaholic.me/2012/10/12/make-powershell-and-git-suck-less-on-windows</id>
+    <content type="html"><![CDATA[<p>There are two Terminals in Windows <em>Command Prompt</em> and <em>Powershell</em>, and they both suck by far.
+I can understand that <em>Command Prompt</em> is no good, but why the <em>Powershell</em> wasn't done better?!</p>
+
+<p>The things missing in <em>Powershell</em>:</p>
+
+<ul>
+<li>Maximizing is just so mid '90.</li>
+<li>History for a session only (So annoying).</li>
+<li>Painful adding of Aliases.</li>
+<li>Emacs navigation (<code>Ctrl+a</code>,<code>Ctrl+e</code>,...).</li>
+<li>Full screen and Tranparency (Oh I just want too much).</li>
+<li>The config dir is in <code>Documents\WindowsPowerShell</code> (WTF).</li>
+</ul>
+
+
+<p>Maybe to most Windows users this is strange because this kind of stuff is never used, but if
+you're coming from <em>Linux</em> or <em>Mac</em> then the frustration is certain. Because <em>Linux</em> or <em>Mac</em> are
+having great Terminal and working in them is just a joy.</p>
+
+<p>The aim of post is to install <em>git</em> on Windowns and then configure it.
+Then customize a little bit the <em>Powershell</em> because the defaults are just crime against humanity.
+Configure <em>SSH</em> on machine and register <em>SSH</em> key with Github.
+Install must-have <a href="https://github.com/dahlbyk/posh-git">posh-git</a> that will add the branch/status
+to <em>Powershell</em> prompt plus auto-completion for <em>git</em>.</p>
+
+<p>Note that I'm using Windows 8 and <em>Powershell</em> version 3.0.</p>
+
+<h2>Git Install</h2>
+
+<p>For those who might don't know the <em>git</em> is created by Linus Torvalds the creator of <em>Linux Kernel</em>.
+<em>Git</em> was a  product of his frustration maintaining <em>Linux Kernel</em>. He is not really the
+huge fan of Windows (nor am I) so <em>git</em> Windows implementation was hard to do because it
+really relies on <em>Unix/Linux</em> commands and philosophies that are lacking on Windows.</p>
+
+<p>I know there was a problem I while back with the <a href="http://git-scm.com/downloads">official Git version for Windows</a>
+and I was always using the <a href="https://code.google.com/p/msysgit">msysgit</a>,
+don't know if still is the case but I will use <em>msysgit</em> in this post.</p>
+
+<p>Download the latest <a href="https://code.google.com/p/msysgit/downloads/list">msysgit</a> and install it
+with just clicking next few times.  There are few things to configure, but using defaults is safest way.</p>
+
+<blockquote><p>Note:</p>
+
+<p>There is also a <a href="http://windows.github.com/">Github for Windows</a>. Probably even easier way to
+install and configure <em>git</em> on Windows, but I like to complicate things.</p></blockquote>
+
+<h2>Add Git to PATH</h2>
+
+<p>By default the <em>git</em> binaries are not set in to PATH, so add it by going to:</p>
+
+<pre><code>Control Panel/System and Security/System/Advanced system settings
+</code></pre>
+
+<p>Then in <em>System Properties</em> click on <em>Environment Variables...</em> and in <em>System Variables</em> list box
+scroll to <em>Variable</em> <code>Path</code>, double-click it and add at the end:</p>
+
+<pre><code>;C:\Program Files (x86)\Git\cmd;C:\Program Files (x86)\Git\bin;
+</code></pre>
+
+<p>Test that the <em>git</em> is available by opening the <em>Powershell</em>. Easiest way to open te <em>Powershell</em>
+(if there is no shortcut) especially in Windows 8 is <code>Win+r</code> and type <code>powershell</code> to prompt.</p>
+
+<p>In <em>Powershell</em> type:</p>
+
+<p>```
+C:> git
+usage: git [--version] [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]</p>
+
+<pre><code>       [-p|--paginate|--no-pager] [--no-replace-objects] [--bare]
+       [--git-dir=&lt;path&gt;] [--work-tree=&lt;path&gt;] [--namespace=&lt;name&gt;]
+       [-c name=value] [--help]
+       &lt;command&gt; [&lt;args&gt;]
+</code></pre>
+
+<p>...
+```</p>
+
+<p>If you get something like <em>usage: git</em>, then the <em>git</em> is ready!</p>
+
+<h2>Configure Git</h2>
+
+<p>Set the user name that will be readable in <em>git</em> log or history:</p>
+
+<p><code>text
+C:\&gt; git config --global user.name "Kornelije Sajler"
+</code></p>
+
+<p>Then set your email:</p>
+
+<p><code>text
+C:\&gt; git config --global user.email "xajler@gmail.com"
+</code></p>
+
+<blockquote><p>Note:</p>
+
+<p>Your email address for Git should be the same one associated with your GitHub account.</p></blockquote>
+
+<h2>Generate SSH key</h2>
+
+<p>With <em>msysgit</em> comes a <em>Git Bash</em> needed to generate <em>SSH</em> keys. If you have one skip this step!</p>
+
+<p>To open <em>Git Bash</em> right-click on any folder in <em>Windows Explorer</em> and choose <em>Git Bash</em>.
+In <em>Git Bash</em> enter:</p>
+
+<p><code>bash
+$ ssh-keygen -t rsa -C "xajler@gmail.com"
+Generating public/private rsa key pair.
+Enter file in which to save the key (/c/Users/Kornelije/.ssh/id_rsa):
+</code>
+Keygen will ask you for passphrase. In my first attempt I've added one, but on each commit I have to enter
+passphrase. That is so annoying.</p>
+
+<p>If you have a <em>SSH</em> key passphrase and it annoys you then enter:</p>
+
+<p><code>bash
+$ ssh-keygen -p
+</code>
+It will ask you for current passphrase, enter the current passphrasse, and with two enters,
+you'll now have a blank passphrase!</p>
+
+<h3>Git Bash Copy/Paste</h3>
+
+<p>The copy/paste is so awful in <em>Git Bash</em>. To paste you need to click the icon in top left corner,
+go to <code>Edit</code> then <code>Paste</code>.</p>
+
+<p>The copy is even more cumbersome, I'll just give you a hint, choose <code>Select All</code>!</p>
+
+<p><img src="http://i47.tinypic.com/kei238.png"></p>
+
+<p>Or read at the end in <em>Options Tab</em> part of <em>Powershell Customization</em> to enable <em>QuickEdit Mode</em>.</p>
+
+<h2>Set SSH key to Github</h2>
+
+<p>To set the public <em>SSH</em> key in <a href="http://github.com">Github</a> there is need for getting it from a
+<code>~/.ssh/id_rsa.pub</code>.</p>
+
+<p>Again open <em>Git Bash</em> right-click on any folder in <em>Windows Explorer</em> and choose <em>Git Bash</em>.
+In <em>Git Bash</em> enter:</p>
+
+<p><code>bash
+$ clip &lt; ~/.ssh/id_rsa.pub
+</code></p>
+
+<p>This command will copy your public <em>SSH</em> key to clipboard. Then go to
+<a href="https://github.com/settings/ssh">Github / Account Settngs / SSH Keys</a> and click the button
+<code>Add SSH Key</code>.</p>
+
+<p>Enter Title (sorry about my title):</p>
+
+<pre><code>win-shit
+</code></pre>
+
+<p>Enter Key:</p>
+
+<pre><code>Just paste from clipboard
+</code></pre>
+
+<p>By clicking <code>Add Key</code> you have successfully added <em>SSH</em> key to <a href="http://github.com">Github</a> and
+the <em>git</em> pushing to <a href="http://github.com">Github</a> is now super easy.</p>
+
+<h2>Powershell customization</h2>
+
+<p>The visual features of <em>Powershell</em> probably didn't change since Windows 95, and defaults
+are probably still dating from '95 and selecting, copy, pasting is awkward, hard and unusable!</p>
+
+<h3>Suck less Powershell</h3>
+
+<p>Click the small <em>Powershell</em> icon in top left corner, and in the context menu click on <code>Properties</code>.</p>
+
+<h4>Options Tab</h4>
+
+<p>In <code>Edit Options</code> check the <code>QuickEdit Mode</code>. Quick edit mode enables selecting text from
+anywhere in <em>Powershell</em> and with right-click it will copy the selected content.
+Also with single right-click pastes the text where the blinking cursor
+currently is, similar to <em>putty</em>.</p>
+
+<p>This option really boosts the productivity in <em>Powershell</em>, it is too bad that this is
+not set by default!</p>
+
+<h4>Font Tab</h4>
+
+<p>Even we are in 21st century but the <em>Powershell</em> is still set by default to <code>Raster Fonts</code> with
+awkward sizes like 16x12, 6x8, that I never really get the meaning of.</p>
+
+<p>In <code>Font</code> list choose the <em>Consolas</em> font (or other available mono-space font) and you can check the
+<code>Bold fonts</code> if you like to have bold text. As for <code>Size</code> in list choose whatever you want
+I'll stick to <code>18</code>.</p>
+
+<h4>Layout Tab</h4>
+
+<p>The <em>Powershell</em> by default is very small, at least to me, maximize is totally unusable, there is
+no full screen!</p>
+
+<p><code>Screen Buffer Size</code> and <code>Window Position</code> <em>Width</em> height should be same size if you dont want
+to have ugly horizontal scroll bar. I set <em>Width</em> to <code>125</code> and <code>Window Position</code> <em>Height</em> to <code>35</code>.</p>
+
+<p>This are all customization, it is not too much but <em>Powershell</em> suck a little less after it,
+but there is a room for lots and lots of improvements, while Microsoft spends time on
+useless technologies like <em>Light Switch</em>.</p>
+
+<h2>Posh-Git: Make your Git shine in Powershell</h2>
+
+<p>A set of <em>Powershell</em> scripts which provide <em>Git/PowerShell</em> integration. Includes:</p>
+
+<ul>
+<li>Prompt for Git repositories - shows the current branch and the state of files (additions, modifications, deletions) within.</li>
+<li>Tab completion for <em>git</em> commands.</li>
+</ul>
+
+
+<h3>Install</h3>
+
+<p>Clone it from <em>Github</em> to any folder, I'll clone it in <code>source</code> folder:</p>
+
+<p><code>text
+C:\source &gt; git clone git://github.com/dahlbyk/posh-git.git
+</code></p>
+
+<p>Verify execution of <em>Powershell</em> scripts is allowed with:</p>
+
+<p><code>text
+C:\source &gt; Get-ExecutionPolicy
+</code></p>
+
+<p>The result should be <em>RemoteSigned</em>  or <em>Unrestricted</em>.</p>
+
+<p>If scripts are not enabled, run <em>Powershell</em> as Administrator and call:</p>
+
+<p><code>text
+C:\source &gt; Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Confirm
+</code></p>
+
+<p>Then <code>cd</code> to <code>posh-git</code> folder and run:</p>
+
+<p>```text
+C:\source\posh-git > .\install.ps1
+Creating PowerShell profile...
+D:\MyData\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
+Adding posh-git to profile...
+posh-git successfully installed!
+Please reload your profile for the changes to take effect:</p>
+
+<pre><code>. $PROFILE
+</code></pre>
+
+<p>```</p>
+
+<p>Then reload your profile, as noted in <em>posh-git</em> after install note:</p>
+
+<p><code>text
+C:\source\posh-git &gt; . $PROFILE
+</code></p>
+
+<p>If you're done everything from this post then everything should work just fine!</p>
+
+<p>The outcome of whole post is to have something at the end of the day:</p>
+
+<p><img src="http://i46.tinypic.com/25ian4n.png"></p>
+
+<p>And just for comparison the <em>Terminal iTerm2</em> on my <em>Mac OS X Mountain Lion</em> with <em>zsh shell</em>
+and very short aliases, pure awesomeness:</p>
+
+<p><img src="http://i46.tinypic.com/33fggut.png"></p>
+]]></content>
+  </entry>
+  
+</feed>

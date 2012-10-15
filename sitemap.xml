@@ -1,35 +1,31 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>
-            http://blog.metaintellect.com/blog/2012/10/10/installing-nginx-in-mac-os-x-mountain-lion/
-        </loc>
-        <lastmod>2012-10-12T13:31:41+02:00</lastmod>
+        <loc>http://learnaholic.me/2012/10/10/installing-nginx-in-mac-os-x-mountain-lion/</loc>
+        <lastmod>2012-10-15T04:42:49+02:00</lastmod>
     </url>
     <url>
         <loc>
-            http://blog.metaintellect.com/blog/2012/10/10/backing-up-postgresql-with-backup-and-whatever-gems/
+            http://learnaholic.me/2012/10/10/backing-up-postgresql-with-backup-and-whatever-gems/
         </loc>
-        <lastmod>2012-10-12T13:31:41+02:00</lastmod>
+        <lastmod>2012-10-15T04:42:49+02:00</lastmod>
     </url>
     <url>
         <loc>
-            http://blog.metaintellect.com/blog/2012/10/10/deploying-octopress-to-github-pages-and-setting-custom-subdomain-cname/
+            http://learnaholic.me/2012/10/10/deploying-octopress-to-github-pages-and-setting-custom-subdomain-cname/
         </loc>
-        <lastmod>2012-10-12T13:31:41+02:00</lastmod>
+        <lastmod>2012-10-15T04:42:49+02:00</lastmod>
     </url>
     <url>
-        <loc>
-            http://blog.metaintellect.com/blog/2012/10/12/make-powershell-and-git-suck-less-on-windows/
-        </loc>
-        <lastmod>2012-10-12T15:24:57+02:00</lastmod>
+        <loc>http://learnaholic.me/2012/10/12/make-powershell-and-git-suck-less-on-windows/</loc>
+        <lastmod>2012-10-15T04:42:49+02:00</lastmod>
     </url>
     <url>
-        <loc>http://blog.metaintellect.com/blog/archives/</loc>
-        <lastmod>2012-10-12T15:24:57+02:00</lastmod>
+        <loc>http://learnaholic.me/blog/archives/</loc>
+        <lastmod>2012-10-15T04:42:49+02:00</lastmod>
     </url>
     <url>
-        <loc>http://blog.metaintellect.com/</loc>
-        <lastmod>2012-10-12T15:24:57+02:00</lastmod>
+        <loc>http://learnaholic.me/</loc>
+        <lastmod>2012-10-15T04:42:49+02:00</lastmod>
     </url>
 </urlset>

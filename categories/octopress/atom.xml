@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: octopress | Learn-a-holic Geek Notes]]></title>
+  <link href="http://learnaholic.me/categories/octopress/atom.xml" rel="self"/>
+  <link href="http://learnaholic.me/"/>
+  <updated>2012-10-15T06:19:33+02:00</updated>
+  <id>http://learnaholic.me/</id>
+  <author>
+    <name><![CDATA[Kornelije Sajler]]></name>
+    <email><![CDATA[xajler@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Deploying Octopress to Github Pages and setting custom subdomain CNAME]]></title>
+    <link href="http://learnaholic.me/2012/10/10/deploying-octopress-to-github-pages-and-setting-custom-subdomain-cname/"/>
+    <updated>2012-10-10T23:49:00+02:00</updated>
+    <id>http://learnaholic.me/2012/10/10/deploying-octopress-to-github-pages-and-setting-custom-subdomain-cname</id>
+    <content type="html"><![CDATA[<p>Blogging was really never easy task for me, I started in 2006 with <a href="http://wordpress.com">WordPress</a> but with short life.
+The more about my blogging history can be read in my blog post
+<a href="http://www.learnaholic.me/2009/04/26/hello-world/">and finally comes time for Blogging!</a> on my
+old blogging site <a href="http://www.learnaholic.me">Learn-a-holic</a>.</p>
+
+<h2>Blog Engines</h2>
+
+<p>So far I was on this blog engines, chronologically:</p>
+
+<ul>
+<li><a href="http://wordpress.com">WordPress</a> (2006 - 2008)</li>
+<li><a href="https://graffiticms.codeplex.com/">Graffiti CMS</a> (2008)</li>
+<li><a href="http://www.dotnetblogengine.net/">BlogEngine.NET</a> (2009)</li>
+<li><a href="http://wordpress.com">WordPress</a> (2009 - 2012)</li>
+</ul>
+
+
+<p>So far I was always coming back to <a href="http://wordpress.com">WordPress</a>, but I was never actually satisfied in writing
+posts in it, everything other than that is plain perfect on <a href="http://wordpress.com">WordPress</a>.
+This is why I haven't blogging for nearly two years.</p>
+
+<p>Nowdays I really like <a href="http://daringfireball.net/projects/markdown/">markdown</a>
+or any similar kind of markup language (<a href="http://redcloth.org/textile">textile</a>,
+<a href="http://www.wikicreole.org/wiki/Home">creole</a>,...), and
+I would prefer writing blog posts with <a href="http://daringfireball.net/projects/markdown/">markdown</a>.
+In my case blog posts are more notes than the blog posts,
+because they are more technical, and there is lots of code snippets!</p>
+
+<h2>Octopress</h2>
+
+<p><a href="http://octopress.org/">Octopress</a> is the very easy framework on top of <a href="https://github.com/mojombo/jekyll">Jekyll</a>, and
+Jekyll is a blog-aware, static site generator in <a href="http://ruby-lang.org">Ruby</a>.</p>
+
+<h3>Install</h3>
+
+<p>The official <a href="http://octopress.org/">Octopress</a> install is just to clone or fork the
+<a href="https://github.com/imathis/octopress">Octopress repo</a>. I've chose to do fork then
+clone it from my forked repo.</p>
+
+<p><code>bash
+$ git clone git@github.com:xajler/octopress.git
+</code></p>
+
+<blockquote><p><strong>Notes:</strong></p>
+
+<p>You'll need to change the clone to your repository, since there is need for Read+Write access!</p>
+
+<p>I'm lying a bit the first attempt was a clone, but afterwards I've chose to fork it, why?,
+you'll need to read about it a little bit later.</p></blockquote>
+
+<h2>Using Octopress with Rake</h2>
+
+<p>The <a href="http://octopress.org/">Octopress</a> uses Jim Weirich's great make-like build utility
+<a href="https://github.com/jimweirich/rake">Rake</a>,
+for creating posts/pages, deploying, generating,...</p>
+
+<h3>Rake Install</h3>
+
+<p>The <a href="http://octopress.org/">Octopress</a> needs for the first time to generate the sandbox with theme and placeholder
+folder for posts. It can be achieved by running (needs to be in forked/cloned directory):</p>
+
+<p>``` bash
+$ rake install</p>
+
+<h2>Copying classic theme into ./source and ./sass</h2>
+
+<p>mkdir -p source
+cp -r .themes/classic/source/. source
+mkdir -p sass
+cp -r .themes/classic/sass/. sass
+mkdir -p source/_posts
+mkdir -p public
+```</p>
+
+<p>The command will create <code>source</code> and <code>sass</code> folders. The <code>source/_posts</code> folder is where the markdown
+posts will reside.</p>
+
+<p>This is why I forked the <a href="http://octopress.org/">Octopress</a>, so that I can commit the posts as
+the markdown files, if I would clone it, I should have the write access to <a href="http://octopress.org/">Octopress</a>,
+to commit, this way I have my forked version and still I can always pull changes from
+upsteramed original <a href="http://octopress.org/">Octopress</a>, but more of this in separate post.</p>
+
+<h3>Creating first post</h3>
+
+<p>Create post with <code>new_post['post name here']</code>:</p>
+
+<p><code>bash
+$ rake new_post['Deploying Octopress to Github Pages and setting custom subdomain CNAME']
+mkdir -p source/_posts
+Creating new post: source/_posts/2012-10-10-deploying-octopress-to-github-pages-and-setting-custom-subdomain-cname.markdown
+</code></p>
+
+<p>By opening it in your favorite editor you'll get:</p>
+
+<h2>``` text 2012-10-10-deploying-octopress-to-github-pages-and-setting-custom-subdomain-cname.markdown</h2>
+
+<p>layout: post
+title: "Deploying Octopress to Github Pages and setting custom subdomain CNAME"
+date: 2012-10-11 01:01
+comments: true</p>
+
+<h2>categories:</h2>
+
+<p>```</p>
+
+<p>Categories can be add in few ways, my way is one-liner:</p>
+
+<pre><code>categories: [octopress, github, github pages]
+</code></pre>
+
+<h3>Generating the Site</h3>
+
+<p>Add some content to your first post and then run <code>generate</code> command that generates whole site:</p>
+
+<p>``` bash
+$ rake generate</p>
+
+<h2>Generating Site with Jekyll</h2>
+
+<p>directory source/stylesheets/
+   create source/stylesheets/screen.css
+Configuration from /Users/xajler/src/octopress-orig/_config.yml
+Building site: source -> public
+Successfully generated site: source -> public
+```</p>
+
+<h3>Preview Site</h3>
+
+<p>To locally preview generated Site use:</p>
+
+<p>```bash
+$ rake preview
+Starting to watch source with Jekyll and Compass. Starting Rack on port 4000
+[2012-10-11 01:16:08] INFO  WEBrick 1.3.1
+[2012-10-11 01:16:08] INFO  ruby 1.9.3 (2012-04-20) [x86_64-darwin12.0.0]
+[2012-10-11 01:16:08] INFO  WEBrick::HTTPServer#start: pid=62929 port=4000
+Configuration from /Users/xajler/src/octopress-orig/_config.yml</p>
+
+<p>...
+```</p>
+
+<p>Then in browser navigate to:</p>
+
+<pre><code>http://localhost:4000/
+</code></pre>
+
+<p>The beauty of the <code>preview</code> is that <em>Auto-regenerating</em> is enabled by default.
+Meaning every save of blog post file will trigger <code>generate</code> command making it as live preview.</p>
+
+<h3>Configuring the Octopress</h3>
+
+<p>The <a href="http://octopress.org/">Octopress</a> configuration is in the root <code>_config.yml</code> file.</p>
+
+<p>There you can change <code>url</code>, <code>title</code>, <code>subtitle</code>, <code>permalink</code>, <code>twitter account</code>, <code>github account</code>,
+and set site comments via <a href="http://disqus.com/">disqus</a> by providing <code>disqus_short_name</code>.</p>
+
+<h2>Deployment</h2>
+
+<p><a href="http://octopress.org/">Octopress</a> supports <a href="http://heroku.com">Heroku</a>, rsync and
+<a href="http://pages.github.com">Github Pages</a> deployment.
+I chose the <a href="http://pages.github.com">Github Pages</a> because
+<a href="http://www.github.com">Github</a> provide the CNAME changes, so the site can be on your desired domain.</p>
+
+<h3>Github Pages setup</h3>
+
+<p>There are two ways of having pages on the <a href="http://www.github.com">Github</a>.</p>
+
+<p>The User/Organization pages <code>http://username.github.com</code> and project pages <code>gh-pages</code>.</p>
+
+<p>The my way was the User/Organization pages.</p>
+
+<h4>Setting up the repository on Github</h4>
+
+<p>Create new repository on <a href="http://www.github.com">Github</a> and named it as your User/Organization name plus <code>.github.com</code>
+in my case was <code>xajler.github.com</code>.</p>
+
+<h4>Configure Octopress for Github Pages</h4>
+
+<p>To prepare <a href="http://octopress.org/">Octopress</a> for deployment to <a href="http://pages.github.com">Github Pages</a>
+run commannd and write <code>Repository url</code> (<code>git@github.com:xajler/xajler.github.com</code>):</p>
+
+<p>``` bash
+$ rake setup_github_pages
+Enter the read/write url for your repository
+(For example, 'git@github.com:your_username/your_username.github.com)
+Repository url: git@github.com:xajler/xajler.github.com
+rm -rf <em>deploy
+mkdir </em>deploy
+cd <em>deploy
+Initialized empty Git repository in /Users/xajler/src/octopress-orig/</em>deploy/.git/
+[master (root-commit) ac273d4] Octopress init
+ 1 file changed, 1 insertion(+)
+ create mode 100644 index.html
+cd -</p>
+
+<hr />
+
+<h2>Now you can deploy to http://xajler.github.com with <code>rake deploy</code></h2>
+
+<p>```</p>
+
+<p>This command will change <code>git remote origin</code> from <a href="http://octopress.org/">Octopress</a> forked/cloned url to:</p>
+
+<pre><code>git@github.com:xajler/xajler.github.com
+</code></pre>
+
+<p>And also add a <code>_deploy</code> folder, actual root of your <a href="http://pages.github.com">Github Pages</a> repository
+(<code>github.com/xajler/xajler.github.com</code>).</p>
+
+<h4>Deployment to Github Pages</h4>
+
+<p>The final <code>rake</code> command is <code>deploy</code>. It will create commit and push to <a href="http://www.github.com">Github</a>
+repo and you'll get notification to your mail.</p>
+
+<p>``` bash
+$ rake deploy</p>
+
+<h2>Deploying branch to Github Pages</h2>
+
+<p>rm -rf _deploy/index.html</p>
+
+<h2>copying public to _deploy</h2>
+
+<p>cp -r public/. <em>deploy
+cd </em>deploy</p>
+
+<h2>Commiting: Site updated at 2012-10-11 00:14:34 UTC</h2>
+
+<p>...
+```</p>
+
+<p>After deployment in your mail box will be a notification:</p>
+
+<pre><code>[xajler.github.com] Page build successful
+
+Your page has been built. If this is the first time you've pushed, it may take a few minutes to appear, otherwise your changes should appear immediately.
+</code></pre>
+
+<p>And if you navigate to <code>http://xajler.github.com</code> (change xajler to your User/Organization name)
+you'll see the post and site online!</p>
+
+<h2>The custom domain via CNAME</h2>
+
+<p>The <code>http://xajler.github.com</code> is not really the URL that you'll want to have for the blog.
+<a href="http://www.github.com">Github</a> provides the way to customize the domain name.</p>
+
+<h3>Setting custom domain name</h3>
+
+<p>To setup the custom domain name that will point to your Github pages, there is need to
+create the <code>CNAME</code> file in <code>source</code> folder. This <code>CNAME</code> will be copied to <code>_deploy</code> folder
+when executing <code>rake deploy</code> and will be used by <a href="http://www.github.com">Github</a> to point to the provided domain.</p>
+
+<p><code>bash
+$ vim source/CNAME
+</code></p>
+
+<p>I've added my subdomain for my domain <a href="http://metaintellect.com">metaintellect</a>.</p>
+
+<pre><code>blog.metaintellect.com
+</code></pre>
+
+<p>Deploy with <code>rake deploy</code> and it should now be pushed and visible in your
+<a href="http://www.github.com">Github</a> repo (<code>xajler.github.com</code>).</p>
+
+<h2>Setting DNS for subdomain</h2>
+
+<p>The DNS nameservers for my domain <a href="http://metaintellect.com">metaintellect</a> are declared on
+<a href="http://dynadot.com">dynadot</a>.</p>
+
+<p>Here is my configuration to make the <code>blog.metaintellect.com</code> CNAME work with <a href="http://pages.github.com">Github Pages</a>:</p>
+
+<p><img src="https://pbs.twimg.com/media/A44tgDACAAAsDwn.png:large"></p>
+
+<h2>Conclusion</h2>
+
+<p>I hope that I will now blog my notes about so many tehnical IT stuff I do everyday, and
+now with markdown and the <a href="http://www.github.com">Github</a> it is fairly easy and fun!</p>
+]]></content>
+  </entry>
+  
+</feed>

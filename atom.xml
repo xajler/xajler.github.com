@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Learn-a-holic Geek Notes]]></title>
-  <link href="http://blog.metaintellect.com/atom.xml" rel="self"/>
-  <link href="http://blog.metaintellect.com/"/>
-  <updated>2012-10-15T03:03:47+02:00</updated>
-  <id>http://blog.metaintellect.com/</id>
+  <link href="http://learnaholic.me/atom.xml" rel="self"/>
+  <link href="http://learnaholic.me/"/>
+  <updated>2012-10-15T06:19:33+02:00</updated>
+  <id>http://learnaholic.me/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
     <email><![CDATA[xajler@gmail.com]]></email>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Make Powershell, SSH Github and git suck less on Windows]]></title>
-    <link href="http://blog.metaintellect.com/blog/2012/10/12/make-powershell-and-git-suck-less-on-windows/"/>
+    <link href="http://learnaholic.me/2012/10/12/make-powershell-and-git-suck-less-on-windows/"/>
     <updated>2012-10-12T03:41:00+02:00</updated>
-    <id>http://blog.metaintellect.com/blog/2012/10/12/make-powershell-and-git-suck-less-on-windows</id>
+    <id>http://learnaholic.me/2012/10/12/make-powershell-and-git-suck-less-on-windows</id>
     <content type="html"><![CDATA[<p>There are two Terminals in Windows <em>Command Prompt</em> and <em>Powershell</em>, and they both suck by far.
 I can understand that <em>Command Prompt</em> is no good, but why the <em>Powershell</em> wasn&#8217;t done better?!</p>
 
@@ -308,9 +308,9 @@ and very short aliases, pure awesomeness:</p>
   
   <entry>
     <title type="html"><![CDATA[Deploying Octopress to Github Pages and setting custom subdomain CNAME]]></title>
-    <link href="http://blog.metaintellect.com/blog/2012/10/10/deploying-octopress-to-github-pages-and-setting-custom-subdomain-cname/"/>
+    <link href="http://learnaholic.me/2012/10/10/deploying-octopress-to-github-pages-and-setting-custom-subdomain-cname/"/>
     <updated>2012-10-10T23:49:00+02:00</updated>
-    <id>http://blog.metaintellect.com/blog/2012/10/10/deploying-octopress-to-github-pages-and-setting-custom-subdomain-cname</id>
+    <id>http://learnaholic.me/2012/10/10/deploying-octopress-to-github-pages-and-setting-custom-subdomain-cname</id>
     <content type="html"><![CDATA[<p>Blogging was really never easy task for me, I started in 2006 with <a href="http://wordpress.com">WordPress</a> but with short life.
 The more about my blogging history can be read in my blog post
 <a href="http://www.learnaholic.me/2009/04/26/hello-world/">and finally comes time for Blogging!</a> on my
@@ -642,9 +642,9 @@ now with markdown and the <a href="http://www.github.com">Github</a> it is fairl
   
   <entry>
     <title type="html"><![CDATA[Backing up PostgreSQL with backup and whatever gems on VPS]]></title>
-    <link href="http://blog.metaintellect.com/blog/2012/10/10/backing-up-postgresql-with-backup-and-whatever-gems/"/>
+    <link href="http://learnaholic.me/2012/10/10/backing-up-postgresql-with-backup-and-whatever-gems/"/>
     <updated>2012-10-10T07:12:00+02:00</updated>
-    <id>http://blog.metaintellect.com/blog/2012/10/10/backing-up-postgresql-with-backup-and-whatever-gems</id>
+    <id>http://learnaholic.me/2012/10/10/backing-up-postgresql-with-backup-and-whatever-gems</id>
     <content type="html"><![CDATA[<h2>Mission</h2>
 
 <p>A few months ago I&#8217;ve created a <a href="https://github.com/xajler/mi-guest">simple Rails app</a> (after 6 years!!!)
@@ -1014,9 +1014,9 @@ works!</p>
   
   <entry>
     <title type="html"><![CDATA[Installing nginx in Mac OS X Mountain Lion with homebrew]]></title>
-    <link href="http://blog.metaintellect.com/blog/2012/10/10/installing-nginx-in-mac-os-x-mountain-lion/"/>
+    <link href="http://learnaholic.me/2012/10/10/installing-nginx-in-mac-os-x-mountain-lion/"/>
     <updated>2012-10-10T03:45:00+02:00</updated>
-    <id>http://blog.metaintellect.com/blog/2012/10/10/installing-nginx-in-mac-os-x-mountain-lion</id>
+    <id>http://learnaholic.me/2012/10/10/installing-nginx-in-mac-os-x-mountain-lion</id>
     <content type="html"><![CDATA[<h2>Install with brew</h2>
 
 <p>Use <code>brew</code> to install the <code>nginx</code> with command:</p>
