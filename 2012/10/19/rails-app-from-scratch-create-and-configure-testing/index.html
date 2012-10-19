@@ -1,0 +1,735 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Rails App from Scratch: Create and Configure for Testing - Learn-a-holic Geek Notes</title>
+  <meta name="author" content="Kornelije Sajler">
+
+  
+  <meta name="description" content="Kornelije Sajler (xajler) Learn-a-holic Geek Notes. Human compiled Brainwork by Kornelije Sajler (xajler).">
+  <meta name="keywords" content="Kornelije Sajler, xajler, metaintellect, learnaholic, learn-a-holic, coding, programming, Ruby, Ruby On Rails, RSpec TDD, cucumber, jasmine, bacbone.js, postgresql, mongodb">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://learnaholic.me/2012/10/19/rails-app-from-scratch-create-and-configure-testing/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Learn-a-holic Geek Notes" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic' rel='stylesheet' type='text/css'>
+
+  
+
+</head>
+
+<body    class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Learn-a-holic Geek Notes</a></h1>
+  
+    <h2>Human compiled Brainwork by Kornelije Sajler.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:learnaholic.me" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Home</a></li>
+  <li><a href="http://metaintellect.com" target="_blank">Metaintellect</a></li>
+  <li><a href="http://caribou.arvixe.com/~ksajler" target="_blank">Old Blog</a></li>
+  <!-- <li><a href="/blog/archives">Archives</a></li> -->
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Rails App From Scratch: Create and Configure for Testing</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-19T05:38:00+02:00" pubdate data-updated="true">Oct 19<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>This blog post will be one many showing how to create <em>Todo</em> the <em>Rails 3</em> application.
+The first post will be creating the Rails application and setting up the testing environment.</p>
+
+<p> The app will be called <em>Just ToDo it</em>, just as famous
+ <a href="https://en.wikipedia.org/wiki/Just_Do_It_(Nike)" target="_blank">Nike slogan</a>. And also Gods of DNS where
+ good to me so the <em>Domain</em> <code>justtodoit.com</code> is free so I bought it and the final stage of this
+ Rails posts will be deployment to <em>VPS</em> and pointing to the domain <a href="http://justtodoit.com">JustToDoIt</a>
+ (Currently displays my domain <a href="http://metaintellect.com">metaintellect</a>).</p>
+
+<h2>Create application</h2>
+
+<p>The command to create new Rails application and omitting default testing framework <em>Unit::Test</em>
+with switch <code>-T</code> or longer version is <code>--skip-test-unit</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>rails new JustToDoIt -T
+</span><span class='line'>create
+</span><span class='line'>create  README.rdoc
+</span><span class='line'>create  Rakefile
+</span><span class='line'>create  config.ru
+</span><span class='line'>create  .gitignore
+</span><span class='line'>create  Gemfile
+</span><span class='line'>create  app
+</span><span class='line'>...
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I had capitalized <code>JustToDoIt</code> before the name is used as Ruby class and Pascal case is convention
+for Ruby classes.</p>
+
+<p>Then rename it to <code>just-todo-it</code> to be more in *nix folder naming convention.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>mv JustToDoIt just-todo-it
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The fun starts when the directory is changed to Rails app directory:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span><span class="nb">cd </span>just-todo-it
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Text editor</h2>
+
+<p>I&#8217;ll use <em>vim</em> as a default text editor, for <em>TextMate</em> use <code>mate</code> and for the <em>Sublime Text 2</em> use
+<code>subl</code> terminal commands for editing files instead of <code>vim</code>.</p>
+
+<h2>Gemfile</h2>
+
+<p>First open the <code>Gemfile</code>, we need to add some <em>gems</em> that will be used in the app and also
+for testing:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>vim Gemfile
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Edit it to include this gems:</p>
+
+<figure class='code'><figcaption><span>Gemfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">source</span> <span class="s1">&#39;https://rubygems.org&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;rails&#39;</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;bcrypt-ruby&#39;</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;unicorn&#39;</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;haml&#39;</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;thin&#39;</span>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;pg&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">group</span> <span class="ss">:test</span><span class="p">,</span> <span class="ss">:development</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">gem</span> <span class="s1">&#39;sqlite3&#39;</span>
+</span><span class='line'>  <span class="n">gem</span> <span class="s1">&#39;rspec-rails&#39;</span>
+</span><span class='line'>  <span class="n">gem</span> <span class="s1">&#39;pry&#39;</span>
+</span><span class='line'>  <span class="n">gem</span> <span class="s1">&#39;factory_girl_rails&#39;</span>
+</span><span class='line'>  <span class="n">gem</span> <span class="s1">&#39;database_cleaner&#39;</span>
+</span><span class='line'>  <span class="n">gem</span> <span class="s1">&#39;awesome_print&#39;</span>
+</span><span class='line'>  <span class="n">gem</span> <span class="s1">&#39;capybara&#39;</span>
+</span><span class='line'>  <span class="n">gem</span> <span class="s1">&#39;rb-fsevent&#39;</span><span class="p">,</span> <span class="ss">:require</span> <span class="o">=&gt;</span> <span class="kp">false</span> <span class="k">if</span> <span class="no">RUBY_PLATFORM</span> <span class="o">=~</span> <span class="sr">/darwin/i</span>
+</span><span class='line'>  <span class="n">gem</span> <span class="s1">&#39;guard-rspec&#39;</span>
+</span><span class='line'>  <span class="n">gem</span> <span class="s1">&#39;spork&#39;</span>
+</span><span class='line'>  <span class="n">gem</span> <span class="s1">&#39;guard-spork&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">group</span> <span class="ss">:assets</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">gem</span> <span class="s1">&#39;sass-rails&#39;</span><span class="p">,</span>   <span class="s1">&#39;~&gt; 3.2.3&#39;</span>
+</span><span class='line'>  <span class="n">gem</span> <span class="s1">&#39;coffee-rails&#39;</span><span class="p">,</span> <span class="s1">&#39;~&gt; 3.2.1&#39;</span>
+</span><span class='line'>  <span class="n">gem</span> <span class="s1">&#39;uglifier&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;= 1.0.3&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">gem</span> <span class="s1">&#39;jquery-rails&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>After changing the <code>Gemfile</code> run <em>bundler</em> to update and download entered <em>gems</em>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>bundle install
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Main and Production Ruby Gems</h3>
+
+<ul>
+<li><a href="http://rubyonrails.org/">rails</a> - The latest one <code>3.2.8</code> for this time of writing.</li>
+<li><a href="https://github.com/codahale/bcrypt-ruby">bcrypt-ruby</a> - Needed for password hashing and app authentication.</li>
+<li><a href="https://github.com/defunkt/unicorn">unicorn</a> - For production, it will run as <a href="https://github.com/rack/rack">Rack</a> HTTP Server.</li>
+<li><a href="http://haml.info/">haml</a> - My favorite View rendering engine.</li>
+<li><a href="http://code.macournoyer.com/thin/">thin</a> - <em>Thin</em> as local server instead of default <em>Webrick</em>.</li>
+<li><a href="https://bitbucket.org/ged/ruby-pg">pg</a> - My default database for production usage.</li>
+</ul>
+
+
+<h3>Test and Development Ruby Gems</h3>
+
+<ul>
+<li><a href="https://github.com/luislavena/sqlite3-ruby">sqlite3</a> - The database used for development and testing environments.</li>
+<li><a href="https://www.relishapp.com/rspec/rspec-rails/docs">rspec-rails</a> - RSpec as default testing framework.</li>
+<li><a href="http://pryrepl.org/">pry</a> - Using as default <em>Interactive Ruby</em> console instead of <code>irb</code>. Needs some configuration to be hooked to <code>rails console</code>.</li>
+<li><a href="https://github.com/thoughtbot/factory_girl/blob/master/GETTING_STARTED.md">factory_girl_rails</a> - The testing factory framework, used instead of the default <em>Fixtures</em>.</li>
+<li><a href="https://github.com/bmabey/database_cleaner">database_cleaner</a> - Used to speed-up tests, in my case to encapsulate the tests into db transaction.</li>
+<li><a href="https://github.com/michaeldv/awesome_print">awesome_print</a> - Used by <em>Pry</em> to pretty prints Ruby objects in full color exposing their internal structure with proper indentation.</li>
+<li><a href="http://jnicklas.github.com/capybara/">capybara</a> - for simulating the web interaction in the tests.</li>
+<li><a href="https://github.com/guard/guard-rspec">guard-rspec</a> - To refresh and run the tests upon saving via <a href="https://github.com/thibaudgg/rb-fsevent">rb-fsevent</a>.</li>
+<li><a href="https://github.com/sporkrb/spork">spork</a> - The server to speed up tests, how?, see provided link.</li>
+<li><a href="https://github.com/guard/guard-spork">guard-sprok</a> - Refreshes the sprok server on change-, so that we don&#8217;t need to.</li>
+</ul>
+
+
+<h2>Testing configuration</h2>
+
+<h3>RSpec</h3>
+
+<p><em>RSpec</em> will be used as the test framework for the <code>Just ToDo it</code> app.</p>
+
+<p>Run generator to install <em>RSpec</em> to <em>Rails</em>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>rails g rspec:install
+</span><span class='line'>create  .rspec
+</span><span class='line'>create  spec
+</span><span class='line'>create  spec/spec_helper.rb
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Guard</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>bundle <span class="nb">exec </span>guard init
+</span><span class='line'>rspec guard added to Guardfile, feel free to edit it
+</span><span class='line'>spork guard added to Guardfile, feel free to edit it
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Configure <code>Guardfile</code> set the <em>Spork</em> on top and <em>RSpec</em> in bottom:</p>
+
+<figure class='code'><figcaption><span>Guardfile</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">guard</span> <span class="s1">&#39;spork&#39;</span><span class="p">,</span> <span class="ss">:cucumber_env</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="s1">&#39;RAILS_ENV&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;test&#39;</span> <span class="p">},</span> <span class="ss">:rspec_env</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="s1">&#39;RAILS_ENV&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;test&#39;</span> <span class="p">}</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">watch</span><span class="p">(</span><span class="s1">&#39;config/application.rb&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">watch</span><span class="p">(</span><span class="s1">&#39;config/environment.rb&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">watch</span><span class="p">(</span><span class="sr">%r{^config/environments/.+\.rb$}</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">watch</span><span class="p">(</span><span class="sr">%r{^config/initializers/.+\.rb$}</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">watch</span><span class="p">(</span><span class="s1">&#39;spec/spec_helper.rb&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">watch</span><span class="p">(</span><span class="sr">%r{^spec/support/.+\.rb$}</span><span class="p">)</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">guard</span> <span class="s1">&#39;rspec&#39;</span><span class="p">,</span> <span class="n">cli</span><span class="p">:</span> <span class="s2">&quot;--drb&quot;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="o">.</span><span class="n">.</span><span class="o">.</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Spork</h3>
+
+<p>Bootstrap the <em>Spork</em>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>spork --bootstrap
+</span><span class='line'>Using RSpec
+</span><span class='line'>Bootstrapping /Users/xajler/src/rb/just-todo-it/spec/spec_helper.rb.
+</span><span class='line'>Done. Edit /Users/xajler/src/rb/just-todo-it/spec/spec_helper.rb now with your favorite text editor and follow the instructions.
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>RSpec Helper</h3>
+
+<p>Edit RSpec helper:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>vim spec/spec_helper.rb
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And edit to include this content:</p>
+
+<figure class='code'><figcaption><span>spec_helper.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;rubygems&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;spork&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Spork</span><span class="o">.</span><span class="n">prefork</span> <span class="k">do</span>
+</span><span class='line'>  <span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;RAILS_ENV&quot;</span><span class="o">]</span> <span class="o">||=</span> <span class="s1">&#39;test&#39;</span>
+</span><span class='line'>  <span class="nb">require</span> <span class="no">File</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="s2">&quot;../../config/environment&quot;</span><span class="p">,</span> <span class="bp">__FILE__</span><span class="p">)</span>
+</span><span class='line'>  <span class="nb">require</span> <span class="s1">&#39;rspec/rails&#39;</span>
+</span><span class='line'>  <span class="nb">require</span> <span class="s1">&#39;capybara/rspec&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="no">Dir</span><span class="o">[</span><span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;spec/support/**/*.rb&quot;</span><span class="p">)</span><span class="o">].</span><span class="n">each</span> <span class="p">{</span><span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="nb">require</span> <span class="n">f</span><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="no">RSpec</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+</span><span class='line'>    <span class="n">config</span><span class="o">.</span><span class="n">mock_with</span> <span class="ss">:rspec</span>
+</span><span class='line'>    <span class="n">config</span><span class="o">.</span><span class="n">include</span> <span class="no">FactoryGirl</span><span class="o">::</span><span class="no">Syntax</span><span class="o">::</span><span class="no">Methods</span>
+</span><span class='line'>    <span class="n">config</span><span class="o">.</span><span class="n">use_transactional_fixtures</span> <span class="o">=</span> <span class="kp">true</span>
+</span><span class='line'>    <span class="n">config</span><span class="o">.</span><span class="n">infer_base_class_for_anonymous_controllers</span> <span class="o">=</span> <span class="kp">false</span>
+</span><span class='line'>    <span class="n">config</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="s2">&quot;random&quot;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">config</span><span class="o">.</span><span class="n">before</span> <span class="ss">:suite</span> <span class="k">do</span>
+</span><span class='line'>      <span class="no">DatabaseCleaner</span><span class="o">.</span><span class="n">strategy</span> <span class="o">=</span> <span class="ss">:transaction</span>
+</span><span class='line'>      <span class="no">DatabaseCleaner</span><span class="o">.</span><span class="n">clean_with</span><span class="p">(</span><span class="ss">:truncation</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">config</span><span class="o">.</span><span class="n">before</span> <span class="k">do</span>
+</span><span class='line'>      <span class="no">DatabaseCleaner</span><span class="o">.</span><span class="n">start</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">config</span><span class="o">.</span><span class="n">after</span> <span class="k">do</span>
+</span><span class='line'>      <span class="no">DatabaseCleaner</span><span class="o">.</span><span class="n">clean</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Spork</span><span class="o">.</span><span class="n">each_run</span> <span class="k">do</span>
+</span><span class='line'>  <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">reload</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>It uses <em>Spork</em> server and the aim is to have most things in <code>prefork</code> this is one time only
+initialization, and <code>each_run</code> only necessary things, we are now having only reloading of
+<em>Factory Girl</em>, but maybe we will add something from <code>prefork</code> if we would have some troubles with testing data.</p>
+
+<p><em>DatabaseCleaner</em> is used to start on each before and clean it on after running, and of
+course the strategy used for <em>DatabaseCleaner</em> is transaction, meaning to have rollback
+after the queries in transaction are finished.</p>
+
+<h3>Run Guard</h3>
+
+<p>The everything is setup, the <em>Guard</em> can be run:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>guard
+</span><span class='line'>uard could not detect any of the supported notification libraries.
+</span><span class='line'>Guard is now watching at <span class="s1">&#39;/Users/xajler/src/rb/just-todo-it&#39;</span>
+</span><span class='line'>Starting Spork <span class="k">for </span>RSpec
+</span><span class='line'>Using RSpec
+</span><span class='line'>Preloading Rails environment
+</span><span class='line'>Loading Spork.prefork block...
+</span><span class='line'>Spork is ready and listening on 8989!
+</span><span class='line'>Spork server <span class="k">for </span>RSpec successfully started
+</span><span class='line'>Guard::RSpec is running
+</span><span class='line'>Running all specs
+</span><span class='line'>Running tests with args <span class="o">[</span><span class="s2">&quot;--drb&quot;</span>, <span class="s2">&quot;-f&quot;</span>, <span class="s2">&quot;progress&quot;</span>, <span class="s2">&quot;-r&quot;</span>, <span class="s2">&quot;/Users/xajler/.rbenv/versions/1.9.3-p194/lib/ruby/gems/1.9.1/gems/guard-rspec-2.1.0/lib/guard/rspec/formatter.rb&quot;</span>, <span class="s2">&quot;-f&quot;</span>, <span class="s2">&quot;Guard::RSpec::Formatter&quot;</span>, <span class="s2">&quot;--out&quot;</span>, <span class="s2">&quot;/dev/null&quot;</span>, <span class="s2">&quot;--failure-exit-code&quot;</span>, <span class="s2">&quot;2&quot;</span>, <span class="s2">&quot;spec&quot;</span><span class="o">]</span>...
+</span><span class='line'>No examples found.
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>Finished in 0.11748 seconds
+</span><span class='line'>0 examples, 0 failures
+</span><span class='line'>
+</span><span class='line'>Randomized with seed 7715
+</span><span class='line'>
+</span><span class='line'>Done.
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>or use <code>bundle exec guard</code> to remove displayed warning.</p>
+
+<p>To exit the <code>guard</code> command use <code>Ctrl+C</code>.</p>
+
+<h2>Pry as Rails Console</h2>
+
+<p>And for the end we will set <em>Pry</em> as our default <em>Interactive Ruby</em> console.</p>
+
+<p>Open the <code>development.rb</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>vim config/enironments/development.rb
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>At the end of source file add code:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">silence_warnings</span> <span class="k">do</span>
+</span><span class='line'>  <span class="nb">require</span> <span class="s1">&#39;pry&#39;</span>
+</span><span class='line'>  <span class="no">IRB</span> <span class="o">=</span> <span class="no">Pry</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Try it out with <code>.pwd</code> and close the <em>Pry</em> with <code>exit</code> command:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>rails c
+</span><span class='line'>Loading development environment <span class="o">(</span>Rails 3.2.8<span class="o">)</span>
+</span><span class='line'>1.9.3 <span class="o">(</span>main<span class="o">)</span>:0 &gt; .pwd
+</span><span class='line'>/Users/xajler/src/rb/just-todo-it
+</span><span class='line'>1.9.3 <span class="o">(</span>main<span class="o">)</span>:0 &gt; <span class="nb">exit</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Conclusion</h2>
+
+<p>It this first part we have created a <code>JustToDoIt</code> Rails application.</p>
+
+<p>And because we shall use <em>TDD</em> (Test Driven Development) to drive this app, we first
+configure the testing environment including:</p>
+
+<ul>
+<li>RSpec</li>
+<li>Factory Girl</li>
+<li>Database Cleaner</li>
+<li>Guard</li>
+<li>Spork</li>
+</ul>
+
+
+<p>And for the end we setup the <em>Pry</em> to be a default for <em>Rails</em> console.</p>
+
+<p>In second post we shall go with the creating the app in <em>TDD</em> manner!</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Kornelije Sajler</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-19T05:38:00+02:00" pubdate data-updated="true">Oct 19<span>th</span>, 2012</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://learnaholic.me/2012/10/19/rails-app-from-scratch-create-and-configure-testing/" data-via="xajler" data-counturl="http://learnaholic.me/2012/10/19/rails-app-from-scratch-create-and-configure-testing/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/2012/10/15/octopress-seo-and-disabling-the-blog-route/" title="Previous Post: Octopress SEO and disabling the blog route">&laquo; Octopress SEO and disabling the blog route</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/2012/10/19/rails-app-from-scratch-create-and-configure-testing/">Rails App from Scratch: Create and Configure for Testing</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2012/10/15/octopress-seo-and-disabling-the-blog-route/">Octopress SEO and disabling the blog route</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2012/10/12/make-powershell-and-git-suck-less-on-windows/">Make Powershell, SSH Github and git suck less on Windows</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2012/10/10/deploying-octopress-to-github-pages-and-setting-custom-subdomain-cname/">Deploying Octopress to Github Pages and setting custom subdomain CNAME</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2012/10/10/backing-up-postgresql-with-backup-and-whatever-gems/">Backing up PostgreSQL with backup and whatever gems on VPS</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/xajler">@xajler</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'xajler',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("xajler", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/xajler" class="twitter-follow-button" data-show-count="false">Follow @xajler</a>
+  
+</section>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Kornelije Sajler -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'metaintellect-blog';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://learnaholic.me/2012/10/19/rails-app-from-scratch-create-and-configure-testing/';
+        var disqus_url = 'http://learnaholic.me/2012/10/19/rails-app-from-scratch-create-and-configure-testing/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-9867685-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+
+</body>
+</html>
