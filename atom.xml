@@ -4,7 +4,7 @@
   <title><![CDATA[Learn-a-holic Geek Notes]]></title>
   <link href="http://learnaholic.me/atom.xml" rel="self"/>
   <link href="http://learnaholic.me/"/>
-  <updated>2012-10-19T06:27:35+02:00</updated>
+  <updated>2012-10-19T06:56:29+02:00</updated>
   <id>http://learnaholic.me/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -53,10 +53,10 @@ with switch <code>-T</code> or longer version is <code>--skip-test-unit</code></
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>I had capitalized <code>JustToDoIt</code> before the name is used as Ruby class and Pascal case is convention
+<p>I had capitalized <code>JustToDoIt</code> before, because the name is used as Ruby class and Pascal case is convention
 for Ruby classes.</p>
 
-<p>Then rename it to <code>just-todo-it</code> to be more in *nix folder naming convention.</p>
+<p>Then rename folder to <code>just-todo-it</code> to be more in *nix folder naming convention:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>mv JustToDoIt just-todo-it
@@ -161,7 +161,7 @@ for testing:</p>
 
 <ul>
 <li><a href="http://rubyonrails.org/">rails</a> - The latest one <code>3.2.8</code> for this time of writing.</li>
-<li><a href="https://github.com/codahale/bcrypt-ruby">bcrypt-ruby</a> - Needed for password hashing and app authentication.</li>
+<li><a href="https://github.com/codahale/bcrypt-ruby">bcrypt-ruby</a> - Needed for password hashing.</li>
 <li><a href="https://github.com/defunkt/unicorn">unicorn</a> - For production, it will run as <a href="https://github.com/rack/rack">Rack</a> HTTP Server.</li>
 <li><a href="http://haml.info/">haml</a> - My favorite View rendering engine.</li>
 <li><a href="http://code.macournoyer.com/thin/">thin</a> - <em>Thin</em> as local server instead of default <em>Webrick</em>.</li>
@@ -174,14 +174,14 @@ for testing:</p>
 <ul>
 <li><a href="https://github.com/luislavena/sqlite3-ruby">sqlite3</a> - The database used for development and testing environments.</li>
 <li><a href="https://www.relishapp.com/rspec/rspec-rails/docs">rspec-rails</a> - RSpec as default testing framework.</li>
-<li><a href="http://pryrepl.org/">pry</a> - Using as default <em>Interactive Ruby</em> console instead of <code>irb</code>. Needs some configuration to be hooked to <code>rails console</code>.</li>
+<li><a href="http://pryrepl.org/">pry</a> - Using as default <em>Interactive Ruby</em> console instead of <code>irb</code>. Needs some configuration to be hooked as <code>rails console</code>.</li>
 <li><a href="https://github.com/thoughtbot/factory_girl/blob/master/GETTING_STARTED.md">factory_girl_rails</a> - The testing factory framework, used instead of the default <em>Fixtures</em>.</li>
 <li><a href="https://github.com/bmabey/database_cleaner">database_cleaner</a> - Used to speed-up tests, in my case to encapsulate the tests into db transaction.</li>
 <li><a href="https://github.com/michaeldv/awesome_print">awesome_print</a> - Used by <em>Pry</em> to pretty prints Ruby objects in full color exposing their internal structure with proper indentation.</li>
 <li><a href="http://jnicklas.github.com/capybara/">capybara</a> - for simulating the web interaction in the tests.</li>
 <li><a href="https://github.com/guard/guard-rspec">guard-rspec</a> - To refresh and run the tests upon saving via <a href="https://github.com/thibaudgg/rb-fsevent">rb-fsevent</a>.</li>
 <li><a href="https://github.com/sporkrb/spork">spork</a> - The server to speed up tests, how?, see provided link.</li>
-<li><a href="https://github.com/guard/guard-spork">guard-sprok</a> - Refreshes the sprok server on change-, so that we don&#8217;t need to.</li>
+<li><a href="https://github.com/guard/guard-spork">guard-spork</a> - Refreshes the spork server on changes, so that we don&#8217;t need to.</li>
 </ul>
 
 
@@ -345,17 +345,20 @@ for testing:</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>It uses <em>Spork</em> server and the aim is to have most things in <code>prefork</code> this is one time only
-initialization, and <code>each_run</code> only necessary things, we are now having only reloading of
-<em>Factory Girl</em>, but maybe we will add something from <code>prefork</code> if we would have some troubles with testing data.</p>
+<p>It uses <em>Spork</em> server and the aim is to have most things in <code>prefork</code> block where is
+stuff run on load of <em>Spork</em>.</p>
 
-<p><em>DatabaseCleaner</em> is used to start on each before and clean it on after running, and of
-course the strategy used for <em>DatabaseCleaner</em> is transaction, meaning to have rollback
-after the queries in transaction are finished.</p>
+<p>In <code>each_run</code> block we want put only necessary things, because it runs each time,
+we are now having only reloading of <em>Factory Girl</em> factories, but maybe we will add something
+from <code>prefork</code> if we would have some troubles with testing data.</p>
+
+<p><em>DatabaseCleaner</em> is used to start, on before and clean it, on after running.
+The strategy used for <em>DatabaseCleaner</em> is transaction, meaning to rollback
+changes after the transaction queries are finished.</p>
 
 <h3>Run Guard</h3>
 
-<p>The everything is setup, the <em>Guard</em> can be run:</p>
+<p>The testing environment is now configured, the <em>Guard</em> can be run:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -589,7 +592,7 @@ remote to the local repository:</p>
 
 <h3>Push to the Github</h3>
 
-<p>After we add remote it is now safe to push changes to <em>Github</em> remote repository:</p>
+<p>After we add remote, it is now safe to push changes to <em>Github</em> remote repository:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
