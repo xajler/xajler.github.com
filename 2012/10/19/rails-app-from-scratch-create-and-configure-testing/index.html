@@ -84,7 +84,7 @@
   
 
 
-<time datetime="2012-10-19T05:38:00+02:00" pubdate data-updated="true">Oct 19<span>th</span>, 2012</time>
+<time datetime="2012-10-19T06:28:00+02:00" pubdate data-updated="true">Oct 19<span>th</span>, 2012</time>
         
       </p>
     
@@ -477,7 +477,7 @@ after the queries in transaction are finished.</p>
 
 <p>or use <code>bundle exec guard</code> to remove displayed warning.</p>
 
-<p>To exit the <code>guard</code> command use <code>Ctrl+C</code>.</p>
+<p>To exit or stop the <code>guard</code> command use <code>Ctrl+C</code>.</p>
 
 <h2>Pry as Rails Console</h2>
 
@@ -518,6 +518,177 @@ after the queries in transaction are finished.</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
+<h2>Commit Source</h2>
+
+<p>First remove the <code>README.rdoc</code> file and create markdown <code>README.md</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>rm README.rdoc
+</span><span class='line'><span class="nv">$ </span>vim README.md
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Add simple description:</p>
+
+<figure class='code'><figcaption><span>README.md</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>The simple ToDo Rails App!
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Initialize</h3>
+
+<p>Initialize the <em>git</em> repository:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>git init
+</span><span class='line'>Initialized empty Git repository in /Users/xajler/src/rb/just-todo-it/.git/
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Status</h3>
+
+<p>See the status:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>git status
+</span><span class='line'><span class="c"># On branch master</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># Initial commit</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># Untracked files:</span>
+</span><span class='line'><span class="c"># .gitignore</span>
+</span><span class='line'><span class="c"># .rspec</span>
+</span><span class='line'><span class="c"># Gemfile</span>
+</span><span class='line'><span class="c"># Gemfile.lock</span>
+</span><span class='line'><span class="c"># Guardfile</span>
+</span><span class='line'><span class="c"># README.md</span>
+</span><span class='line'><span class="c"># Rakefile</span>
+</span><span class='line'><span class="c"># app/</span>
+</span><span class='line'><span class="c"># config.ru</span>
+</span><span class='line'><span class="c"># config/</span>
+</span><span class='line'><span class="c"># db/</span>
+</span><span class='line'><span class="c"># doc/</span>
+</span><span class='line'><span class="c"># lib/</span>
+</span><span class='line'><span class="c"># log/</span>
+</span><span class='line'><span class="c"># public/</span>
+</span><span class='line'><span class="c"># script/</span>
+</span><span class='line'><span class="c"># spec/</span>
+</span><span class='line'><span class="c"># vendor/</span>
+</span><span class='line'>nothing added to commit but untracked files present
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Add</h3>
+
+<p>Then add all files:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>git add .
+</span><span class='line'><span class="c"># On branch master</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># Initial commit</span>
+</span><span class='line'><span class="c">#</span>
+</span><span class='line'><span class="c"># Changes to be committed:</span>
+</span><span class='line'><span class="c"># new file:   .gitignore</span>
+</span><span class='line'><span class="c"># new file:   .rspec</span>
+</span><span class='line'><span class="c"># new file:   Gemfile</span>
+</span><span class='line'>...
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Commit</h3>
+
+<p>Commit the files to local repository:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>git commit -m <span class="s1">&#39;Initial Commit. Created initial Rails app, added all needed Gems, testing configured&#39;</span>
+</span><span class='line'><span class="o">[</span>master <span class="o">(</span>root-commit<span class="o">)</span> e4517a6<span class="o">]</span> Initial Commit. Created initial Rails app, added all needed Gems, testing configured
+</span><span class='line'> 38 files changed, 1086 insertions<span class="o">(</span>+<span class="o">)</span>
+</span><span class='line'> create mode 100644 .gitignore
+</span><span class='line'> create mode 100644 .rspec
+</span><span class='line'> create mode 100644 Gemfile
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Set Github Remote</h3>
+
+<p>The app will be on <em>Github</em>. So after the new repository is created on <em>Github</em>, we can add
+remote to the local repository:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>git remote add origin git@github.com:xajler/just-todo-it.git
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Push to the Github</h3>
+
+<p>After we add remote it is now safe to push changes to <em>Github</em> remote repository:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>git push -u origin master
+</span><span class='line'>Counting objects: 63, <span class="k">done</span>.
+</span><span class='line'>Delta compression using up to 4 threads.
+</span><span class='line'>Compressing objects: 100% <span class="o">(</span>47/47<span class="o">)</span>, <span class="k">done</span>.
+</span><span class='line'>Writing objects: 100% <span class="o">(</span>63/63<span class="o">)</span>, 23.32 KiB, <span class="k">done</span>.
+</span><span class='line'>Total 63 <span class="o">(</span>delta 2<span class="o">)</span>, reused 0 <span class="o">(</span>delta 0<span class="o">)</span>
+</span><span class='line'>To git@github.com:xajler/just-todo-it.git
+</span><span class='line'> * <span class="o">[</span>new branch<span class="o">]</span>      master -&gt; master
+</span><span class='line'>Branch master <span class="nb">set </span>up to track remote branch master from origin.
+</span></code></pre></td></tr></table></div></figure>
+
+
+<blockquote><p>Github xajler/just-todo-it commit:</p>
+
+<p><a href="https://github.com/xajler/just-todo-it/commit/e4517a6390f912850c63cc60085cbd57770d22ed">Initial Commit. Created initial Rails app, added all needed Gems, testing configured</a></p></blockquote>
+
 <h2>Conclusion</h2>
 
 <p>It this first part we have created a <code>JustToDoIt</code> Rails application.</p>
@@ -534,9 +705,10 @@ configure the testing environment including:</p>
 </ul>
 
 
-<p>And for the end we setup the <em>Pry</em> to be a default for <em>Rails</em> console.</p>
+<p>And for the end we setup the <em>Pry</em> to be a default for <em>Rails</em> console and commit the
+source to the <em>Github</em> repository <a href="https://github.com/xajler/just-todo-it">xajler/just-todo-it</a>.</p>
 
-<p>In second post we shall go with the creating the app in <em>TDD</em> manner!</p>
+<p>In second post we shall go with the creating the app logic in <em>TDD</em> manner!</p>
 </div>
 
 
@@ -559,7 +731,7 @@ configure the testing environment including:</p>
   
 
 
-<time datetime="2012-10-19T05:38:00+02:00" pubdate data-updated="true">Oct 19<span>th</span>, 2012</time>
+<time datetime="2012-10-19T06:28:00+02:00" pubdate data-updated="true">Oct 19<span>th</span>, 2012</time>
       
 
 
