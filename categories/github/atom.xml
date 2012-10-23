@@ -4,7 +4,7 @@
   <title><![CDATA[Category: github | Learn-a-holic Geek Notes]]></title>
   <link href="http://learnaholic.me/categories/github/atom.xml" rel="self"/>
   <link href="http://learnaholic.me/"/>
-  <updated>2012-10-19T06:56:29+02:00</updated>
+  <updated>2012-10-23T05:35:05+02:00</updated>
   <id>http://learnaholic.me/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -12,6 +12,477 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Rails App from Scratch: Create and Configure for Testing]]></title>
+    <link href="http://learnaholic.me/2012/10/19/rails-app-from-scratch-create-and-configure-testing/"/>
+    <updated>2012-10-19T06:28:00+02:00</updated>
+    <id>http://learnaholic.me/2012/10/19/rails-app-from-scratch-create-and-configure-testing</id>
+    <content type="html"><![CDATA[<p>This blog post will be one many showing how to create <em>Todo</em> the <em>Rails 3</em> application.
+The first post will be creating the Rails application and setting up the testing environment.</p>
+
+<p> The app will be called <em>Just ToDo it</em>, just as famous
+ <a href="https://en.wikipedia.org/wiki/Just_Do_It_(Nike)" target="_blank">Nike slogan</a>. And also Gods of DNS where
+ good to me so the <em>Domain</em> <code>justtodoit.com</code> is free so I bought it and the final stage of this
+ Rails posts will be deployment to <em>VPS</em> and pointing to the domain <a href="http://justtodoit.com">JustToDoIt</a>
+ (Currently displays my domain <a href="http://metaintellect.com">metaintellect</a>).</p>
+
+<h2>Create application</h2>
+
+<p>The command to create new Rails application and omitting default testing framework <em>Unit::Test</em>
+with switch <code>-T</code> or longer version is <code>--skip-test-unit</code></p>
+
+<p><code>bash
+$ rails new JustToDoIt -T
+create
+create  README.rdoc
+create  Rakefile
+create  config.ru
+create  .gitignore
+create  Gemfile
+create  app
+...
+</code></p>
+
+<p>I had capitalized <code>JustToDoIt</code> before, because the name is used as Ruby class and Pascal case is convention
+for Ruby classes.</p>
+
+<p>Then rename folder to <code>just-todo-it</code> to be more in *nix folder naming convention:</p>
+
+<p><code>bash
+$ mv JustToDoIt just-todo-it
+</code></p>
+
+<p>The fun starts when the directory is changed to Rails app directory:</p>
+
+<p><code>bash
+$ cd just-todo-it
+</code></p>
+
+<h2>Text editor</h2>
+
+<p>I'll use <em>vim</em> as a default text editor, for <em>TextMate</em> use <code>mate</code> and for the <em>Sublime Text 2</em> use
+<code>subl</code> terminal commands for editing files instead of <code>vim</code>.</p>
+
+<h2>Gemfile</h2>
+
+<p>First open the <code>Gemfile</code>, we need to add some <em>gems</em> that will be used in the app and also
+for testing:</p>
+
+<p><code>bash
+$ vim Gemfile
+</code>
+Edit it to include this gems:</p>
+
+<p>```ruby Gemfile
+source 'https://rubygems.org'</p>
+
+<p>gem 'rails'
+gem 'bcrypt-ruby'
+gem 'unicorn'
+gem 'haml'
+gem 'thin'
+gem 'pg'</p>
+
+<p>group :test, :development do
+  gem 'sqlite3'
+  gem 'rspec-rails'
+  gem 'pry'
+  gem 'factory_girl_rails'
+  gem 'database_cleaner'
+  gem 'awesome_print'
+  gem 'capybara'
+  gem 'rb-fsevent', :require => false if RUBY_PLATFORM =~ /darwin/i
+  gem 'guard-rspec'
+  gem 'spork'
+  gem 'guard-spork'
+end</p>
+
+<p>group :assets do
+  gem 'sass-rails',   '~> 3.2.3'
+  gem 'coffee-rails', '~> 3.2.1'
+  gem 'uglifier', '>= 1.0.3'
+end</p>
+
+<p>gem 'jquery-rails'
+```</p>
+
+<p>After changing the <code>Gemfile</code> run <em>bundler</em> to update and download entered <em>gems</em>:</p>
+
+<p><code>bash
+$ bundle install
+</code></p>
+
+<h3>Main and Production Ruby Gems</h3>
+
+<ul>
+<li><a href="http://rubyonrails.org/">rails</a> - The latest one <code>3.2.8</code> for this time of writing.</li>
+<li><a href="https://github.com/codahale/bcrypt-ruby">bcrypt-ruby</a> - Needed for password hashing.</li>
+<li><a href="https://github.com/defunkt/unicorn">unicorn</a> - For production, it will run as <a href="https://github.com/rack/rack">Rack</a> HTTP Server.</li>
+<li><a href="http://haml.info/">haml</a> - My favorite View rendering engine.</li>
+<li><a href="http://code.macournoyer.com/thin/">thin</a> - <em>Thin</em> as local server instead of default <em>Webrick</em>.</li>
+<li><a href="https://bitbucket.org/ged/ruby-pg">pg</a> - My default database for production usage.</li>
+</ul>
+
+
+<h3>Test and Development Ruby Gems</h3>
+
+<ul>
+<li><a href="https://github.com/luislavena/sqlite3-ruby">sqlite3</a> - The database used for development and testing environments.</li>
+<li><a href="https://www.relishapp.com/rspec/rspec-rails/docs">rspec-rails</a> - RSpec as default testing framework.</li>
+<li><a href="http://pryrepl.org/">pry</a> - Using as default <em>Interactive Ruby</em> console instead of <code>irb</code>. Needs some configuration to be hooked as <code>rails console</code>.</li>
+<li><a href="https://github.com/thoughtbot/factory_girl/blob/master/GETTING_STARTED.md">factory_girl_rails</a> - The testing factory framework, used instead of the default <em>Fixtures</em>.</li>
+<li><a href="https://github.com/bmabey/database_cleaner">database_cleaner</a> - Used to speed-up tests, in my case to encapsulate the tests into db transaction.</li>
+<li><a href="https://github.com/michaeldv/awesome_print">awesome_print</a> - Used by <em>Pry</em> to pretty prints Ruby objects in full color exposing their internal structure with proper indentation.</li>
+<li><a href="http://jnicklas.github.com/capybara/">capybara</a> - for simulating the web interaction in the tests.</li>
+<li><a href="https://github.com/guard/guard-rspec">guard-rspec</a> - To refresh and run the tests upon saving via <a href="https://github.com/thibaudgg/rb-fsevent">rb-fsevent</a>.</li>
+<li><a href="https://github.com/sporkrb/spork">spork</a> - The server to speed up tests, how?, see provided link.</li>
+<li><a href="https://github.com/guard/guard-spork">guard-spork</a> - Refreshes the spork server on changes, so that we don't need to.</li>
+</ul>
+
+
+<h2>Testing configuration</h2>
+
+<h3>RSpec</h3>
+
+<p><em>RSpec</em> will be used as the test framework for the <code>Just ToDo it</code> app.</p>
+
+<p>Run generator to install <em>RSpec</em> to <em>Rails</em>:</p>
+
+<p><code>bash
+$ rails g rspec:install
+create  .rspec
+create  spec
+create  spec/spec_helper.rb
+</code></p>
+
+<h3>Guard</h3>
+
+<p><code>bash
+$ bundle exec guard init
+rspec guard added to Guardfile, feel free to edit it
+spork guard added to Guardfile, feel free to edit it
+</code></p>
+
+<p>Configure <code>Guardfile</code> set the <em>Spork</em> on top and <em>RSpec</em> in bottom:</p>
+
+<p>```ruby Guardfile
+guard 'spork', :cucumber_env => { 'RAILS_ENV' => 'test' }, :rspec_env => { 'RAILS_ENV' => 'test' } do
+  watch('config/application.rb')
+  watch('config/environment.rb')
+  watch(%r{<sup>config/environments/.+.rb$})</sup>
+  watch(%r{<sup>config/initializers/.+.rb$})</sup>
+  watch('spec/spec_helper.rb')
+  watch(%r{<sup>spec/support/.+.rb$})</sup>
+end</p>
+
+<p>guard 'rspec', cli: "--drb" do
+  ...
+end
+```</p>
+
+<h3>Spork</h3>
+
+<p>Bootstrap the <em>Spork</em>:</p>
+
+<p><code>bash
+$ spork --bootstrap
+Using RSpec
+Bootstrapping /Users/xajler/src/rb/just-todo-it/spec/spec_helper.rb.
+Done. Edit /Users/xajler/src/rb/just-todo-it/spec/spec_helper.rb now with your favorite text editor and follow the instructions.
+</code></p>
+
+<h3>RSpec Helper</h3>
+
+<p>Edit RSpec helper:</p>
+
+<p><code>bash
+$ vim spec/spec_helper.rb
+</code>
+And edit to include this content:</p>
+
+<p>```ruby spec_helper.rb
+require 'rubygems'
+require 'spork'</p>
+
+<p>Spork.prefork do
+  ENV["RAILS_ENV"] ||= 'test'
+  require File.expand_path("../../config/environment", <strong>FILE</strong>)
+  require 'rspec/rails'
+  require 'capybara/rspec'</p>
+
+<p>  Dir[Rails.root.join("spec/support/<em>*/</em>.rb")].each {|f| require f}</p>
+
+<p>  RSpec.configure do |config|</p>
+
+<pre><code>config.mock_with :rspec
+config.include FactoryGirl::Syntax::Methods
+config.use_transactional_fixtures = true
+config.infer_base_class_for_anonymous_controllers = false
+config.order = "random"
+
+config.before :suite do
+  DatabaseCleaner.strategy = :transaction
+  DatabaseCleaner.clean_with(:truncation)
+end
+
+config.before do
+  DatabaseCleaner.start
+end
+
+config.after do
+  DatabaseCleaner.clean
+end
+</code></pre>
+
+<p>  end
+end</p>
+
+<p>Spork.each_run do
+  FactoryGirl.reload
+end
+```</p>
+
+<p>It uses <em>Spork</em> server and the aim is to have most things in <code>prefork</code> block where is
+stuff run on load of <em>Spork</em>.</p>
+
+<p>In <code>each_run</code> block we want put only necessary things, because it runs each time,
+we are now having only reloading of <em>Factory Girl</em> factories, but maybe we will add something
+from <code>prefork</code> if we would have some troubles with testing data.</p>
+
+<p><em>DatabaseCleaner</em> is used to start, on before and clean it, on after running.
+The strategy used for <em>DatabaseCleaner</em> is transaction, meaning to rollback
+changes after the transaction queries are finished.</p>
+
+<h3>Run Guard</h3>
+
+<p>The testing environment is now configured, the <em>Guard</em> can be run:</p>
+
+<p>```bash
+$ guard
+uard could not detect any of the supported notification libraries.
+Guard is now watching at '/Users/xajler/src/rb/just-todo-it'
+Starting Spork for RSpec
+Using RSpec
+Preloading Rails environment
+Loading Spork.prefork block...
+Spork is ready and listening on 8989!
+Spork server for RSpec successfully started
+Guard::RSpec is running
+Running all specs
+Running tests with args ["--drb", "-f", "progress", "-r", "/Users/xajler/.rbenv/versions/1.9.3-p194/lib/ruby/gems/1.9.1/gems/guard-rspec-2.1.0/lib/guard/rspec/formatter.rb", "-f", "Guard::RSpec::Formatter", "--out", "/dev/null", "--failure-exit-code", "2", "spec"]...
+No examples found.</p>
+
+<p>Finished in 0.11748 seconds
+0 examples, 0 failures</p>
+
+<p>Randomized with seed 7715</p>
+
+<p>Done.
+```</p>
+
+<p>or use <code>bundle exec guard</code> to remove displayed warning.</p>
+
+<p>To exit or stop the <code>guard</code> command use <code>Ctrl+C</code>.</p>
+
+<h2>Pry as Rails Console</h2>
+
+<p>And for the end we will set <em>Pry</em> as our default <em>Interactive Ruby</em> console.</p>
+
+<p>Open the <code>development.rb</code>:</p>
+
+<p><code>bash
+$ vim config/enironments/development.rb
+</code>
+At the end of source file add code:</p>
+
+<p><code>ruby
+silence_warnings do
+  require 'pry'
+  IRB = Pry
+end
+</code></p>
+
+<p>Try it out with <code>.pwd</code> and close the <em>Pry</em> with <code>exit</code> command:</p>
+
+<p><code>bash
+$ rails c
+Loading development environment (Rails 3.2.8)
+1.9.3 (main):0 &gt; .pwd
+/Users/xajler/src/rb/just-todo-it
+1.9.3 (main):0 &gt; exit
+</code></p>
+
+<h2>Commit Source</h2>
+
+<p>First remove the <code>README.rdoc</code> file and create markdown <code>README.md</code>:</p>
+
+<p><code>bash
+$ rm README.rdoc
+$ vim README.md
+</code></p>
+
+<p>Add simple description:</p>
+
+<p><code>text README.md
+The simple ToDo Rails App!
+</code></p>
+
+<h3>Initialize</h3>
+
+<p>Initialize the <em>git</em> repository:</p>
+
+<p><code>bash
+$ git init
+Initialized empty Git repository in /Users/xajler/src/rb/just-todo-it/.git/
+</code></p>
+
+<h3>Status</h3>
+
+<p>See the status:</p>
+
+<p>```bash
+$ git status</p>
+
+<h1>On branch master</h1>
+
+<p>#</p>
+
+<h1>Initial commit</h1>
+
+<p>#</p>
+
+<h1>Untracked files:</h1>
+
+<h1>.gitignore</h1>
+
+<h1>.rspec</h1>
+
+<h1>Gemfile</h1>
+
+<h1>Gemfile.lock</h1>
+
+<h1>Guardfile</h1>
+
+<h1>README.md</h1>
+
+<h1>Rakefile</h1>
+
+<h1>app/</h1>
+
+<h1>config.ru</h1>
+
+<h1>config/</h1>
+
+<h1>db/</h1>
+
+<h1>doc/</h1>
+
+<h1>lib/</h1>
+
+<h1>log/</h1>
+
+<h1>public/</h1>
+
+<h1>script/</h1>
+
+<h1>spec/</h1>
+
+<h1>vendor/</h1>
+
+<p>nothing added to commit but untracked files present
+```</p>
+
+<h3>Add</h3>
+
+<p>Then add all files:</p>
+
+<p>```bash
+$ git add .</p>
+
+<h1>On branch master</h1>
+
+<p>#</p>
+
+<h1>Initial commit</h1>
+
+<p>#</p>
+
+<h1>Changes to be committed:</h1>
+
+<h1>new file:   .gitignore</h1>
+
+<h1>new file:   .rspec</h1>
+
+<h1>new file:   Gemfile</h1>
+
+<p>...
+```</p>
+
+<h3>Commit</h3>
+
+<p>Commit the files to local repository:</p>
+
+<p><code>
+$ git commit -m 'Initial Commit. Created initial Rails app, added all needed Gems, testing configured'
+[master (root-commit) e4517a6] Initial Commit. Created initial Rails app, added all needed Gems, testing configured
+ 38 files changed, 1086 insertions(+)
+ create mode 100644 .gitignore
+ create mode 100644 .rspec
+ create mode 100644 Gemfile
+</code></p>
+
+<h3>Set Github Remote</h3>
+
+<p>The app will be on <em>Github</em>. So after the new repository is created on <em>Github</em>, we can add
+remote to the local repository:</p>
+
+<p><code>bash
+$ git remote add origin git@github.com:xajler/just-todo-it.git
+</code></p>
+
+<h3>Push to the Github</h3>
+
+<p>After we add remote, it is now safe to push changes to <em>Github</em> remote repository:</p>
+
+<p><code>
+$ git push -u origin master
+Counting objects: 63, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (47/47), done.
+Writing objects: 100% (63/63), 23.32 KiB, done.
+Total 63 (delta 2), reused 0 (delta 0)
+To git@github.com:xajler/just-todo-it.git
+ * [new branch]      master -&gt; master
+Branch master set up to track remote branch master from origin.
+</code></p>
+
+<blockquote><p>Github xajler/just-todo-it commit:</p>
+
+<p><a href="https://github.com/xajler/just-todo-it/commit/e4517a6390f912850c63cc60085cbd57770d22ed">Initial Commit. Created initial Rails app, added all needed Gems, testing configured</a></p></blockquote>
+
+<h2>Conclusion</h2>
+
+<p>It this first part we have created a <code>JustToDoIt</code> Rails application.</p>
+
+<p>And because we shall use <em>TDD</em> (Test Driven Development) to drive this app, we first
+configure the testing environment including:</p>
+
+<ul>
+<li>RSpec</li>
+<li>Factory Girl</li>
+<li>Database Cleaner</li>
+<li>Guard</li>
+<li>Spork</li>
+</ul>
+
+
+<p>And for the end we setup the <em>Pry</em> to be a default for <em>Rails</em> console and commit the
+source to the <em>Github</em> repository <a href="https://github.com/xajler/just-todo-it">xajler/just-todo-it</a>.</p>
+
+<p>In second post we shall go with the creating the app logic in <em>TDD</em> manner!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Make Powershell, SSH Github and git suck less on Windows]]></title>
