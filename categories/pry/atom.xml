@@ -4,7 +4,7 @@
   <title><![CDATA[Category: pry | Learn-a-holic Geek Notes]]></title>
   <link href="http://learnaholic.me/categories/pry/atom.xml" rel="self"/>
   <link href="http://learnaholic.me/"/>
-  <updated>2012-10-23T05:35:05+02:00</updated>
+  <updated>2012-10-24T05:05:25+02:00</updated>
   <id>http://learnaholic.me/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -203,7 +203,8 @@ And edit to include this content:</p>
 
 <p>```ruby spec_helper.rb
 require 'rubygems'
-require 'spork'</p>
+require 'spork'
+require 'database_cleaner'</p>
 
 <p>Spork.prefork do
   ENV["RAILS_ENV"] ||= 'test'
@@ -213,6 +214,8 @@ require 'spork'</p>
 
 <p>  Dir[Rails.root.join("spec/support/<em>*/</em>.rb")].each {|f| require f}</p>
 
+<p>  DatabaseCleaner.strategy = :truncation</p>
+
 <p>  RSpec.configure do |config|</p>
 
 <pre><code>config.mock_with :rspec
@@ -220,26 +223,14 @@ config.include FactoryGirl::Syntax::Methods
 config.use_transactional_fixtures = true
 config.infer_base_class_for_anonymous_controllers = false
 config.order = "random"
-
-config.before :suite do
-  DatabaseCleaner.strategy = :transaction
-  DatabaseCleaner.clean_with(:truncation)
-end
-
-config.before do
-  DatabaseCleaner.start
-end
-
-config.after do
-  DatabaseCleaner.clean
-end
 </code></pre>
 
-<p>  end
+<p>   end
 end</p>
 
 <p>Spork.each_run do
   FactoryGirl.reload
+  DatabaseCleaner.clean
 end
 ```</p>
 

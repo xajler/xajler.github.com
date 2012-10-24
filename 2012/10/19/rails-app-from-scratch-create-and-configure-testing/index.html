@@ -370,17 +370,9 @@ for testing:</p>
 <span class='line-number'>25</span>
 <span class='line-number'>26</span>
 <span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;rubygems&#39;</span>
 </span><span class='line'><span class="nb">require</span> <span class="s1">&#39;spork&#39;</span>
+</span><span class='line'><span class="nb">require</span> <span class="s1">&#39;database_cleaner&#39;</span>
 </span><span class='line'>
 </span><span class='line'><span class="no">Spork</span><span class="o">.</span><span class="n">prefork</span> <span class="k">do</span>
 </span><span class='line'>  <span class="no">ENV</span><span class="o">[</span><span class="s2">&quot;RAILS_ENV&quot;</span><span class="o">]</span> <span class="o">||=</span> <span class="s1">&#39;test&#39;</span>
@@ -390,30 +382,20 @@ for testing:</p>
 </span><span class='line'>
 </span><span class='line'>  <span class="no">Dir</span><span class="o">[</span><span class="no">Rails</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;spec/support/**/*.rb&quot;</span><span class="p">)</span><span class="o">].</span><span class="n">each</span> <span class="p">{</span><span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="nb">require</span> <span class="n">f</span><span class="p">}</span>
 </span><span class='line'>
+</span><span class='line'>  <span class="no">DatabaseCleaner</span><span class="o">.</span><span class="n">strategy</span> <span class="o">=</span> <span class="ss">:truncation</span>
+</span><span class='line'>
 </span><span class='line'>  <span class="no">RSpec</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
 </span><span class='line'>    <span class="n">config</span><span class="o">.</span><span class="n">mock_with</span> <span class="ss">:rspec</span>
 </span><span class='line'>    <span class="n">config</span><span class="o">.</span><span class="n">include</span> <span class="no">FactoryGirl</span><span class="o">::</span><span class="no">Syntax</span><span class="o">::</span><span class="no">Methods</span>
 </span><span class='line'>    <span class="n">config</span><span class="o">.</span><span class="n">use_transactional_fixtures</span> <span class="o">=</span> <span class="kp">true</span>
 </span><span class='line'>    <span class="n">config</span><span class="o">.</span><span class="n">infer_base_class_for_anonymous_controllers</span> <span class="o">=</span> <span class="kp">false</span>
 </span><span class='line'>    <span class="n">config</span><span class="o">.</span><span class="n">order</span> <span class="o">=</span> <span class="s2">&quot;random&quot;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">config</span><span class="o">.</span><span class="n">before</span> <span class="ss">:suite</span> <span class="k">do</span>
-</span><span class='line'>      <span class="no">DatabaseCleaner</span><span class="o">.</span><span class="n">strategy</span> <span class="o">=</span> <span class="ss">:transaction</span>
-</span><span class='line'>      <span class="no">DatabaseCleaner</span><span class="o">.</span><span class="n">clean_with</span><span class="p">(</span><span class="ss">:truncation</span><span class="p">)</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">config</span><span class="o">.</span><span class="n">before</span> <span class="k">do</span>
-</span><span class='line'>      <span class="no">DatabaseCleaner</span><span class="o">.</span><span class="n">start</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">config</span><span class="o">.</span><span class="n">after</span> <span class="k">do</span>
-</span><span class='line'>      <span class="no">DatabaseCleaner</span><span class="o">.</span><span class="n">clean</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>   <span class="k">end</span>
 </span><span class='line'><span class="k">end</span>
 </span><span class='line'>
 </span><span class='line'><span class="no">Spork</span><span class="o">.</span><span class="n">each_run</span> <span class="k">do</span>
 </span><span class='line'>  <span class="no">FactoryGirl</span><span class="o">.</span><span class="n">reload</span>
+</span><span class='line'>  <span class="no">DatabaseCleaner</span><span class="o">.</span><span class="n">clean</span>
 </span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
@@ -760,7 +742,7 @@ source to the <em>Github</em> repository <a href="https://github.com/xajler/just
         <a class="basic-alignment left" href="/2012/10/15/octopress-seo-and-disabling-the-blog-route/" title="Previous Post: Octopress SEO and disabling the blog route">&laquo; Octopress SEO and disabling the blog route</a>
       
       
-        <a class="basic-alignment right" href="/2012/10/23/rails-app-from-scratch-simple-authentication/" title="Next Post: Rails App from Scratch: Simple Authentication">Rails App from Scratch: Simple Authentication &raquo;</a>
+        <a class="basic-alignment right" href="/2012/10/24/rails-app-from-scratch-user-signup-page/" title="Next Post: Rails App from Scratch: User Sign Up page">Rails App from Scratch: User Sign Up page &raquo;</a>
       
     </p>
   </footer>
@@ -781,7 +763,7 @@ source to the <em>Github</em> repository <a href="https://github.com/xajler/just
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/2012/10/23/rails-app-from-scratch-simple-authentication/">Rails App from Scratch: Simple Authentication</a>
+        <a href="/2012/10/24/rails-app-from-scratch-user-signup-page/">Rails App from Scratch: User Sign Up page</a>
       </li>
     
       <li class="post">
