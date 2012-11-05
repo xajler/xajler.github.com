@@ -4,7 +4,7 @@
   <title><![CDATA[Category: authentication | Learn-a-holic Geek Notes]]></title>
   <link href="http://learnaholic.me/categories/authentication/atom.xml" rel="self"/>
   <link href="http://learnaholic.me/"/>
-  <updated>2012-10-27T17:59:30+02:00</updated>
+  <updated>2012-11-05T13:15:54+01:00</updated>
   <id>http://learnaholic.me/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -493,6 +493,14 @@ end
 <p>This post intended to absorb whole authentication of user, but currently is just too long
 and I will stop here and in second post will introduce validation, saving and maybe yet
 in third post authenticating and updating user!</p>
+
+<h2>Code</h2>
+
+<p>The code is hosted on GitHub and can be cloned from the <a href="https://github.com/xajler/just-todo-it">xajler/just-todo-it</a>.</p>
+
+<blockquote><p>Github xajler/just-todo-it commit for this post:</p>
+
+<p><a href="https://github.com/xajler/just-todo-it/commit/7ee07ec64ca652f4840da8463ad3ce0d1efe64c6">Created User Controller, Model and View for Sign Up or Create User, created two integration tests, changed spec_helper due issues between the database_cleaner and sprok.</a></p></blockquote>
 ]]></content>
   </entry>
   

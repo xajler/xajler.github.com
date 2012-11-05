@@ -4,7 +4,7 @@
   <title><![CDATA[Category: sprok | Learn-a-holic Geek Notes]]></title>
   <link href="http://learnaholic.me/categories/sprok/atom.xml" rel="self"/>
   <link href="http://learnaholic.me/"/>
-  <updated>2012-10-27T17:59:30+02:00</updated>
+  <updated>2012-11-05T13:15:54+01:00</updated>
   <id>http://learnaholic.me/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -448,10 +448,6 @@ To git@github.com:xajler/just-todo-it.git
 Branch master set up to track remote branch master from origin.
 </code></p>
 
-<blockquote><p>Github xajler/just-todo-it commit:</p>
-
-<p><a href="https://github.com/xajler/just-todo-it/commit/e4517a6390f912850c63cc60085cbd57770d22ed">Initial Commit. Created initial Rails app, added all needed Gems, testing configured</a></p></blockquote>
-
 <h2>Conclusion</h2>
 
 <p>It this first part we have created a <code>JustToDoIt</code> Rails application.</p>
@@ -471,7 +467,15 @@ configure the testing environment including:</p>
 <p>And for the end we setup the <em>Pry</em> to be a default for <em>Rails</em> console and commit the
 source to the <em>Github</em> repository <a href="https://github.com/xajler/just-todo-it">xajler/just-todo-it</a>.</p>
 
-<p>In second post we shall go with the creating the app logic in <em>TDD</em> manner!</p>
+<p>In second post we shall go with the creating the app logic in <em>TDD</em> way!</p>
+
+<h2>Code</h2>
+
+<p>The code is hosted on GitHub and can be cloned from the <a href="https://github.com/xajler/just-todo-it">xajler/just-todo-it</a>.</p>
+
+<blockquote><p>Github xajler/just-todo-it commit for this post:</p>
+
+<p><a href="https://github.com/xajler/just-todo-it/commit/e4517a6390f912850c63cc60085cbd57770d22ed">Initial Commit. Created initial Rails app, added all needed Gems, testing configured</a></p></blockquote>
 ]]></content>
   </entry>
   

@@ -4,7 +4,7 @@
   <title><![CDATA[Learn-a-holic Geek Notes]]></title>
   <link href="http://learnaholic.me/atom.xml" rel="self"/>
   <link href="http://learnaholic.me/"/>
-  <updated>2012-10-27T17:59:30+02:00</updated>
+  <updated>2012-11-05T13:15:54+01:00</updated>
   <id>http://learnaholic.me/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -12,6 +12,638 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Rails App from Scratch: User Validation]]></title>
+    <link href="http://learnaholic.me/2012/11/05/rails-app-from-scratch-user-validation/"/>
+    <updated>2012-11-05T13:30:00+01:00</updated>
+    <id>http://learnaholic.me/2012/11/05/rails-app-from-scratch-user-validation</id>
+    <content type="html"><![CDATA[<p>On the last post we&#8217;ve created a User Sign Up page and in this post we&#8217;ll continue to add
+some validation to the User to make sure that User is valid so it is safe to save or update
+User to the Database.</p>
+
+<h2>Validation</h2>
+
+<p>There are few rules that we&#8217;ve mention in last post about some validation logic:</p>
+
+<ul>
+<li><em>Email</em> - Required, Unique, valid email format and after creation it cannot be updated anymore or for short read-only.</li>
+<li><em>Password</em> - Required and at least 8 characters long.</li>
+<li><em>Full Name</em> - Required.</li>
+</ul>
+
+
+<h2>Validation for Required Attributes</h2>
+
+<p>We had one pending test up till now in <code>spec/models/user_spec.rb</code>. We will use this test
+file to set up the Validation for User in TDD way.</p>
+
+<p>First remove pending part generated on User Model:</p>
+
+<pre><code>pending "add some examples to (or delete) #{__FILE__}"
+</code></pre>
+
+<h3>User Factory</h3>
+
+<p>First lets create a Factory of User that we&#8217;ll use in tests. This will be a valid Model of User:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">FactoryGirl</span><span class="o">.</span><span class="n">define</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">factory</span> <span class="ss">:user</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">email</span> <span class="s1">&#39;xajler@gmail.com&#39;</span>
+</span><span class='line'>    <span class="n">password</span> <span class="s1">&#39;x1234567&#39;</span>
+</span><span class='line'>    <span class="n">password_confirmation</span> <span class="s1">&#39;x1234567&#39;</span>
+</span><span class='line'>    <span class="n">full_name</span> <span class="s1">&#39;Kornelije Sajler&#39;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>RSpec let and subject and Factory Girl build</h3>
+
+<p>Then we&#8217;ll learn some of RSpec and Factory Girl, but first add this beneath the <code>describe</code> block:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">let</span> <span class="ss">:user</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">build</span> <span class="ss">:user</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">subject</span> <span class="k">do</span>
+</span><span class='line'> <span class="n">user</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>RSpec <code>let</code> description borrowed from the RSpec documentation:</p>
+
+<blockquote><p>Use let to define a memoized helper method. The value will be cached across multiple calls in the same example but not across examples.</p>
+
+<p>Note that let is lazy-evaluated: it is not evaluated until the first time the method it defines is invoked. You can use let! to force the method&#8217;s invocation before each example.</p></blockquote>
+
+<p>RSpec <code>subject</code></p>
+
+<blockquote><p>Use subject in the group scope to explicitly define the value that is returned by the subject method in the example scope.</p></blockquote>
+
+<p>There is also used a Factory Girl <code>build</code> that returns a User instance that&#8217;s not saved, use <code>create</code>
+if it is mandatory that Model is saved to database before getting it in tests.</p>
+
+<h3>Required Fields Model Tests</h3>
+
+<p>The <code>email</code>, <code>password</code> and <code>full_name</code> are required so we create the RSpec <code>context</code> named
+<em>is invalid</em> and even though we should go one by one test for each attribute, for quickness we&#8217;ll
+do them at once:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">context</span> <span class="s1">&#39;is invalid&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">it</span> <span class="s1">&#39;when required #email is not given&#39;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">user</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+</span><span class='line'>    <span class="n">should_not</span> <span class="n">be_valid</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">it</span> <span class="s1">&#39;when required #password is not given&#39;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">user</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+</span><span class='line'>    <span class="n">should_not</span> <span class="n">be_valid</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">it</span> <span class="s1">&#39;when required #full_name is not given&#39;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">user</span><span class="o">.</span><span class="n">full_name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+</span><span class='line'>    <span class="n">should_not</span> <span class="n">be_valid</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<blockquote><p>Note:</p>
+
+<p>The <code>#</code> is used to denote the Ruby way of describing the <em>instance methods</em>, the <code>.</code> is
+used for the <em>class methods</em>!</p></blockquote>
+
+<p>The <code>should_not</code> can be used since we set a <code>subject</code> to be instance of User built from
+Factory Girl <code>:user</code> factory so the RSpec knows to what the <code>should_not</code> refers to.</p>
+
+<p>The <code>be_valid</code> method is a RSpec shorthand for the Rails <code>valid?</code> method that returns
+boolean hence the <code>?</code>, every Ruby method with <code>?</code> can be called in RSpec with <code>be_&lt;name_of_method&gt;</code>.</p>
+
+<p>The running tests should failing with message:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Failures</span><span class="p">:</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="mi">1</span><span class="p">)</span> <span class="no">User</span> <span class="n">is</span> <span class="n">invalid</span> <span class="k">when</span> <span class="n">required</span> <span class="c1">#full_name is not given</span>
+</span><span class='line'>     <span class="no">Failure</span><span class="o">/</span><span class="no">Error</span><span class="p">:</span> <span class="n">should_not</span> <span class="n">be_valid</span>
+</span><span class='line'>       <span class="n">expected</span> <span class="n">valid?</span> <span class="n">to</span> <span class="k">return</span> <span class="kp">false</span><span class="p">,</span> <span class="n">got</span> <span class="kp">true</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="mi">2</span><span class="p">)</span> <span class="no">User</span> <span class="n">is</span> <span class="n">invalid</span> <span class="k">when</span> <span class="n">required</span> <span class="c1">#email is not given</span>
+</span><span class='line'>     <span class="no">Failure</span><span class="o">/</span><span class="no">Error</span><span class="p">:</span> <span class="n">should_not</span> <span class="n">be_valid</span>
+</span><span class='line'>       <span class="n">expected</span> <span class="n">valid?</span> <span class="n">to</span> <span class="k">return</span> <span class="kp">false</span><span class="p">,</span> <span class="n">got</span> <span class="kp">true</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="mi">3</span><span class="p">)</span> <span class="no">User</span> <span class="n">is</span> <span class="n">invalid</span> <span class="k">when</span> <span class="n">required</span> <span class="c1">#password is not given</span>
+</span><span class='line'>     <span class="no">Failure</span><span class="o">/</span><span class="no">Error</span><span class="p">:</span> <span class="n">should_not</span> <span class="n">be_valid</span>
+</span><span class='line'>       <span class="n">expected</span> <span class="n">valid?</span> <span class="n">to</span> <span class="k">return</span> <span class="kp">false</span><span class="p">,</span> <span class="n">got</span> <span class="kp">true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>To make the test green, add the <code>validates presence</code> for all three required properties
+in the <code>app/models/user.rb</code>:</p>
+
+<figure class='code'><figcaption><span>app/models/user.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="n">has_secure_password</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">attr_accessible</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">:password</span><span class="p">,</span> <span class="ss">:password_confirmation</span><span class="p">,</span> <span class="ss">:full_name</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="n">presence</span><span class="p">:</span> <span class="kp">true</span>
+</span><span class='line'>  <span class="n">validates</span> <span class="ss">:password</span><span class="p">,</span> <span class="n">presence</span><span class="p">:</span> <span class="kp">true</span>
+</span><span class='line'>  <span class="n">validates</span> <span class="ss">:full_name</span><span class="p">,</span> <span class="n">presence</span><span class="p">:</span> <span class="kp">true</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The tests should all pass:</p>
+
+<pre><code>Finished in 0.81772 seconds
+5 examples, 0 failures
+</code></pre>
+
+<h2>Validation of Email Uniqueness</h2>
+
+<p>Another validation for <code>email</code> is that is need to be unique or there should not be two same
+<code>email</code>s stored in the database.</p>
+
+<p>Add the new <code>it</code> test to <code>spec/models/user_spec.rb</code> in <em>is invalid</em> <code>context</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">it</span> <span class="s1">&#39;when #email is not unique&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">user</span><span class="o">.</span><span class="n">save</span>
+</span><span class='line'>  <span class="n">user1</span> <span class="o">=</span> <span class="n">build</span> <span class="ss">:user</span>
+</span><span class='line'>  <span class="n">user1</span><span class="o">.</span><span class="n">save</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">user1</span><span class="o">.</span><span class="n">should_not</span> <span class="n">be_valid</span>
+</span><span class='line'>  <span class="n">user1</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">full_messages</span><span class="o">[</span><span class="mi">0</span><span class="o">].</span><span class="n">should</span> <span class="n">match</span> <span class="s1">&#39;Email has already been taken&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This test is little sketchy, firstly because there are two assertions and secondly of
+saving our <code>subject</code> User, then <code>build</code> identical User, store him to <code>user1</code> variable, and
+then try to save User to database.</p>
+
+<p>The second assertion is just to make sure that error is raised because of the <code>email</code> uniqueness.</p>
+
+<p>The failing message:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="mi">1</span><span class="p">)</span> <span class="no">User</span> <span class="n">is</span> <span class="n">invalid</span> <span class="k">when</span> <span class="c1">#email is not unique</span>
+</span><span class='line'>   <span class="no">Failure</span><span class="o">/</span><span class="no">Error</span><span class="p">:</span> <span class="n">user1</span><span class="o">.</span><span class="n">should_not</span> <span class="n">be_valid</span>
+</span><span class='line'>     <span class="n">expected</span> <span class="n">valid?</span> <span class="n">to</span> <span class="k">return</span> <span class="kp">false</span><span class="p">,</span> <span class="n">got</span> <span class="kp">true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So the only thing is for us to prevent having <code>email</code> stored to database more than once
+with <code>uniqueness</code> added to existing <code>email vaildates</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="n">presence</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="n">uniqueness</span><span class="p">:</span> <span class="kp">true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This should make the test green:</p>
+
+<pre><code>Finished in 0.8653 seconds
+6 examples, 0 failures
+</code></pre>
+
+<h2>Validation of Email format</h2>
+
+<p>Next there is need to make sure that the <code>email</code> format is valid. The <em>Regular Expression</em>
+is used to validate the <code>email</code> format.</p>
+
+<blockquote><p><strong>Note</strong>: There are better ways to do the complex Mail validation in Ruby or Rails, but it is out of scope of this simple app!</p></blockquote>
+
+<p>Add test below latest one, still in the <em>is invalid</em> <code>context</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">it</span> <span class="s1">&#39;when #email format is not valid&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">user</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="s1">&#39;invalid mail&#39;</span>
+</span><span class='line'>  <span class="n">should_not</span> <span class="n">be_valid</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The test should fail with message:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="mi">1</span><span class="p">)</span> <span class="no">User</span> <span class="n">is</span> <span class="n">invalid</span> <span class="k">when</span> <span class="c1">#email format is not valid</span>
+</span><span class='line'>   <span class="no">Failure</span><span class="o">/</span><span class="no">Error</span><span class="p">:</span> <span class="n">should_not</span> <span class="n">be_valid</span>
+</span><span class='line'>     <span class="n">expected</span> <span class="n">valid?</span> <span class="n">to</span> <span class="k">return</span> <span class="kp">false</span><span class="p">,</span> <span class="n">got</span> <span class="kp">true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>To fix it simple as possible add the <code>format</code> to <code>email validates</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="n">presence</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="n">uniqueness</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span>
+</span><span class='line'>          <span class="nb">format</span><span class="p">:</span> <span class="p">{</span> <span class="n">with</span><span class="p">:</span> <span class="sr">/\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/</span><span class="p">,</span>
+</span><span class='line'>                    <span class="n">message</span><span class="p">:</span> <span class="s1">&#39;The format of Email is invalid&#39;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This should make to pass the test:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="no">Finished</span> <span class="k">in</span> <span class="mi">1</span><span class="o">.</span><span class="mi">3</span> <span class="n">seconds</span>
+</span><span class='line'><span class="mi">7</span> <span class="n">examples</span><span class="p">,</span> <span class="mi">0</span> <span class="n">failures</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Validation of at least 8 chars for Password</h2>
+
+<p>The User entered <code>password</code> must be at least 8 characters.
+The <code>password</code> will also be simple as possible without checking that there are at least
+one number or symbol, but rather, just to have at least 8 characters!</p>
+
+<p>Add new test as last in <code>context</code> <em>is invalid</em>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">it</span> <span class="s1">&#39;when #password is not at least 8 characters&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">user</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="s1">&#39;abc123&#39;</span>
+</span><span class='line'>  <span class="n">should_not</span> <span class="n">be_valid</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The test should fail with message:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="mi">1</span><span class="p">)</span> <span class="no">User</span> <span class="n">is</span> <span class="n">invalid</span> <span class="k">when</span> <span class="c1">#password is not at least 8 characters</span>
+</span><span class='line'>   <span class="no">Failure</span><span class="o">/</span><span class="no">Error</span><span class="p">:</span> <span class="n">should_not</span> <span class="n">be_valid</span>
+</span><span class='line'>     <span class="n">expected</span> <span class="n">valid?</span> <span class="n">to</span> <span class="k">return</span> <span class="kp">false</span><span class="p">,</span> <span class="n">got</span> <span class="kp">true</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>To make test pass add the <code>length</code> to the <code>password validates</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">validates</span> <span class="ss">:password</span><span class="p">,</span> <span class="n">presence</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="n">length</span><span class="p">:</span> <span class="p">{</span> <span class="n">minimum</span><span class="p">:</span> <span class="mi">8</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The test should pass now:</p>
+
+<pre><code>Finished in 1.09 seconds
+8 examples, 0 failures
+</code></pre>
+
+<h2>The Email must be read-only</h2>
+
+<p>The <code>email</code> can only be set when is created and after saving to the database that <code>email</code>
+must not ever be possible to change.</p>
+
+<p>Outside of the <code>context</code> <em>is invalid</em> create the new <code>it</code> test:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">it</span> <span class="s1">&#39;#email must not ever change after it is created&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">user</span><span class="o">.</span><span class="n">save</span>
+</span><span class='line'>  <span class="n">user</span><span class="o">.</span><span class="n">update_attributes</span> <span class="n">email</span><span class="p">:</span> <span class="s1">&#39;ksajler@gmail.com&#39;</span>
+</span><span class='line'>  <span class="n">user</span><span class="o">.</span><span class="n">reload</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">should</span> <span class="n">eql</span> <span class="s1">&#39;xajler@gmail.com&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This test is a little bit weird, what it ensures that when attributes are updated and
+reloaded from the database, that the <code>email</code> is still same as when it was created even
+though is changed to new value.</p>
+
+<p>The test should fail with message:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="mi">1</span><span class="p">)</span> <span class="no">User</span><span class="c1">#email must not ever change after it is created</span>
+</span><span class='line'>   <span class="no">Failure</span><span class="o">/</span><span class="no">Error</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">reload</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">should</span> <span class="n">match</span> <span class="s1">&#39;xajler@gmail.com&#39;</span>
+</span><span class='line'>     <span class="n">expected</span> <span class="s2">&quot;ksajler@gmail.com&quot;</span> <span class="n">to</span> <span class="n">match</span> <span class="s2">&quot;xajler@gmail.com&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>To make sure that <code>email</code> is never changed after creation and all attempts to change the
+<code>email</code> will be silently ignored, use Rails <code>attr_readonly</code> for <code>email</code>.</p>
+
+<p>Then the <code>app/models/user.rb</code> should look like this:</p>
+
+<figure class='code'><figcaption><span>app/models/user</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+</span><span class='line'>  <span class="n">has_secure_password</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">attr_accessible</span> <span class="ss">:email</span><span class="p">,</span> <span class="ss">:password</span><span class="p">,</span> <span class="ss">:password_confirmation</span><span class="p">,</span> <span class="ss">:full_name</span>
+</span><span class='line'>  <span class="n">attr_readonly</span> <span class="ss">:email</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">validates</span> <span class="ss">:email</span><span class="p">,</span> <span class="n">presence</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="n">uniqueness</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span>
+</span><span class='line'>            <span class="nb">format</span><span class="p">:</span> <span class="p">{</span> <span class="n">with</span><span class="p">:</span> <span class="sr">/\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/</span><span class="p">,</span>
+</span><span class='line'>                      <span class="n">message</span><span class="p">:</span> <span class="s1">&#39;The format of Email is invalid&#39;</span><span class="p">}</span>
+</span><span class='line'>  <span class="n">validates</span> <span class="ss">:password</span><span class="p">,</span> <span class="n">presence</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="n">length</span><span class="p">:</span> <span class="p">{</span> <span class="n">minimum</span><span class="p">:</span> <span class="mi">8</span> <span class="p">}</span>
+</span><span class='line'>  <span class="n">validates</span> <span class="ss">:full_name</span><span class="p">,</span> <span class="n">presence</span><span class="p">:</span> <span class="kp">true</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And the test should pass:</p>
+
+<pre><code>Finished in 1.28 seconds
+9 examples, 0 failures
+</code></pre>
+
+<h2>Test that User is valid</h2>
+
+<p>We tested all invalid combinations of the User to make sure that the logic we wanted is
+implemented, now for sanity check we&#8217;ll add the test to make sure when all given is valid
+then the User should be valid and saving of the User can be executed.</p>
+
+<p>Add new test <code>is valid</code> and the whole <code>spec/models/user_spec.rb</code> should look like this:</p>
+
+<figure class='code'><figcaption><span>spec/models/user_spec.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;spec_helper&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">describe</span> <span class="no">User</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">let</span> <span class="ss">:user</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">build</span> <span class="ss">:user</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">subject</span> <span class="k">do</span>
+</span><span class='line'>   <span class="n">user</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">context</span> <span class="s1">&#39;is invalid&#39;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">it</span> <span class="s1">&#39;when required #email is not given&#39;</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">user</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+</span><span class='line'>      <span class="n">should_not</span> <span class="n">be_valid</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">it</span> <span class="s1">&#39;when required #password is not given&#39;</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">user</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+</span><span class='line'>      <span class="n">should_not</span> <span class="n">be_valid</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">it</span> <span class="s1">&#39;when required #full_name is not given&#39;</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">user</span><span class="o">.</span><span class="n">full_name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+</span><span class='line'>      <span class="n">should_not</span> <span class="n">be_valid</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">it</span> <span class="s1">&#39;when #email is not unique&#39;</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">user</span><span class="o">.</span><span class="n">save</span>
+</span><span class='line'>      <span class="n">user1</span> <span class="o">=</span> <span class="n">build</span> <span class="ss">:user</span>
+</span><span class='line'>      <span class="n">user1</span><span class="o">.</span><span class="n">save</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">user1</span><span class="o">.</span><span class="n">should_not</span> <span class="n">be_valid</span>
+</span><span class='line'>      <span class="n">user1</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">full_messages</span><span class="o">[</span><span class="mi">0</span><span class="o">].</span><span class="n">should</span> <span class="n">match</span> <span class="s1">&#39;Email has already been taken&#39;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">it</span> <span class="s1">&#39;when #email format is not valid&#39;</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">user</span><span class="o">.</span><span class="n">email</span> <span class="o">=</span> <span class="s1">&#39;invalid mail&#39;</span>
+</span><span class='line'>      <span class="n">should_not</span> <span class="n">be_valid</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">it</span> <span class="s1">&#39;when #password is not at least 8 characters&#39;</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">user</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="s1">&#39;abc123&#39;</span>
+</span><span class='line'>      <span class="n">should_not</span> <span class="n">be_valid</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">it</span> <span class="s1">&#39;#email must not ever change after it is created&#39;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">user</span><span class="o">.</span><span class="n">save</span>
+</span><span class='line'>    <span class="n">user</span><span class="o">.</span><span class="n">update_attributes</span> <span class="n">email</span><span class="p">:</span> <span class="s1">&#39;ksajler@gmail.com&#39;</span>
+</span><span class='line'>    <span class="n">user</span><span class="o">.</span><span class="n">reload</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">should</span> <span class="n">match</span> <span class="s1">&#39;xajler@gmail.com&#39;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">it</span> <span class="s1">&#39;is valid&#39;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">should</span> <span class="n">be_valid</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And all 10 tests, Integration and Model should pass:</p>
+
+<pre><code>Finished in 1.24 seconds
+10 examples, 0 failures
+</code></pre>
+
+<h2>Prettier RSpec Tests</h2>
+
+<p>By default the RSpec tests are represented as dots (<code>.</code>) if they are passed and <code>F</code> if they fail.</p>
+
+<p>To display <code>describe</code>, <code>context</code> and <code>it</code> titles while running RSpec, add <code>format</code> to
+<code>.rspec</code> file:</p>
+
+<figure class='code'><figcaption><span>.rspec</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>--color
+</span><span class='line'>--format documentation
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Run all test and the format of RSpec test should look like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>User
+</span><span class='line'>  #email must not ever change after it is created
+</span><span class='line'>  is valid
+</span><span class='line'>  is invalid
+</span><span class='line'>    when #password is not at least 8 characters
+</span><span class='line'>    when required #password is not given
+</span><span class='line'>    when #email format is not valid
+</span><span class='line'>    when required #full_name is not given
+</span><span class='line'>    when #email is not unique
+</span><span class='line'>    when required #email is not given
+</span><span class='line'>
+</span><span class='line'>Users
+</span><span class='line'>  GET /users/new
+</span><span class='line'>    displays the create new user page
+</span><span class='line'>  GET /signup
+</span><span class='line'>    displays the sign up page
+</span><span class='line'>
+</span><span class='line'>Finished in 1.81 seconds
+</span><span class='line'>10 examples, 0 failures
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Conclusion</h2>
+
+<p>This post was all about the Rails Validation, there are few interesting samples how to
+test Rails application. The TDD in this post is solely done on User Model instead of on
+request browser based testes done with <em>Capybara</em>.</p>
+
+<p>Now when we are sure that User Model validation logic is implemented and tested in next
+post, we will Save and Update User Views, Controller methods and create browser based
+test to make sure that User Model logic actually works in real usage!</p>
+
+<h2>Code</h2>
+
+<p>The code is hosted on GitHub and can be cloned from the <a href="https://github.com/xajler/just-todo-it">xajler/just-todo-it</a>.</p>
+
+<blockquote><p>Github xajler/just-todo-it commit for this post:</p>
+
+<p><a href="https://github.com/xajler/just-todo-it/commit/f2edd5551c915bba59b3aabb8c894325cf4f5414">Implemented User Model validation and tested in user_spec.rb, the tests using users factory.</a></p></blockquote>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Rails App from Scratch: User Sign Up page]]></title>
@@ -636,6 +1268,14 @@ better route name!</p>
 <p>This post intended to absorb whole authentication of user, but currently is just too long
 and I will stop here and in second post will introduce validation, saving and maybe yet
 in third post authenticating and updating user!</p>
+
+<h2>Code</h2>
+
+<p>The code is hosted on GitHub and can be cloned from the <a href="https://github.com/xajler/just-todo-it">xajler/just-todo-it</a>.</p>
+
+<blockquote><p>Github xajler/just-todo-it commit for this post:</p>
+
+<p><a href="https://github.com/xajler/just-todo-it/commit/7ee07ec64ca652f4840da8463ad3ce0d1efe64c6">Created User Controller, Model and View for Sign Up or Create User, created two integration tests, changed spec_helper due issues between the database_cleaner and sprok.</a></p></blockquote>
 ]]></content>
   </entry>
   
@@ -1223,10 +1863,6 @@ remote to the local repository:</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<blockquote><p>Github xajler/just-todo-it commit:</p>
-
-<p><a href="https://github.com/xajler/just-todo-it/commit/e4517a6390f912850c63cc60085cbd57770d22ed">Initial Commit. Created initial Rails app, added all needed Gems, testing configured</a></p></blockquote>
-
 <h2>Conclusion</h2>
 
 <p>It this first part we have created a <code>JustToDoIt</code> Rails application.</p>
@@ -1246,7 +1882,15 @@ configure the testing environment including:</p>
 <p>And for the end we setup the <em>Pry</em> to be a default for <em>Rails</em> console and commit the
 source to the <em>Github</em> repository <a href="https://github.com/xajler/just-todo-it">xajler/just-todo-it</a>.</p>
 
-<p>In second post we shall go with the creating the app logic in <em>TDD</em> manner!</p>
+<p>In second post we shall go with the creating the app logic in <em>TDD</em> way!</p>
+
+<h2>Code</h2>
+
+<p>The code is hosted on GitHub and can be cloned from the <a href="https://github.com/xajler/just-todo-it">xajler/just-todo-it</a>.</p>
+
+<blockquote><p>Github xajler/just-todo-it commit for this post:</p>
+
+<p><a href="https://github.com/xajler/just-todo-it/commit/e4517a6390f912850c63cc60085cbd57770d22ed">Initial Commit. Created initial Rails app, added all needed Gems, testing configured</a></p></blockquote>
 ]]></content>
   </entry>
   

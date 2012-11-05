@@ -4,7 +4,7 @@
   <title><![CDATA[Category: rspec | Learn-a-holic Geek Notes]]></title>
   <link href="http://learnaholic.me/categories/rspec/atom.xml" rel="self"/>
   <link href="http://learnaholic.me/"/>
-  <updated>2012-10-27T17:59:30+02:00</updated>
+  <updated>2012-11-05T13:15:54+01:00</updated>
   <id>http://learnaholic.me/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -12,6 +12,509 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Rails App from Scratch: User Validation]]></title>
+    <link href="http://learnaholic.me/2012/11/05/rails-app-from-scratch-user-validation/"/>
+    <updated>2012-11-05T13:30:00+01:00</updated>
+    <id>http://learnaholic.me/2012/11/05/rails-app-from-scratch-user-validation</id>
+    <content type="html"><![CDATA[<p>On the last post we've created a User Sign Up page and in this post we'll continue to add
+some validation to the User to make sure that User is valid so it is safe to save or update
+User to the Database.</p>
+
+<h2>Validation</h2>
+
+<p>There are few rules that we've mention in last post about some validation logic:</p>
+
+<ul>
+<li><em>Email</em> - Required, Unique, valid email format and after creation it cannot be updated anymore or for short read-only.</li>
+<li><em>Password</em> - Required and at least 8 characters long.</li>
+<li><em>Full Name</em> - Required.</li>
+</ul>
+
+
+<h2>Validation for Required Attributes</h2>
+
+<p>We had one pending test up till now in <code>spec/models/user_spec.rb</code>. We will use this test
+file to set up the Validation for User in TDD way.</p>
+
+<p>First remove pending part generated on User Model:</p>
+
+<pre><code>pending "add some examples to (or delete) #{__FILE__}"
+</code></pre>
+
+<h3>User Factory</h3>
+
+<p>First lets create a Factory of User that we'll use in tests. This will be a valid Model of User:</p>
+
+<p>```ruby
+FactoryGirl.define do
+  factory :user do</p>
+
+<pre><code>email 'xajler@gmail.com'
+password 'x1234567'
+password_confirmation 'x1234567'
+full_name 'Kornelije Sajler'
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<h3>RSpec let and subject and Factory Girl build</h3>
+
+<p>Then we'll learn some of RSpec and Factory Girl, but first add this beneath the <code>describe</code> block:</p>
+
+<p>```ruby
+let :user do
+  build :user
+end</p>
+
+<p>subject do
+ user
+end
+```</p>
+
+<p>RSpec <code>let</code> description borrowed from the RSpec documentation:</p>
+
+<blockquote><p>Use let to define a memoized helper method. The value will be cached across multiple calls in the same example but not across examples.</p>
+
+<p>Note that let is lazy-evaluated: it is not evaluated until the first time the method it defines is invoked. You can use let! to force the method's invocation before each example.</p></blockquote>
+
+<p>RSpec <code>subject</code></p>
+
+<blockquote><p>Use subject in the group scope to explicitly define the value that is returned by the subject method in the example scope.</p></blockquote>
+
+<p>There is also used a Factory Girl <code>build</code> that returns a User instance that's not saved, use <code>create</code>
+if it is mandatory that Model is saved to database before getting it in tests.</p>
+
+<h3>Required Fields Model Tests</h3>
+
+<p>The <code>email</code>, <code>password</code> and <code>full_name</code> are required so we create the RSpec <code>context</code> named
+<em>is invalid</em> and even though we should go one by one test for each attribute, for quickness we'll
+do them at once:</p>
+
+<p>```ruby
+context 'is invalid' do
+  it 'when required #email is not given' do</p>
+
+<pre><code>user.email = ''
+should_not be_valid
+</code></pre>
+
+<p>  end</p>
+
+<p>  it 'when required #password is not given' do</p>
+
+<pre><code>user.password = ''
+should_not be_valid
+</code></pre>
+
+<p>  end</p>
+
+<p>  it 'when required #full_name is not given' do</p>
+
+<pre><code>user.full_name = ''
+should_not be_valid
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<blockquote><p>Note:</p>
+
+<p>The <code>#</code> is used to denote the Ruby way of describing the <em>instance methods</em>, the <code>.</code> is
+used for the <em>class methods</em>!</p></blockquote>
+
+<p>The <code>should_not</code> can be used since we set a <code>subject</code> to be instance of User built from
+Factory Girl <code>:user</code> factory so the RSpec knows to what the <code>should_not</code> refers to.</p>
+
+<p>The <code>be_valid</code> method is a RSpec shorthand for the Rails <code>valid?</code> method that returns
+boolean hence the <code>?</code>, every Ruby method with <code>?</code> can be called in RSpec with <code>be_&lt;name_of_method&gt;</code>.</p>
+
+<p>The running tests should failing with message:</p>
+
+<p>```
+Failures:</p>
+
+<p>  1) User is invalid when required #full_name is not given</p>
+
+<pre><code> Failure/Error: should_not be_valid
+   expected valid? to return false, got true
+</code></pre>
+
+<p>  2) User is invalid when required #email is not given</p>
+
+<pre><code> Failure/Error: should_not be_valid
+   expected valid? to return false, got true
+</code></pre>
+
+<p>  3) User is invalid when required #password is not given</p>
+
+<pre><code> Failure/Error: should_not be_valid
+   expected valid? to return false, got true
+</code></pre>
+
+<p>```</p>
+
+<p>To make the test green, add the <code>validates presence</code> for all three required properties
+in the <code>app/models/user.rb</code>:</p>
+
+<p>```ruby app/models/user.rb
+class User &lt; ActiveRecord::Base
+  has_secure_password</p>
+
+<p>  attr_accessible :email, :password, :password_confirmation, :full_name</p>
+
+<p>  validates :email, presence: true
+  validates :password, presence: true
+  validates :full_name, presence: true
+end
+```</p>
+
+<p>The tests should all pass:</p>
+
+<pre><code>Finished in 0.81772 seconds
+5 examples, 0 failures
+</code></pre>
+
+<h2>Validation of Email Uniqueness</h2>
+
+<p>Another validation for <code>email</code> is that is need to be unique or there should not be two same
+<code>email</code>s stored in the database.</p>
+
+<p>Add the new <code>it</code> test to <code>spec/models/user_spec.rb</code> in <em>is invalid</em> <code>context</code>:</p>
+
+<p>```ruby
+it 'when #email is not unique' do
+  user.save
+  user1 = build :user
+  user1.save</p>
+
+<p>  user1.should_not be_valid
+  user1.errors.full_messages[0].should match 'Email has already been taken'
+end
+```</p>
+
+<p>This test is little sketchy, firstly because there are two assertions and secondly of
+saving our <code>subject</code> User, then <code>build</code> identical User, store him to <code>user1</code> variable, and
+then try to save User to database.</p>
+
+<p>The second assertion is just to make sure that error is raised because of the <code>email</code> uniqueness.</p>
+
+<p>The failing message:</p>
+
+<p>```
+1) User is invalid when #email is not unique
+   Failure/Error: user1.should_not be_valid</p>
+
+<pre><code> expected valid? to return false, got true
+</code></pre>
+
+<p>```</p>
+
+<p>So the only thing is for us to prevent having <code>email</code> stored to database more than once
+with <code>uniqueness</code> added to existing <code>email vaildates</code>:</p>
+
+<p><code>ruby
+validates :email, presence: true, uniqueness: true
+</code>
+This should make the test green:</p>
+
+<pre><code>Finished in 0.8653 seconds
+6 examples, 0 failures
+</code></pre>
+
+<h2>Validation of Email format</h2>
+
+<p>Next there is need to make sure that the <code>email</code> format is valid. The <em>Regular Expression</em>
+is used to validate the <code>email</code> format.</p>
+
+<blockquote><p><strong>Note</strong>: There are better ways to do the complex Mail validation in Ruby or Rails, but it is out of scope of this simple app!</p></blockquote>
+
+<p>Add test below latest one, still in the <em>is invalid</em> <code>context</code>:</p>
+
+<p><code>ruby
+it 'when #email format is not valid' do
+  user.email = 'invalid mail'
+  should_not be_valid
+end
+</code>
+The test should fail with message:</p>
+
+<p>```
+1) User is invalid when #email format is not valid
+   Failure/Error: should_not be_valid</p>
+
+<pre><code> expected valid? to return false, got true
+</code></pre>
+
+<p>```</p>
+
+<p>To fix it simple as possible add the <code>format</code> to <code>email validates</code>:</p>
+
+<p>```ruby
+validates :email, presence: true, uniqueness: true,</p>
+
+<pre><code>      format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/,
+                message: 'The format of Email is invalid'}
+</code></pre>
+
+<p>```</p>
+
+<p>This should make to pass the test:</p>
+
+<p><code>
+Finished in 1.3 seconds
+7 examples, 0 failures
+</code></p>
+
+<h2>Validation of at least 8 chars for Password</h2>
+
+<p>The User entered <code>password</code> must be at least 8 characters.
+The <code>password</code> will also be simple as possible without checking that there are at least
+one number or symbol, but rather, just to have at least 8 characters!</p>
+
+<p>Add new test as last in <code>context</code> <em>is invalid</em>:</p>
+
+<p><code>ruby
+it 'when #password is not at least 8 characters' do
+  user.password = 'abc123'
+  should_not be_valid
+end
+</code></p>
+
+<p>The test should fail with message:</p>
+
+<p>```
+1) User is invalid when #password is not at least 8 characters
+   Failure/Error: should_not be_valid</p>
+
+<pre><code> expected valid? to return false, got true
+</code></pre>
+
+<p>```</p>
+
+<p>To make test pass add the <code>length</code> to the <code>password validates</code>:</p>
+
+<p><code>ruby
+validates :password, presence: true, length: { minimum: 8 }
+</code></p>
+
+<p>The test should pass now:</p>
+
+<pre><code>Finished in 1.09 seconds
+8 examples, 0 failures
+</code></pre>
+
+<h2>The Email must be read-only</h2>
+
+<p>The <code>email</code> can only be set when is created and after saving to the database that <code>email</code>
+must not ever be possible to change.</p>
+
+<p>Outside of the <code>context</code> <em>is invalid</em> create the new <code>it</code> test:</p>
+
+<p><code>ruby
+it '#email must not ever change after it is created' do
+  user.save
+  user.update_attributes email: 'ksajler@gmail.com'
+  user.reload.email.should eql 'xajler@gmail.com'
+end
+</code></p>
+
+<p>This test is a little bit weird, what it ensures that when attributes are updated and
+reloaded from the database, that the <code>email</code> is still same as when it was created even
+though is changed to new value.</p>
+
+<p>The test should fail with message:</p>
+
+<p>```
+1) User#email must not ever change after it is created
+   Failure/Error: user.reload.email.should match 'xajler@gmail.com'</p>
+
+<pre><code> expected "ksajler@gmail.com" to match "xajler@gmail.com"
+</code></pre>
+
+<p>```</p>
+
+<p>To make sure that <code>email</code> is never changed after creation and all attempts to change the
+<code>email</code> will be silently ignored, use Rails <code>attr_readonly</code> for <code>email</code>.</p>
+
+<p>Then the <code>app/models/user.rb</code> should look like this:</p>
+
+<p>```ruby app/models/user
+class User &lt; ActiveRecord::Base
+  has_secure_password</p>
+
+<p>  attr_accessible :email, :password, :password_confirmation, :full_name
+  attr_readonly :email</p>
+
+<p>  validates :email, presence: true, uniqueness: true,</p>
+
+<pre><code>        format: { with: /\A[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+\z/,
+                  message: 'The format of Email is invalid'}
+</code></pre>
+
+<p>  validates :password, presence: true, length: { minimum: 8 }
+  validates :full_name, presence: true
+end
+```</p>
+
+<p>And the test should pass:</p>
+
+<pre><code>Finished in 1.28 seconds
+9 examples, 0 failures
+</code></pre>
+
+<h2>Test that User is valid</h2>
+
+<p>We tested all invalid combinations of the User to make sure that the logic we wanted is
+implemented, now for sanity check we'll add the test to make sure when all given is valid
+then the User should be valid and saving of the User can be executed.</p>
+
+<p>Add new test <code>is valid</code> and the whole <code>spec/models/user_spec.rb</code> should look like this:</p>
+
+<p>```ruby spec/models/user_spec.rb
+require 'spec_helper'</p>
+
+<p>describe User do
+  let :user do</p>
+
+<pre><code>build :user
+</code></pre>
+
+<p>  end</p>
+
+<p>  subject do
+   user
+  end</p>
+
+<p>  context 'is invalid' do</p>
+
+<pre><code>it 'when required #email is not given' do
+  user.email = ''
+  should_not be_valid
+end
+
+it 'when required #password is not given' do
+  user.password = ''
+  should_not be_valid
+end
+
+it 'when required #full_name is not given' do
+  user.full_name = ''
+  should_not be_valid
+end
+
+it 'when #email is not unique' do
+  user.save
+  user1 = build :user
+  user1.save
+
+  user1.should_not be_valid
+  user1.errors.full_messages[0].should match 'Email has already been taken'
+end
+
+it 'when #email format is not valid' do
+  user.email = 'invalid mail'
+  should_not be_valid
+end
+
+it 'when #password is not at least 8 characters' do
+  user.password = 'abc123'
+  should_not be_valid
+end
+</code></pre>
+
+<p>  end</p>
+
+<p>  it '#email must not ever change after it is created' do</p>
+
+<pre><code>user.save
+user.update_attributes email: 'ksajler@gmail.com'
+user.reload.email.should match 'xajler@gmail.com'
+</code></pre>
+
+<p>  end</p>
+
+<p>  it 'is valid' do</p>
+
+<pre><code>should be_valid
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>And all 10 tests, Integration and Model should pass:</p>
+
+<pre><code>Finished in 1.24 seconds
+10 examples, 0 failures
+</code></pre>
+
+<h2>Prettier RSpec Tests</h2>
+
+<p>By default the RSpec tests are represented as dots (<code>.</code>) if they are passed and <code>F</code> if they fail.</p>
+
+<p>To display <code>describe</code>, <code>context</code> and <code>it</code> titles while running RSpec, add <code>format</code> to
+<code>.rspec</code> file:</p>
+
+<p><code>text .rspec
+--color
+--format documentation
+</code></p>
+
+<p>Run all test and the format of RSpec test should look like this:</p>
+
+<p>```text
+User
+  #email must not ever change after it is created
+  is valid
+  is invalid</p>
+
+<pre><code>when #password is not at least 8 characters
+when required #password is not given
+when #email format is not valid
+when required #full_name is not given
+when #email is not unique
+when required #email is not given
+</code></pre>
+
+<p>Users
+  GET /users/new</p>
+
+<pre><code>displays the create new user page
+</code></pre>
+
+<p>  GET /signup</p>
+
+<pre><code>displays the sign up page
+</code></pre>
+
+<p>Finished in 1.81 seconds
+10 examples, 0 failures
+```</p>
+
+<h2>Conclusion</h2>
+
+<p>This post was all about the Rails Validation, there are few interesting samples how to
+test Rails application. The TDD in this post is solely done on User Model instead of on
+request browser based testes done with <em>Capybara</em>.</p>
+
+<p>Now when we are sure that User Model validation logic is implemented and tested in next
+post, we will Save and Update User Views, Controller methods and create browser based
+test to make sure that User Model logic actually works in real usage!</p>
+
+<h2>Code</h2>
+
+<p>The code is hosted on GitHub and can be cloned from the <a href="https://github.com/xajler/just-todo-it">xajler/just-todo-it</a>.</p>
+
+<blockquote><p>Github xajler/just-todo-it commit for this post:</p>
+
+<p><a href="https://github.com/xajler/just-todo-it/commit/f2edd5551c915bba59b3aabb8c894325cf4f5414">Implemented User Model validation and tested in user_spec.rb, the tests using users factory.</a></p></blockquote>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Rails App from Scratch: User Sign Up page]]></title>
@@ -493,6 +996,14 @@ end
 <p>This post intended to absorb whole authentication of user, but currently is just too long
 and I will stop here and in second post will introduce validation, saving and maybe yet
 in third post authenticating and updating user!</p>
+
+<h2>Code</h2>
+
+<p>The code is hosted on GitHub and can be cloned from the <a href="https://github.com/xajler/just-todo-it">xajler/just-todo-it</a>.</p>
+
+<blockquote><p>Github xajler/just-todo-it commit for this post:</p>
+
+<p><a href="https://github.com/xajler/just-todo-it/commit/7ee07ec64ca652f4840da8463ad3ce0d1efe64c6">Created User Controller, Model and View for Sign Up or Create User, created two integration tests, changed spec_helper due issues between the database_cleaner and sprok.</a></p></blockquote>
 ]]></content>
   </entry>
   
@@ -931,10 +1442,6 @@ To git@github.com:xajler/just-todo-it.git
 Branch master set up to track remote branch master from origin.
 </code></p>
 
-<blockquote><p>Github xajler/just-todo-it commit:</p>
-
-<p><a href="https://github.com/xajler/just-todo-it/commit/e4517a6390f912850c63cc60085cbd57770d22ed">Initial Commit. Created initial Rails app, added all needed Gems, testing configured</a></p></blockquote>
-
 <h2>Conclusion</h2>
 
 <p>It this first part we have created a <code>JustToDoIt</code> Rails application.</p>
@@ -954,7 +1461,15 @@ configure the testing environment including:</p>
 <p>And for the end we setup the <em>Pry</em> to be a default for <em>Rails</em> console and commit the
 source to the <em>Github</em> repository <a href="https://github.com/xajler/just-todo-it">xajler/just-todo-it</a>.</p>
 
-<p>In second post we shall go with the creating the app logic in <em>TDD</em> manner!</p>
+<p>In second post we shall go with the creating the app logic in <em>TDD</em> way!</p>
+
+<h2>Code</h2>
+
+<p>The code is hosted on GitHub and can be cloned from the <a href="https://github.com/xajler/just-todo-it">xajler/just-todo-it</a>.</p>
+
+<blockquote><p>Github xajler/just-todo-it commit for this post:</p>
+
+<p><a href="https://github.com/xajler/just-todo-it/commit/e4517a6390f912850c63cc60085cbd57770d22ed">Initial Commit. Created initial Rails app, added all needed Gems, testing configured</a></p></blockquote>
 ]]></content>
   </entry>
   
