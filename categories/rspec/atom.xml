@@ -4,7 +4,7 @@
   <title><![CDATA[Category: rspec | Learn-a-holic Geek Notes]]></title>
   <link href="http://learnaholic.me/categories/rspec/atom.xml" rel="self"/>
   <link href="http://learnaholic.me/"/>
-  <updated>2012-11-05T13:15:54+01:00</updated>
+  <updated>2012-11-08T01:21:41+01:00</updated>
   <id>http://learnaholic.me/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -12,6 +12,852 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Rails App from Scratch: User Save and Update]]></title>
+    <link href="http://learnaholic.me/2012/11/06/rails-app-from-scratch-user-save-and-update/"/>
+    <updated>2012-11-06T23:33:00+01:00</updated>
+    <id>http://learnaholic.me/2012/11/06/rails-app-from-scratch-user-save-and-update</id>
+    <content type="html"><![CDATA[<p>After we implemented logic around User attributes, it is time to finally save and update
+the User to the database.</p>
+
+<p>But first, we shall change a mistake from the post on creating Sign Up page, the <code>password</code>
+fields in the View are set as normal text. We shall make sure that it is a password field!</p>
+
+<p>Change the <code>text_field</code> to <code>password_field</code> in <code>app/views/users/_form.html.haml</code>:</p>
+
+<p>```haml
+= f.label :password, 'Password:'
+= f.password_field :password
+%br</p>
+
+<p>= f.label :password_confirmation, 'Confirm Password:'
+= f.password_field :password_confirmation
+%br
+```</p>
+
+<h2>Saving Valid User Test</h2>
+
+<p>Now when the password fields are fixed, lets create a test to save a Valid User to the
+database.</p>
+
+<p>Create a new <code>context</code> for <code>POST</code> in <code>spec/requests/users_spec.rb</code>:</p>
+
+<p>```ruby
+context 'POST /users' do
+  it 'creates and saves the valid user' do</p>
+
+<pre><code>visit new_user_path
+
+fill_in 'Email', with: 'xajler@gmail.com'
+fill_in 'Password', with: 'x1234567'
+fill_in 'Confirm Password', with: 'x1234567'
+fill_in 'Full Name', with: 'Kornelije Sajler'
+click_button 'Sign Up'
+
+current_path.should == signup_path
+page.should have_content 'The User is successfully saved!'
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>The test is pretty simple, we fill up the form with data, click 'Sign Up' button, and
+expect to be redirected again to "Sign Up" page (in new post when we create a Login page
+the <code>create</code> action will be redirecting to it!) and we expect that the flash notice will show that
+User is successfully saved.</p>
+
+<p>The test should fail on the clicking the <em>Sign Up</em> button, because there is no <code>create</code>
+action in <code>UsersController</code>:</p>
+
+<p>```
+1) Users POST /users creates and saves the valid user
+   Failure/Error: click_button 'Sign Up'
+   AbstractController::ActionNotFound:</p>
+
+<pre><code> The action 'create' could not be found for UsersController
+</code></pre>
+
+<p>```</p>
+
+<p>So to pass this test we need to add a <code>create</code> method to the <code>UsersController</code>:</p>
+
+<p>```ruby
+def create
+  @user = User.new params[:user]</p>
+
+<p>  if @user.save</p>
+
+<pre><code>flash[:notice] = 'The User is successfully saved!'
+redirect_to signup_path
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>The test should pass:</p>
+
+<pre><code>Finished in 1.37 seconds
+11 examples, 0 failures
+</code></pre>
+
+<p>The happy path is working, now lets test all the possible ways the Sign Up might go wrong!</p>
+
+<h2>Invalid User Tests</h2>
+
+<h3>Password Confirmation</h3>
+
+<p>Lets first check <code>password</code>s matching is working, by applying the two different passwords.
+We shall crate the new <code>context</code> inside <code>POST /users</code> <code>context</code> and call it "<em>not saving invalid user</em>":</p>
+
+<p>```ruby
+context 'not saving invalid user' do
+  it 'when passwords mismatch' do</p>
+
+<pre><code>visit new_user_path
+
+fill_in 'Email', with: 'xajler@gmail.com'
+fill_in 'Password', with: 'x1234567'
+fill_in 'Confirm Password', with: 'x123'
+fill_in 'Full Name', with: 'Kornelije Sajler'
+click_button 'Sign Up'
+
+current_path.should == signup_path
+page.should have_content 'The User is successfully saved!'
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>After running test we shall get odd message that there is no View Template for <code>create</code>.</p>
+
+<p>```
+1) Users POST /users not saving invalid user when passwords mismatch
+   Failure/Error: click_button 'Sign Up'
+   ActionView::MissingTemplate:</p>
+
+<pre><code> Missing template users/create, application/create with {:locale=&gt;[:en], :formats=&gt;[:html], :handlers=&gt;[:erb, :builder, :coffee, :haml]}. Searched in:
+   * "/Users/xajler/src/rb/just-todo-it/app/views"
+</code></pre>
+
+<p>```</p>
+
+<p>We don't need a new View Templet but rather change the <code>UserController</code> method <code>create</code>
+to do something if the user is not saved. And when is not saved we shall flash an error message:</p>
+
+<p>```ruby
+def create
+  @user = User.new params[:user]</p>
+
+<p>  if @user.save</p>
+
+<pre><code>flash[:notice] = 'The User is successfully saved!'
+redirect_to signup_path
+</code></pre>
+
+<p>  else</p>
+
+<pre><code>flash[:error] = @user.errors.full_messages[0]
+redirect_to signup_path
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>After applying the given code, the test should pass:</p>
+
+<pre><code>Finished in 1.54 seconds
+12 examples, 0 failures
+</code></pre>
+
+<p>We this code applied we also satisfy the tests that are yet to come, but we still need
+tests to prove that <code>create</code> method is working!</p>
+
+<h3>Required Fields</h3>
+
+<p>We have three required fields:</p>
+
+<ul>
+<li><code>email</code></li>
+<li><code>password</code></li>
+<li><code>full_name</code></li>
+</ul>
+
+
+<p>Lets write three more test, they should all be green since the implementation is written
+to satisfy the previous test.</p>
+
+<p>We will add them to the "<em>not saving invalid user</em>" <code>context</code> below the latest test:</p>
+
+<p>```ruby
+it 'when email is blank' do
+  visit new_user_path</p>
+
+<p>  fill_in 'Email', with: ''
+  fill_in 'Password', with: 'x1234567'
+  fill_in 'Confirm Password', with: 'x1234567'
+  fill_in 'Full Name', with: 'Kornelije Sajler'
+  click_button 'Sign Up'</p>
+
+<p>  current_path.should == signup_path
+  page.should have_content "Email can't be blank"
+end</p>
+
+<p>it 'when password is blank' do
+  visit new_user_path</p>
+
+<p>  fill_in 'Email', with: 'xajler@gmail.com'
+  fill_in 'Password', with: ''
+  fill_in 'Confirm Password', with: ''
+  fill_in 'Full Name', with: 'Kornelije Sajler'
+  click_button 'Sign Up'</p>
+
+<p>  current_path.should == signup_path
+  page.should have_content "Password digest can't be blank"
+end</p>
+
+<p>it 'when full name is blank' do
+  visit new_user_path</p>
+
+<p>  fill_in 'Email', with: 'xajler@gmail.com'
+  fill_in 'Password', with: 'x1234567'
+  fill_in 'Confirm Password', with: 'x1234567'
+  fill_in 'Full Name', with: ''
+  click_button 'Sign Up'</p>
+
+<p>  current_path.should == signup_path
+  page.should have_content "Full name can't be blank"
+end
+```</p>
+
+<p>And if all was OK then all tests should pass:</p>
+
+<pre><code>Finished in 1.79 seconds
+15 examples, 0 failures
+</code></pre>
+
+<h3>Email Uniqueness</h3>
+
+<p>The saving User with entered existing <code>email</code> should fail. Lets create the test to prove
+it:</p>
+
+<p>```ruby
+it 'when email is not unique' do
+  create :user
+  visit new_user_path</p>
+
+<p>  fill_in 'Email', with: 'xajler@gmail.com'
+  fill_in 'Password', with: 'x1234567'
+  fill_in 'Confirm Password', with: 'x1234567'
+  fill_in 'Full Name', with: 'Kornelije Sajler'
+  click_button 'Sign Up'</p>
+
+<p>  current_path.should == signup_path
+  page.should have_content 'Email has already been taken'
+end
+```</p>
+
+<p>So, first we insert User from our created factory via <em>Factory Girl</em>. The factory of User
+inserted has the same email that we try to save it from the form.</p>
+
+<p>The test should pass, because the code is implemented:</p>
+
+<pre><code>Finished in 2.02 seconds
+16 examples, 0 failures
+</code></pre>
+
+<h3>Password with at least 8 characters</h3>
+
+<p>The User cannot be saved if both passwords length is at least 8 characters long:</p>
+
+<p>```ruby
+it 'when password is less than 8 characters' do
+  visit new_user_path</p>
+
+<p>  fill_in 'Email', with: 'xajler@gmail.com'
+  fill_in 'Password', with: '123'
+  fill_in 'Confirm Password', with: '123'
+  fill_in 'Full Name', with: 'Kornelije Sajler'
+  click_button 'Sign Up'</p>
+
+<p>  current_path.should == signup_path
+  page.should have_content "Password is too short (minimum is 8 characters)"
+end
+```</p>
+
+<p>This was easy, all tests should pass still:</p>
+
+<pre><code>Finished in 2.07 seconds
+17 examples, 0 failures
+</code></pre>
+
+<blockquote><p>Note:</p>
+
+<p>If you using <em>Guard</em> as I do, for running test, you may need to enter <code>r</code> command to
+<em>Guard</em> console to reload all, only if your tests are passing and they should not be or vice versa!</p></blockquote>
+
+<p>And with this test we have test for all User Create problems, now we'll add test for User Update.</p>
+
+<h2>Valid Update Test</h2>
+
+<p>Essentially, the valid update only lets to change User <code>password</code> and <code>full_name</code>. Create
+new <code>context</code> called "<em>PUT users/:id</em>" and new <code>it</code> block "<em>valid user update</em>":</p>
+
+<p>```ruby
+context 'PUT users/:id' do
+  it 'valid user update' do</p>
+
+<pre><code>user = create :user
+visit edit_user_path user
+
+find_field('Email').value.should == 'xajler@gmail.com'
+find_field('Full Name').value.should == 'Kornelije Sajler'
+
+fill_in 'Email', with: 'xajler@gmail.com'
+fill_in 'Password', with: 'aoeuidht'
+fill_in 'Confirm Password', with: 'aoeuidht'
+fill_in 'Full Name', with: 'Kornelije Sajler - xajler'
+click_button 'Update User'
+
+current_path.should == edit_user_path(user)
+page.should have_content 'The User is successfully updated!'
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>First we create a User from factory and save it as variable, because we are simulating edit,
+so we need the User id when we want to edit him. This is why we pass the <code>user</code> variable to the
+<code>edit_user_path</code>.</p>
+
+<p>Before we fill in the Update User Form we shall test it if the Form fields are actually binded with
+data from User that will be updated.</p>
+
+<p>OK, same thing as for new/create it will fail, first, because there is no method <code>edit</code> in
+<code>UsersController</code>.</p>
+
+<p>```
+1) Users POST /users PUT users/:id valid user update
+   Failure/Error: visit edit_user_path #user
+   ActionController::RoutingError:</p>
+
+<pre><code> No route matches {:action=&gt;"edit", :controller=&gt;"users"}
+</code></pre>
+
+<p>```</p>
+
+<p>To pass this error lets create the <code>edit</code> method:</p>
+
+<p><code>ruby
+def edit
+  @user = User.find params[:id]
+end
+</code></p>
+
+<p>So we need the User to get him from the given <em>params id</em> so that we can have it in
+instance variable <code>@user</code> and share it to the View and then fill the form with existing
+User data.</p>
+
+<p>The test should still fail, because there is no edit View Template:</p>
+
+<p>```
+1) Users POST /users PUT users/:id valid user update
+   Failure/Error: visit edit_user_path user
+   ActionView::MissingTemplate:</p>
+
+<pre><code> Missing template users/edit, application/edit with {:locale=&gt;[:en], :formats=&gt;[:html], :handlers=&gt;[:erb, :builder, :coffee, :haml]}. Searched in:
+   * "/Users/xajler/src/rb/just-todo-it/app/views"
+</code></pre>
+
+<p>```</p>
+
+<p>Long time ago when we are creating View Template for Sign Up we've created <code>new.html.haml</code>
+and also separated form to partial <code>_form.html.haml</code> so it can be shared witd edit View.</p>
+
+<p>Lets create <code>edit.html.haml</code> View page that calls the Form partial and passing to it the
+<code>@user</code> so that the Form will display User data:</p>
+
+<p>```haml
+%h1 Update User</p>
+
+<p>= render partial: 'form', locals: { user: @user }
+```</p>
+
+<p>The test will fail because there is no button "Update User", and this is because we hard-coded
+the "Sign Up" text to submit element in the form partial <code>_form.html.haml</code>. We will fix
+not very pretty but it will work:</p>
+
+<p>Change <code>submit</code> in <code>_form.html.haml</code> from:</p>
+
+<p><code>haml
+= f.submit 'Sign Up'
+</code>
+To:</p>
+
+<p><code>haml
+= f.submit @user.id ? 'Update User' : 'Sign Up'
+</code></p>
+
+<p>The test should still fail because we are after all trying to update, and there in no
+<code>update</code> method it <code>UsersController</code>:</p>
+
+<p>```
+1) Users POST /users PUT users/:id valid user update
+   Failure/Error: click_button 'Update User'
+   AbstractController::ActionNotFound:</p>
+
+<pre><code> The action 'update' could not be found for UsersController
+</code></pre>
+
+<p>```</p>
+
+<p>So, we shall impelment the <code>update</code> method for the <code>UsersController</code>:</p>
+
+<p>```ruby
+def update
+  @user = User.find params[:id]</p>
+
+<p>  if @user.update_attributes params[:user]</p>
+
+<pre><code>flash[:notice] = 'The User is successfully updated!'
+redirect_to edit_user_path
+</code></pre>
+
+<p>  else</p>
+
+<pre><code>  flash[:error] = @user.errors.full_messages[0]
+  redirect_to signup_path
+</code></pre>
+
+<p>  end
+end
+```
+I</p>
+
+<p>And at last the test is passing:</p>
+
+<pre><code>Finished in 2.3 seconds
+18 examples, 0 failures
+</code></pre>
+
+<p>The only problem here is that to Update User the <code>password</code>s needed to be entered every
+time. There are better solutions, like, if they are blank to ignore them on update instead
+right now, it will be validated. And blank password is not allowed!</p>
+
+<h2>Password Mismatch</h2>
+
+<p>We will not try all the tests that we tried for User Sign Up, but only one. If you remember,
+this was the only test that was needed a code, others were just a proof of existing code,
+that is more about User Model than actual User View, but we've needed to run them all to
+ensure that flash messages are proper and expected.</p>
+
+<p>```ruby
+it 'invalid when passwords mismatch' do
+  user = create :user
+  visit edit_user_path user</p>
+
+<p>  fill_in 'Email', with: 'xajler@gmail.com'
+  fill_in 'Password', with: 'aoeuidht'
+  fill_in 'Confirm Password', with: 'aoeu'
+  fill_in 'Full Name', with: 'Kornelije Sajler'
+  click_button 'Update User'</p>
+
+<p>  current_path.should == edit_user_path(user)
+  page.should have_content "Password doesn't match confirmation"
+end
+```</p>
+
+<p>And the test fails, complaining about View, but actually we need the code in Controller,
+to send message of what went wrong to User Update Form:</p>
+
+<p>```ruby
+def update
+  @user = User.find params[:id]</p>
+
+<p>  if @user.update_attributes params[:user]</p>
+
+<pre><code>flash[:notice] = 'The User is successfully updated!'
+redirect_to edit_user_path
+</code></pre>
+
+<p>  else</p>
+
+<pre><code>  flash[:error] = @user.errors.full_messages[0]
+  redirect_to edit_user_path
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>After adding the else clause to <code>update</code> method that handles all errors, the test
+should pass:</p>
+
+<pre><code>Finished in 2.6 seconds
+19 examples, 0 failures
+</code></pre>
+
+<h2>Ensure Email is not changed after User creation</h2>
+
+<p>The only test that is left is to ensure that <code>email</code> given on create should never ever
+be possible to change!</p>
+
+<p>In this test we shall try to change the email of existing User and it needs to be the same
+after update, even though the <code>email</code> sent to update is quite different from the one when
+User is created:</p>
+
+<p>```ruby
+it 'keeps the User Email intact while other fields do change' do
+  user = create :user
+  visit edit_user_path user</p>
+
+<p>  find_field('Email').value.should == 'xajler@gmail.com'
+  find_field('Full Name').value.should == 'Kornelije Sajler'</p>
+
+<p>  fill_in 'Email', with: 'xxx@example.com'
+  fill_in 'Password', with: 'aoeuidht'
+  fill_in 'Confirm Password', with: 'aoeuidht'
+  fill_in 'Full Name', with: 'Kornelije Sajler - xajler'
+  click_button 'Update User'</p>
+
+<p>  current_path.should == edit_user_path(user)
+  find_field('Email').value.should == 'xajler@gmail.com'
+  find_field('Full Name').value.should == 'Kornelije Sajler - xajler'
+end
+```</p>
+
+<p>The above test ensures that the <code>email</code> after creation will stay intact, while other fields
+will change, there will be no errors having different <code>email</code>. The <code>email</code> for update will
+be silently ignored.</p>
+
+<p>And now all 20 test should pass, and we use RSpec format to show them all:</p>
+
+<p>```text
+User
+  #email must not ever change after it is created
+  is valid
+  is invalid</p>
+
+<pre><code>when required #email is not given
+when #email format is not valid
+when #email is not unique
+when required #full_name is not given
+when required #password is not given
+when #password is not at least 8 characters
+</code></pre>
+
+<p>Users
+  GET /signup</p>
+
+<pre><code>displays the sign up page
+</code></pre>
+
+<p>  PUT users/:id</p>
+
+<pre><code>valid user update
+invalid when passwords mismatch
+keeps the User Email intact while other fields do change
+</code></pre>
+
+<p>  POST /users</p>
+
+<pre><code>creates and saves the valid user
+not saving invalid user
+  when passwords mismatch
+  when email is not unique
+  when full name is blank
+  when password is blank
+  when email is blank
+  when password is less than 8 characters
+</code></pre>
+
+<p>  GET /users/new</p>
+
+<pre><code>displays the create new user page
+</code></pre>
+
+<p>Finished in 2.86 seconds
+20 examples, 0 failures
+```</p>
+
+<h2>Users Controller</h2>
+
+<p>The whole Users Controller <code>app/controllers/users_controllers.rb</code> after this post should look like this:</p>
+
+<p>```ruby app/controllers/users_controllers.rb
+class UsersController &lt; ApplicationController
+  def new</p>
+
+<pre><code>@user = User.new
+</code></pre>
+
+<p>  end</p>
+
+<p>  def create</p>
+
+<pre><code>@user = User.new params[:user]
+
+if @user.save
+  flash[:notice] = 'The User is successfully saved!'
+  redirect_to signup_path
+else
+  flash[:error] = @user.errors.full_messages[0]
+  redirect_to signup_path
+end
+</code></pre>
+
+<p>  end</p>
+
+<p>  def edit</p>
+
+<pre><code>@user = User.find params[:id]
+</code></pre>
+
+<p>  end</p>
+
+<p>  def update</p>
+
+<pre><code>@user = User.find params[:id]
+
+if @user.update_attributes params[:user]
+  flash[:notice] = 'The User is successfully updated!'
+  redirect_to edit_user_path
+else
+    flash[:error] = @user.errors.full_messages[0]
+    redirect_to edit_user_path
+end
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<h2>Users Request Spec (Tests)</h2>
+
+<p>The whole Users Request Spec <code>spec/requests/users_spec.rb</code> after this post should look like this:</p>
+
+<p>```ruby spec/requests/users_spec.rb
+require 'spec_helper'</p>
+
+<p>describe 'Users' do
+  context 'GET /users/new' do</p>
+
+<pre><code>it 'displays the create new user page' do
+  visit new_user_path
+
+  page.should have_content 'Email'
+  page.should have_content 'Full Name'
+  page.should have_content 'Password'
+  page.should have_content 'Confirm Password'
+  page.has_field? 'email'
+  page.has_field? 'full_name'
+  page.has_field? 'password'
+  page.has_field? 'password_confirmation'
+  page.has_button? 'Sign Up'
+end
+</code></pre>
+
+<p>  end</p>
+
+<p>  context 'GET /signup' do</p>
+
+<pre><code>it 'displays the sign up page' do
+  visit signup_path
+
+  page.should have_content 'Email'
+  page.should have_content 'Full Name'
+  page.should have_content 'Password'
+  page.should have_content 'Confirm Password'
+  page.has_field? 'email'
+  page.has_field? 'full_name'
+  page.has_field? 'password'
+  page.has_field? 'password_confirmation'
+  page.has_button? 'Sign Up'
+end
+</code></pre>
+
+<p>  end</p>
+
+<p>  context 'POST /users' do</p>
+
+<pre><code>it 'creates and saves the valid user' do
+  visit new_user_path
+
+  fill_in 'Email', with: 'xajler@gmail.com'
+  fill_in 'Password', with: 'x1234567'
+  fill_in 'Confirm Password', with: 'x1234567'
+  fill_in 'Full Name', with: 'Kornelije Sajler'
+  click_button 'Sign Up'
+
+  current_path.should == signup_path
+  page.should have_content 'The User is successfully saved!'
+end
+
+context 'not saving invalid user' do
+  it 'when passwords mismatch' do
+    visit new_user_path
+
+    fill_in 'Email', with: 'xajler@gmail.com'
+    fill_in 'Password', with: 'x1234567'
+    fill_in 'Confirm Password', with: 'x123'
+    fill_in 'Full Name', with: 'Kornelije Sajler'
+    click_button 'Sign Up'
+
+    current_path.should == signup_path
+    page.should have_content "Password doesn't match confirmation"
+  end
+
+  it 'when email is blank' do
+    visit new_user_path
+
+    fill_in 'Email', with: ''
+    fill_in 'Password', with: 'x1234567'
+    fill_in 'Confirm Password', with: 'x1234567'
+    fill_in 'Full Name', with: 'Kornelije Sajler'
+    click_button 'Sign Up'
+
+    current_path.should == signup_path
+    page.should have_content "Email can't be blank"
+  end
+
+  it 'when password is blank' do
+    visit new_user_path
+
+    fill_in 'Email', with: 'xajler@gmail.com'
+    fill_in 'Password', with: ''
+    fill_in 'Confirm Password', with: ''
+    fill_in 'Full Name', with: 'Kornelije Sajler'
+    click_button 'Sign Up'
+
+    current_path.should == signup_path
+    page.should have_content "Password digest can't be blank"
+  end
+
+  it 'when full name is blank' do
+    visit new_user_path
+
+    fill_in 'Email', with: 'xajler@gmail.com'
+    fill_in 'Password', with: 'x1234567'
+    fill_in 'Confirm Password', with: 'x1234567'
+    fill_in 'Full Name', with: ''
+    click_button 'Sign Up'
+
+    current_path.should == signup_path
+    page.should have_content "Full name can't be blank"
+  end
+
+  it 'when email is not unique' do
+    create :user
+    visit new_user_path
+
+    fill_in 'Email', with: 'xajler@gmail.com'
+    fill_in 'Password', with: 'x1234567'
+    fill_in 'Confirm Password', with: 'x1234567'
+    fill_in 'Full Name', with: 'Kornelije Sajler'
+    click_button 'Sign Up'
+
+    current_path.should == signup_path
+    page.should have_content 'Email has already been taken'
+  end
+
+  it 'when password is less than 8 characters' do
+    visit new_user_path
+
+    fill_in 'Email', with: 'xajler@gmail.com'
+    fill_in 'Password', with: '123'
+    fill_in 'Confirm Password', with: '123'
+    fill_in 'Full Name', with: 'Kornelije Sajler'
+    click_button 'Sign Up'
+
+    current_path.should == signup_path
+    page.should have_content "Password is too short (minimum is 8 characters)"
+  end
+end
+</code></pre>
+
+<p>  end</p>
+
+<p>  context 'PUT users/:id' do</p>
+
+<pre><code>it 'valid user update' do
+  user = create :user
+  visit edit_user_path user
+
+  find_field('Email').value.should == 'xajler@gmail.com'
+  find_field('Full Name').value.should == 'Kornelije Sajler'
+
+  fill_in 'Email', with: 'xajler@gmail.com'
+  fill_in 'Password', with: 'aoeuidht'
+  fill_in 'Confirm Password', with: 'aoeuidht'
+  fill_in 'Full Name', with: 'Kornelije Sajler - xajler'
+  click_button 'Update User'
+
+  current_path.should == edit_user_path(user)
+  page.should have_content 'The User is successfully updated!'
+end
+
+it 'invalid when passwords mismatch' do
+  user = create :user
+  visit edit_user_path user
+
+  fill_in 'Email', with: 'xajler@gmail.com'
+  fill_in 'Password', with: 'aoeuidht'
+  fill_in 'Confirm Password', with: 'aoeu'
+  fill_in 'Full Name', with: 'Kornelije Sajler'
+  click_button 'Update User'
+
+  current_path.should == edit_user_path(user)
+  page.should have_content "Password doesn't match confirmation"
+end
+
+it 'keeps the User Email intact while other fields do change' do
+  user = create :user
+  visit edit_user_path user
+
+  find_field('Email').value.should == 'xajler@gmail.com'
+  find_field('Full Name').value.should == 'Kornelije Sajler'
+
+  fill_in 'Email', with: 'xxx@example.com'
+  fill_in 'Password', with: 'aoeuidht'
+  fill_in 'Confirm Password', with: 'aoeuidht'
+  fill_in 'Full Name', with: 'Kornelije Sajler - xajler'
+  click_button 'Update User'
+
+  current_path.should == edit_user_path(user)
+  find_field('Email').value.should == 'xajler@gmail.com'
+  find_field('Full Name').value.should == 'Kornelije Sajler - xajler'
+end
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<h2>Conclusion</h2>
+
+<p>In this post we made sure that User Model Validation that is tested through actual User
+Sign Up and Update Views. And all aspects of Validation are tested in integration Broweser
+Tests simulated with <em>Capybara</em>.</p>
+
+<p>In next post we shall finally tackle the Login page and implementing Authentication for
+Application.</p>
+
+<h2>Code</h2>
+
+<p>The code is hosted on GitHub and can be cloned from the <a href="https://github.com/xajler/just-todo-it">xajler/just-todo-it</a>.</p>
+
+<blockquote><p>Github xajler/just-todo-it commit for this post:</p>
+
+<p><a href="https://github.com/xajler/just-todo-it/commit/ebbd2b0e48b3b6d94571f8d593d8d194bd6aec46">The User Create and Update Integration Tests, Users Controller and new Edit View Template.</a></p>
+
+<p><a href="https://github.com/xajler/just-todo-it/commit/4da7186bd475e6465f35ee404b2c50b4bbfdf996">A PUT tests are now top context, not child of POST context tests.</a></p></blockquote>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Rails App from Scratch: User Validation]]></title>

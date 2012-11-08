@@ -1,0 +1,1517 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Rails App from Scratch: User Save and Update - Learn-a-holic Geek Notes</title>
+  <meta name="author" content="Kornelije Sajler">
+
+  
+  <meta name="description" content="The Rails 3 App from Scratch, implementing a User Save and Update.">
+  <meta name="keywords" content="rails, ruby, TDD, rspec, save, update, authentication">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://learnaholic.me/2012/11/06/rails-app-from-scratch-user-save-and-update/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Learn-a-holic Geek Notes" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic' rel='stylesheet' type='text/css'>
+
+  
+
+</head>
+
+<body    class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Learn-a-holic Geek Notes</a></h1>
+  
+    <h2>Human compiled Brainwork by Kornelije Sajler.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:learnaholic.me" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Home</a></li>
+  <li><a href="http://metaintellect.com" target="_blank">Metaintellect</a></li>
+  <li><a href="http://caribou.arvixe.com/~ksajler" target="_blank">Old Blog</a></li>
+  <!-- <li><a href="/blog/archives">Archives</a></li> -->
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Rails App From Scratch: User Save and Update</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-06T23:33:00+01:00" pubdate data-updated="true">Nov 6<span>th</span>, 2012</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>After we implemented logic around User attributes, it is time to finally save and update
+the User to the database.</p>
+
+<p>But first, we shall change a mistake from the post on creating Sign Up page, the <code>password</code>
+fields in the View are set as normal text. We shall make sure that it is a password field!</p>
+
+<p>Change the <code>text_field</code> to <code>password_field</code> in <code>app/views/users/_form.html.haml</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='haml'><span class='line'><span class="p">=</span> <span class="n">f</span><span class="o">.</span><span class="n">label</span> <span class="ss">:password</span><span class="p">,</span> <span class="s1">&#39;Password:&#39;</span>
+</span><span class='line'><span class="p">=</span> <span class="n">f</span><span class="o">.</span><span class="n">password_field</span> <span class="ss">:password</span>
+</span><span class='line'><span class="nt">%br</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">=</span> <span class="n">f</span><span class="o">.</span><span class="n">label</span> <span class="ss">:password_confirmation</span><span class="p">,</span> <span class="s1">&#39;Confirm Password:&#39;</span>
+</span><span class='line'><span class="p">=</span> <span class="n">f</span><span class="o">.</span><span class="n">password_field</span> <span class="ss">:password_confirmation</span>
+</span><span class='line'><span class="nt">%br</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Saving Valid User Test</h2>
+
+<p>Now when the password fields are fixed, lets create a test to save a Valid User to the
+database.</p>
+
+<p>Create a new <code>context</code> for <code>POST</code> in <code>spec/requests/users_spec.rb</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">context</span> <span class="s1">&#39;POST /users&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">it</span> <span class="s1">&#39;creates and saves the valid user&#39;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">visit</span> <span class="n">new_user_path</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">fill_in</span> <span class="s1">&#39;Email&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;xajler@gmail.com&#39;</span>
+</span><span class='line'>    <span class="n">fill_in</span> <span class="s1">&#39;Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;x1234567&#39;</span>
+</span><span class='line'>    <span class="n">fill_in</span> <span class="s1">&#39;Confirm Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;x1234567&#39;</span>
+</span><span class='line'>    <span class="n">fill_in</span> <span class="s1">&#39;Full Name&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;Kornelije Sajler&#39;</span>
+</span><span class='line'>    <span class="n">click_button</span> <span class="s1">&#39;Sign Up&#39;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">current_path</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="n">signup_path</span>
+</span><span class='line'>    <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span> <span class="s1">&#39;The User is successfully saved!&#39;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The test is pretty simple, we fill up the form with data, click &#8216;Sign Up&#8217; button, and
+expect to be redirected again to &#8220;Sign Up&#8221; page (in new post when we create a Login page
+the <code>create</code> action will be redirecting to it!) and we expect that the flash notice will show that
+User is successfully saved.</p>
+
+<p>The test should fail on the clicking the <em>Sign Up</em> button, because there is no <code>create</code>
+action in <code>UsersController</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="mi">1</span><span class="p">)</span> <span class="no">Users</span> <span class="no">POST</span> <span class="sr">/users creates and saves the valid user</span>
+</span><span class='line'><span class="sr">   Failure/</span><span class="no">Error</span><span class="p">:</span> <span class="n">click_button</span> <span class="s1">&#39;Sign Up&#39;</span>
+</span><span class='line'>   <span class="no">AbstractController</span><span class="o">::</span><span class="no">ActionNotFound</span><span class="p">:</span>
+</span><span class='line'>     <span class="no">The</span> <span class="n">action</span> <span class="s1">&#39;create&#39;</span> <span class="n">could</span> <span class="ow">not</span> <span class="n">be</span> <span class="n">found</span> <span class="k">for</span> <span class="no">UsersController</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So to pass this test we need to add a <code>create</code> method to the <code>UsersController</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">create</span>
+</span><span class='line'>  <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span> <span class="n">params</span><span class="o">[</span><span class="ss">:user</span><span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span> <span class="vi">@user</span><span class="o">.</span><span class="n">save</span>
+</span><span class='line'>    <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;The User is successfully saved!&#39;</span>
+</span><span class='line'>    <span class="n">redirect_to</span> <span class="n">signup_path</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The test should pass:</p>
+
+<pre><code>Finished in 1.37 seconds
+11 examples, 0 failures
+</code></pre>
+
+<p>The happy path is working, now lets test all the possible ways the Sign Up might go wrong!</p>
+
+<h2>Invalid User Tests</h2>
+
+<h3>Password Confirmation</h3>
+
+<p>Lets first check <code>password</code>s matching is working, by applying the two different passwords.
+We shall crate the new <code>context</code> inside <code>POST /users</code> <code>context</code> and call it &#8221;<em>not saving invalid user</em>&#8221;:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">context</span> <span class="s1">&#39;not saving invalid user&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">it</span> <span class="s1">&#39;when passwords mismatch&#39;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">visit</span> <span class="n">new_user_path</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">fill_in</span> <span class="s1">&#39;Email&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;xajler@gmail.com&#39;</span>
+</span><span class='line'>    <span class="n">fill_in</span> <span class="s1">&#39;Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;x1234567&#39;</span>
+</span><span class='line'>    <span class="n">fill_in</span> <span class="s1">&#39;Confirm Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;x123&#39;</span>
+</span><span class='line'>    <span class="n">fill_in</span> <span class="s1">&#39;Full Name&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;Kornelije Sajler&#39;</span>
+</span><span class='line'>    <span class="n">click_button</span> <span class="s1">&#39;Sign Up&#39;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">current_path</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="n">signup_path</span>
+</span><span class='line'>    <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span> <span class="s1">&#39;The User is successfully saved!&#39;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>After running test we shall get odd message that there is no View Template for <code>create</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="mi">1</span><span class="p">)</span> <span class="no">Users</span> <span class="no">POST</span> <span class="sr">/users not saving invalid user when passwords mismatch</span>
+</span><span class='line'><span class="sr">   Failure/</span><span class="no">Error</span><span class="p">:</span> <span class="n">click_button</span> <span class="s1">&#39;Sign Up&#39;</span>
+</span><span class='line'>   <span class="no">ActionView</span><span class="o">::</span><span class="no">MissingTemplate</span><span class="p">:</span>
+</span><span class='line'>     <span class="no">Missing</span> <span class="n">template</span> <span class="n">users</span><span class="o">/</span><span class="n">create</span><span class="p">,</span> <span class="n">application</span><span class="o">/</span><span class="n">create</span> <span class="n">with</span> <span class="p">{</span><span class="ss">:locale</span><span class="o">=&gt;[</span><span class="ss">:en</span><span class="o">]</span><span class="p">,</span> <span class="ss">:formats</span><span class="o">=&gt;[</span><span class="ss">:html</span><span class="o">]</span><span class="p">,</span> <span class="ss">:handlers</span><span class="o">=&gt;[</span><span class="ss">:erb</span><span class="p">,</span> <span class="ss">:builder</span><span class="p">,</span> <span class="ss">:coffee</span><span class="p">,</span> <span class="ss">:haml</span><span class="o">]</span><span class="p">}</span><span class="o">.</span> <span class="no">Searched</span> <span class="k">in</span><span class="p">:</span>
+</span><span class='line'>       <span class="o">*</span> <span class="s2">&quot;/Users/xajler/src/rb/just-todo-it/app/views&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We don&#8217;t need a new View Templet but rather change the <code>UserController</code> method <code>create</code>
+to do something if the user is not saved. And when is not saved we shall flash an error message:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">create</span>
+</span><span class='line'>  <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span> <span class="n">params</span><span class="o">[</span><span class="ss">:user</span><span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span> <span class="vi">@user</span><span class="o">.</span><span class="n">save</span>
+</span><span class='line'>    <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;The User is successfully saved!&#39;</span>
+</span><span class='line'>    <span class="n">redirect_to</span> <span class="n">signup_path</span>
+</span><span class='line'>  <span class="k">else</span>
+</span><span class='line'>    <span class="n">flash</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">full_messages</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span>
+</span><span class='line'>    <span class="n">redirect_to</span> <span class="n">signup_path</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>After applying the given code, the test should pass:</p>
+
+<pre><code>Finished in 1.54 seconds
+12 examples, 0 failures
+</code></pre>
+
+<p>We this code applied we also satisfy the tests that are yet to come, but we still need
+tests to prove that <code>create</code> method is working!</p>
+
+<h3>Required Fields</h3>
+
+<p>We have three required fields:</p>
+
+<ul>
+<li><code>email</code></li>
+<li><code>password</code></li>
+<li><code>full_name</code></li>
+</ul>
+
+
+<p>Lets write three more test, they should all be green since the implementation is written
+to satisfy the previous test.</p>
+
+<p>We will add them to the &#8221;<em>not saving invalid user</em>&#8221; <code>context</code> below the latest test:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">it</span> <span class="s1">&#39;when email is blank&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">visit</span> <span class="n">new_user_path</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">fill_in</span> <span class="s1">&#39;Email&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;&#39;</span>
+</span><span class='line'>  <span class="n">fill_in</span> <span class="s1">&#39;Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;x1234567&#39;</span>
+</span><span class='line'>  <span class="n">fill_in</span> <span class="s1">&#39;Confirm Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;x1234567&#39;</span>
+</span><span class='line'>  <span class="n">fill_in</span> <span class="s1">&#39;Full Name&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;Kornelije Sajler&#39;</span>
+</span><span class='line'>  <span class="n">click_button</span> <span class="s1">&#39;Sign Up&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">current_path</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="n">signup_path</span>
+</span><span class='line'>  <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span> <span class="s2">&quot;Email can&#39;t be blank&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">it</span> <span class="s1">&#39;when password is blank&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">visit</span> <span class="n">new_user_path</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">fill_in</span> <span class="s1">&#39;Email&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;xajler@gmail.com&#39;</span>
+</span><span class='line'>  <span class="n">fill_in</span> <span class="s1">&#39;Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;&#39;</span>
+</span><span class='line'>  <span class="n">fill_in</span> <span class="s1">&#39;Confirm Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;&#39;</span>
+</span><span class='line'>  <span class="n">fill_in</span> <span class="s1">&#39;Full Name&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;Kornelije Sajler&#39;</span>
+</span><span class='line'>  <span class="n">click_button</span> <span class="s1">&#39;Sign Up&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">current_path</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="n">signup_path</span>
+</span><span class='line'>  <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span> <span class="s2">&quot;Password digest can&#39;t be blank&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">it</span> <span class="s1">&#39;when full name is blank&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">visit</span> <span class="n">new_user_path</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">fill_in</span> <span class="s1">&#39;Email&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;xajler@gmail.com&#39;</span>
+</span><span class='line'>  <span class="n">fill_in</span> <span class="s1">&#39;Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;x1234567&#39;</span>
+</span><span class='line'>  <span class="n">fill_in</span> <span class="s1">&#39;Confirm Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;x1234567&#39;</span>
+</span><span class='line'>  <span class="n">fill_in</span> <span class="s1">&#39;Full Name&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;&#39;</span>
+</span><span class='line'>  <span class="n">click_button</span> <span class="s1">&#39;Sign Up&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">current_path</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="n">signup_path</span>
+</span><span class='line'>  <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span> <span class="s2">&quot;Full name can&#39;t be blank&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And if all was OK then all tests should pass:</p>
+
+<pre><code>Finished in 1.79 seconds
+15 examples, 0 failures
+</code></pre>
+
+<h3>Email Uniqueness</h3>
+
+<p>The saving User with entered existing <code>email</code> should fail. Lets create the test to prove
+it:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">it</span> <span class="s1">&#39;when email is not unique&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">create</span> <span class="ss">:user</span>
+</span><span class='line'>  <span class="n">visit</span> <span class="n">new_user_path</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">fill_in</span> <span class="s1">&#39;Email&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;xajler@gmail.com&#39;</span>
+</span><span class='line'>  <span class="n">fill_in</span> <span class="s1">&#39;Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;x1234567&#39;</span>
+</span><span class='line'>  <span class="n">fill_in</span> <span class="s1">&#39;Confirm Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;x1234567&#39;</span>
+</span><span class='line'>  <span class="n">fill_in</span> <span class="s1">&#39;Full Name&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;Kornelije Sajler&#39;</span>
+</span><span class='line'>  <span class="n">click_button</span> <span class="s1">&#39;Sign Up&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">current_path</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="n">signup_path</span>
+</span><span class='line'>  <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span> <span class="s1">&#39;Email has already been taken&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So, first we insert User from our created factory via <em>Factory Girl</em>. The factory of User
+inserted has the same email that we try to save it from the form.</p>
+
+<p>The test should pass, because the code is implemented:</p>
+
+<pre><code>Finished in 2.02 seconds
+16 examples, 0 failures
+</code></pre>
+
+<h3>Password with at least 8 characters</h3>
+
+<p>The User cannot be saved if both passwords length is at least 8 characters long:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">it</span> <span class="s1">&#39;when password is less than 8 characters&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">visit</span> <span class="n">new_user_path</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">fill_in</span> <span class="s1">&#39;Email&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;xajler@gmail.com&#39;</span>
+</span><span class='line'>  <span class="n">fill_in</span> <span class="s1">&#39;Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;123&#39;</span>
+</span><span class='line'>  <span class="n">fill_in</span> <span class="s1">&#39;Confirm Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;123&#39;</span>
+</span><span class='line'>  <span class="n">fill_in</span> <span class="s1">&#39;Full Name&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;Kornelije Sajler&#39;</span>
+</span><span class='line'>  <span class="n">click_button</span> <span class="s1">&#39;Sign Up&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">current_path</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="n">signup_path</span>
+</span><span class='line'>  <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span> <span class="s2">&quot;Password is too short (minimum is 8 characters)&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This was easy, all tests should pass still:</p>
+
+<pre><code>Finished in 2.07 seconds
+17 examples, 0 failures
+</code></pre>
+
+<blockquote><p>Note:</p>
+
+<p>If you using <em>Guard</em> as I do, for running test, you may need to enter <code>r</code> command to
+<em>Guard</em> console to reload all, only if your tests are passing and they should not be or vice versa!</p></blockquote>
+
+<p>And with this test we have test for all User Create problems, now we&#8217;ll add test for User Update.</p>
+
+<h2>Valid Update Test</h2>
+
+<p>Essentially, the valid update only lets to change User <code>password</code> and <code>full_name</code>. Create
+new <code>context</code> called &#8221;<em>PUT users/:id</em>&#8221; and new <code>it</code> block &#8221;<em>valid user update</em>&#8221;:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">context</span> <span class="s1">&#39;PUT users/:id&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">it</span> <span class="s1">&#39;valid user update&#39;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">user</span> <span class="o">=</span> <span class="n">create</span> <span class="ss">:user</span>
+</span><span class='line'>    <span class="n">visit</span> <span class="n">edit_user_path</span> <span class="n">user</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">find_field</span><span class="p">(</span><span class="s1">&#39;Email&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="s1">&#39;xajler@gmail.com&#39;</span>
+</span><span class='line'>    <span class="n">find_field</span><span class="p">(</span><span class="s1">&#39;Full Name&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="s1">&#39;Kornelije Sajler&#39;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">fill_in</span> <span class="s1">&#39;Email&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;xajler@gmail.com&#39;</span>
+</span><span class='line'>    <span class="n">fill_in</span> <span class="s1">&#39;Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;aoeuidht&#39;</span>
+</span><span class='line'>    <span class="n">fill_in</span> <span class="s1">&#39;Confirm Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;aoeuidht&#39;</span>
+</span><span class='line'>    <span class="n">fill_in</span> <span class="s1">&#39;Full Name&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;Kornelije Sajler - xajler&#39;</span>
+</span><span class='line'>    <span class="n">click_button</span> <span class="s1">&#39;Update User&#39;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">current_path</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</span><span class='line'>    <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span> <span class="s1">&#39;The User is successfully updated!&#39;</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>First we create a User from factory and save it as variable, because we are simulating edit,
+so we need the User id when we want to edit him. This is why we pass the <code>user</code> variable to the
+<code>edit_user_path</code>.</p>
+
+<p>Before we fill in the Update User Form we shall test it if the Form fields are actually binded with
+data from User that will be updated.</p>
+
+<p>OK, same thing as for new/create it will fail, first, because there is no method <code>edit</code> in
+<code>UsersController</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="mi">1</span><span class="p">)</span> <span class="no">Users</span> <span class="no">POST</span> <span class="sr">/users PUT users/</span><span class="ss">:id</span> <span class="n">valid</span> <span class="n">user</span> <span class="n">update</span>
+</span><span class='line'>   <span class="no">Failure</span><span class="o">/</span><span class="no">Error</span><span class="p">:</span> <span class="n">visit</span> <span class="n">edit_user_path</span> <span class="c1">#user</span>
+</span><span class='line'>   <span class="no">ActionController</span><span class="o">::</span><span class="no">RoutingError</span><span class="p">:</span>
+</span><span class='line'>     <span class="no">No</span> <span class="n">route</span> <span class="n">matches</span> <span class="p">{</span><span class="ss">:action</span><span class="o">=&gt;</span><span class="s2">&quot;edit&quot;</span><span class="p">,</span> <span class="ss">:controller</span><span class="o">=&gt;</span><span class="s2">&quot;users&quot;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>To pass this error lets create the <code>edit</code> method:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">edit</span>
+</span><span class='line'>  <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span> <span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So we need the User to get him from the given <em>params id</em> so that we can have it in
+instance variable <code>@user</code> and share it to the View and then fill the form with existing
+User data.</p>
+
+<p>The test should still fail, because there is no edit View Template:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="mi">1</span><span class="p">)</span> <span class="no">Users</span> <span class="no">POST</span> <span class="sr">/users PUT users/</span><span class="ss">:id</span> <span class="n">valid</span> <span class="n">user</span> <span class="n">update</span>
+</span><span class='line'>   <span class="no">Failure</span><span class="o">/</span><span class="no">Error</span><span class="p">:</span> <span class="n">visit</span> <span class="n">edit_user_path</span> <span class="n">user</span>
+</span><span class='line'>   <span class="no">ActionView</span><span class="o">::</span><span class="no">MissingTemplate</span><span class="p">:</span>
+</span><span class='line'>     <span class="no">Missing</span> <span class="n">template</span> <span class="n">users</span><span class="o">/</span><span class="n">edit</span><span class="p">,</span> <span class="n">application</span><span class="o">/</span><span class="n">edit</span> <span class="n">with</span> <span class="p">{</span><span class="ss">:locale</span><span class="o">=&gt;[</span><span class="ss">:en</span><span class="o">]</span><span class="p">,</span> <span class="ss">:formats</span><span class="o">=&gt;[</span><span class="ss">:html</span><span class="o">]</span><span class="p">,</span> <span class="ss">:handlers</span><span class="o">=&gt;[</span><span class="ss">:erb</span><span class="p">,</span> <span class="ss">:builder</span><span class="p">,</span> <span class="ss">:coffee</span><span class="p">,</span> <span class="ss">:haml</span><span class="o">]</span><span class="p">}</span><span class="o">.</span> <span class="no">Searched</span> <span class="k">in</span><span class="p">:</span>
+</span><span class='line'>       <span class="o">*</span> <span class="s2">&quot;/Users/xajler/src/rb/just-todo-it/app/views&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Long time ago when we are creating View Template for Sign Up we&#8217;ve created <code>new.html.haml</code>
+and also separated form to partial <code>_form.html.haml</code> so it can be shared witd edit View.</p>
+
+<p>Lets create <code>edit.html.haml</code> View page that calls the Form partial and passing to it the
+<code>@user</code> so that the Form will display User data:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='haml'><span class='line'><span class="nt">%h1</span> Update User
+</span><span class='line'>
+</span><span class='line'><span class="p">=</span> <span class="n">render</span> <span class="n">partial</span><span class="p">:</span> <span class="s1">&#39;form&#39;</span><span class="p">,</span> <span class="n">locals</span><span class="p">:</span> <span class="p">{</span> <span class="n">user</span><span class="p">:</span> <span class="vi">@user</span> <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The test will fail because there is no button &#8220;Update User&#8221;, and this is because we hard-coded
+the &#8220;Sign Up&#8221; text to submit element in the form partial <code>_form.html.haml</code>. We will fix
+not very pretty but it will work:</p>
+
+<p>Change <code>submit</code> in <code>_form.html.haml</code> from:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='haml'><span class='line'><span class="p">=</span> <span class="n">f</span><span class="o">.</span><span class="n">submit</span> <span class="s1">&#39;Sign Up&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>To:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='haml'><span class='line'><span class="p">=</span> <span class="n">f</span><span class="o">.</span><span class="n">submit</span> <span class="vi">@user</span><span class="o">.</span><span class="n">id</span> <span class="p">?</span> <span class="s1">&#39;Update User&#39;</span> <span class="p">:</span> <span class="s1">&#39;Sign Up&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The test should still fail because we are after all trying to update, and there in no
+<code>update</code> method it <code>UsersController</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='haml'><span class='line'>1) Users POST /users PUT users/:id valid user update
+</span><span class='line'>   Failure/Error: click_button &#39;Update User&#39;
+</span><span class='line'>   AbstractController::ActionNotFound:
+</span><span class='line'>     The action &#39;update&#39; could not be found for UsersController
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So, we shall impelment the <code>update</code> method for the <code>UsersController</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">update</span>
+</span><span class='line'>  <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span> <span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span> <span class="vi">@user</span><span class="o">.</span><span class="n">update_attributes</span> <span class="n">params</span><span class="o">[</span><span class="ss">:user</span><span class="o">]</span>
+</span><span class='line'>    <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;The User is successfully updated!&#39;</span>
+</span><span class='line'>    <span class="n">redirect_to</span> <span class="n">edit_user_path</span>
+</span><span class='line'>  <span class="k">else</span>
+</span><span class='line'>      <span class="n">flash</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">full_messages</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span>
+</span><span class='line'>      <span class="n">redirect_to</span> <span class="n">signup_path</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I</p>
+
+<p>And at last the test is passing:</p>
+
+<pre><code>Finished in 2.3 seconds
+18 examples, 0 failures
+</code></pre>
+
+<p>The only problem here is that to Update User the <code>password</code>s needed to be entered every
+time. There are better solutions, like, if they are blank to ignore them on update instead
+right now, it will be validated. And blank password is not allowed!</p>
+
+<h2>Password Mismatch</h2>
+
+<p>We will not try all the tests that we tried for User Sign Up, but only one. If you remember,
+this was the only test that was needed a code, others were just a proof of existing code,
+that is more about User Model than actual User View, but we&#8217;ve needed to run them all to
+ensure that flash messages are proper and expected.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">it</span> <span class="s1">&#39;invalid when passwords mismatch&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">user</span> <span class="o">=</span> <span class="n">create</span> <span class="ss">:user</span>
+</span><span class='line'>  <span class="n">visit</span> <span class="n">edit_user_path</span> <span class="n">user</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">fill_in</span> <span class="s1">&#39;Email&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;xajler@gmail.com&#39;</span>
+</span><span class='line'>  <span class="n">fill_in</span> <span class="s1">&#39;Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;aoeuidht&#39;</span>
+</span><span class='line'>  <span class="n">fill_in</span> <span class="s1">&#39;Confirm Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;aoeu&#39;</span>
+</span><span class='line'>  <span class="n">fill_in</span> <span class="s1">&#39;Full Name&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;Kornelije Sajler&#39;</span>
+</span><span class='line'>  <span class="n">click_button</span> <span class="s1">&#39;Update User&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">current_path</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span> <span class="s2">&quot;Password doesn&#39;t match confirmation&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And the test fails, complaining about View, but actually we need the code in Controller,
+to send message of what went wrong to User Update Form:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">update</span>
+</span><span class='line'>  <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span> <span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span> <span class="vi">@user</span><span class="o">.</span><span class="n">update_attributes</span> <span class="n">params</span><span class="o">[</span><span class="ss">:user</span><span class="o">]</span>
+</span><span class='line'>    <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;The User is successfully updated!&#39;</span>
+</span><span class='line'>    <span class="n">redirect_to</span> <span class="n">edit_user_path</span>
+</span><span class='line'>  <span class="k">else</span>
+</span><span class='line'>      <span class="n">flash</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">full_messages</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span>
+</span><span class='line'>      <span class="n">redirect_to</span> <span class="n">edit_user_path</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>After adding the else clause to <code>update</code> method that handles all errors, the test
+should pass:</p>
+
+<pre><code>Finished in 2.6 seconds
+19 examples, 0 failures
+</code></pre>
+
+<h2>Ensure Email is not changed after User creation</h2>
+
+<p>The only test that is left is to ensure that <code>email</code> given on create should never ever
+be possible to change!</p>
+
+<p>In this test we shall try to change the email of existing User and it needs to be the same
+after update, even though the <code>email</code> sent to update is quite different from the one when
+User is created:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">it</span> <span class="s1">&#39;keeps the User Email intact while other fields do change&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">user</span> <span class="o">=</span> <span class="n">create</span> <span class="ss">:user</span>
+</span><span class='line'>  <span class="n">visit</span> <span class="n">edit_user_path</span> <span class="n">user</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">find_field</span><span class="p">(</span><span class="s1">&#39;Email&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="s1">&#39;xajler@gmail.com&#39;</span>
+</span><span class='line'>  <span class="n">find_field</span><span class="p">(</span><span class="s1">&#39;Full Name&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="s1">&#39;Kornelije Sajler&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">fill_in</span> <span class="s1">&#39;Email&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;xxx@example.com&#39;</span>
+</span><span class='line'>  <span class="n">fill_in</span> <span class="s1">&#39;Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;aoeuidht&#39;</span>
+</span><span class='line'>  <span class="n">fill_in</span> <span class="s1">&#39;Confirm Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;aoeuidht&#39;</span>
+</span><span class='line'>  <span class="n">fill_in</span> <span class="s1">&#39;Full Name&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;Kornelije Sajler - xajler&#39;</span>
+</span><span class='line'>  <span class="n">click_button</span> <span class="s1">&#39;Update User&#39;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">current_path</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">find_field</span><span class="p">(</span><span class="s1">&#39;Email&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="s1">&#39;xajler@gmail.com&#39;</span>
+</span><span class='line'>  <span class="n">find_field</span><span class="p">(</span><span class="s1">&#39;Full Name&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="s1">&#39;Kornelije Sajler - xajler&#39;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The above test ensures that the <code>email</code> after creation will stay intact, while other fields
+will change, there will be no errors having different <code>email</code>. The <code>email</code> for update will
+be silently ignored.</p>
+
+<p>And now all 20 test should pass, and we use RSpec format to show them all:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>User
+</span><span class='line'>  #email must not ever change after it is created
+</span><span class='line'>  is valid
+</span><span class='line'>  is invalid
+</span><span class='line'>    when required #email is not given
+</span><span class='line'>    when #email format is not valid
+</span><span class='line'>    when #email is not unique
+</span><span class='line'>    when required #full_name is not given
+</span><span class='line'>    when required #password is not given
+</span><span class='line'>    when #password is not at least 8 characters
+</span><span class='line'>
+</span><span class='line'>Users
+</span><span class='line'>  GET /signup
+</span><span class='line'>    displays the sign up page
+</span><span class='line'>  PUT users/:id
+</span><span class='line'>    valid user update
+</span><span class='line'>    invalid when passwords mismatch
+</span><span class='line'>    keeps the User Email intact while other fields do change
+</span><span class='line'>  POST /users
+</span><span class='line'>    creates and saves the valid user
+</span><span class='line'>    not saving invalid user
+</span><span class='line'>      when passwords mismatch
+</span><span class='line'>      when email is not unique
+</span><span class='line'>      when full name is blank
+</span><span class='line'>      when password is blank
+</span><span class='line'>      when email is blank
+</span><span class='line'>      when password is less than 8 characters
+</span><span class='line'>  GET /users/new
+</span><span class='line'>    displays the create new user page
+</span><span class='line'>
+</span><span class='line'>Finished in 2.86 seconds
+</span><span class='line'>20 examples, 0 failures
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Users Controller</h2>
+
+<p>The whole Users Controller <code>app/controllers/users_controllers.rb</code> after this post should look like this:</p>
+
+<figure class='code'><figcaption><span>app/controllers/users_controllers.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">new</span>
+</span><span class='line'>    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">create</span>
+</span><span class='line'>    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span> <span class="n">params</span><span class="o">[</span><span class="ss">:user</span><span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="vi">@user</span><span class="o">.</span><span class="n">save</span>
+</span><span class='line'>      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;The User is successfully saved!&#39;</span>
+</span><span class='line'>      <span class="n">redirect_to</span> <span class="n">signup_path</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>      <span class="n">flash</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">full_messages</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span>
+</span><span class='line'>      <span class="n">redirect_to</span> <span class="n">signup_path</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">edit</span>
+</span><span class='line'>    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span> <span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">update</span>
+</span><span class='line'>    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span> <span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="vi">@user</span><span class="o">.</span><span class="n">update_attributes</span> <span class="n">params</span><span class="o">[</span><span class="ss">:user</span><span class="o">]</span>
+</span><span class='line'>      <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;The User is successfully updated!&#39;</span>
+</span><span class='line'>      <span class="n">redirect_to</span> <span class="n">edit_user_path</span>
+</span><span class='line'>    <span class="k">else</span>
+</span><span class='line'>        <span class="n">flash</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">full_messages</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span>
+</span><span class='line'>        <span class="n">redirect_to</span> <span class="n">edit_user_path</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Users Request Spec (Tests)</h2>
+
+<p>The whole Users Request Spec <code>spec/requests/users_spec.rb</code> after this post should look like this:</p>
+
+<figure class='code'><figcaption><span>spec/requests/users_spec.rb</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+<span class='line-number'>157</span>
+<span class='line-number'>158</span>
+<span class='line-number'>159</span>
+<span class='line-number'>160</span>
+<span class='line-number'>161</span>
+<span class='line-number'>162</span>
+<span class='line-number'>163</span>
+<span class='line-number'>164</span>
+<span class='line-number'>165</span>
+<span class='line-number'>166</span>
+<span class='line-number'>167</span>
+<span class='line-number'>168</span>
+<span class='line-number'>169</span>
+<span class='line-number'>170</span>
+<span class='line-number'>171</span>
+<span class='line-number'>172</span>
+<span class='line-number'>173</span>
+<span class='line-number'>174</span>
+<span class='line-number'>175</span>
+<span class='line-number'>176</span>
+<span class='line-number'>177</span>
+<span class='line-number'>178</span>
+<span class='line-number'>179</span>
+<span class='line-number'>180</span>
+<span class='line-number'>181</span>
+<span class='line-number'>182</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="nb">require</span> <span class="s1">&#39;spec_helper&#39;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">describe</span> <span class="s1">&#39;Users&#39;</span> <span class="k">do</span>
+</span><span class='line'>  <span class="n">context</span> <span class="s1">&#39;GET /users/new&#39;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">it</span> <span class="s1">&#39;displays the create new user page&#39;</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">visit</span> <span class="n">new_user_path</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span> <span class="s1">&#39;Email&#39;</span>
+</span><span class='line'>      <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span> <span class="s1">&#39;Full Name&#39;</span>
+</span><span class='line'>      <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span> <span class="s1">&#39;Password&#39;</span>
+</span><span class='line'>      <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span> <span class="s1">&#39;Confirm Password&#39;</span>
+</span><span class='line'>      <span class="n">page</span><span class="o">.</span><span class="n">has_field?</span> <span class="s1">&#39;email&#39;</span>
+</span><span class='line'>      <span class="n">page</span><span class="o">.</span><span class="n">has_field?</span> <span class="s1">&#39;full_name&#39;</span>
+</span><span class='line'>      <span class="n">page</span><span class="o">.</span><span class="n">has_field?</span> <span class="s1">&#39;password&#39;</span>
+</span><span class='line'>      <span class="n">page</span><span class="o">.</span><span class="n">has_field?</span> <span class="s1">&#39;password_confirmation&#39;</span>
+</span><span class='line'>      <span class="n">page</span><span class="o">.</span><span class="n">has_button?</span> <span class="s1">&#39;Sign Up&#39;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">context</span> <span class="s1">&#39;GET /signup&#39;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">it</span> <span class="s1">&#39;displays the sign up page&#39;</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">visit</span> <span class="n">signup_path</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span> <span class="s1">&#39;Email&#39;</span>
+</span><span class='line'>      <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span> <span class="s1">&#39;Full Name&#39;</span>
+</span><span class='line'>      <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span> <span class="s1">&#39;Password&#39;</span>
+</span><span class='line'>      <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span> <span class="s1">&#39;Confirm Password&#39;</span>
+</span><span class='line'>      <span class="n">page</span><span class="o">.</span><span class="n">has_field?</span> <span class="s1">&#39;email&#39;</span>
+</span><span class='line'>      <span class="n">page</span><span class="o">.</span><span class="n">has_field?</span> <span class="s1">&#39;full_name&#39;</span>
+</span><span class='line'>      <span class="n">page</span><span class="o">.</span><span class="n">has_field?</span> <span class="s1">&#39;password&#39;</span>
+</span><span class='line'>      <span class="n">page</span><span class="o">.</span><span class="n">has_field?</span> <span class="s1">&#39;password_confirmation&#39;</span>
+</span><span class='line'>      <span class="n">page</span><span class="o">.</span><span class="n">has_button?</span> <span class="s1">&#39;Sign Up&#39;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">context</span> <span class="s1">&#39;POST /users&#39;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">it</span> <span class="s1">&#39;creates and saves the valid user&#39;</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">visit</span> <span class="n">new_user_path</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">fill_in</span> <span class="s1">&#39;Email&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;xajler@gmail.com&#39;</span>
+</span><span class='line'>      <span class="n">fill_in</span> <span class="s1">&#39;Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;x1234567&#39;</span>
+</span><span class='line'>      <span class="n">fill_in</span> <span class="s1">&#39;Confirm Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;x1234567&#39;</span>
+</span><span class='line'>      <span class="n">fill_in</span> <span class="s1">&#39;Full Name&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;Kornelije Sajler&#39;</span>
+</span><span class='line'>      <span class="n">click_button</span> <span class="s1">&#39;Sign Up&#39;</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">current_path</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="n">signup_path</span>
+</span><span class='line'>      <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span> <span class="s1">&#39;The User is successfully saved!&#39;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">context</span> <span class="s1">&#39;not saving invalid user&#39;</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">it</span> <span class="s1">&#39;when passwords mismatch&#39;</span> <span class="k">do</span>
+</span><span class='line'>        <span class="n">visit</span> <span class="n">new_user_path</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">fill_in</span> <span class="s1">&#39;Email&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;xajler@gmail.com&#39;</span>
+</span><span class='line'>        <span class="n">fill_in</span> <span class="s1">&#39;Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;x1234567&#39;</span>
+</span><span class='line'>        <span class="n">fill_in</span> <span class="s1">&#39;Confirm Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;x123&#39;</span>
+</span><span class='line'>        <span class="n">fill_in</span> <span class="s1">&#39;Full Name&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;Kornelije Sajler&#39;</span>
+</span><span class='line'>        <span class="n">click_button</span> <span class="s1">&#39;Sign Up&#39;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">current_path</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="n">signup_path</span>
+</span><span class='line'>        <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span> <span class="s2">&quot;Password doesn&#39;t match confirmation&quot;</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">it</span> <span class="s1">&#39;when email is blank&#39;</span> <span class="k">do</span>
+</span><span class='line'>        <span class="n">visit</span> <span class="n">new_user_path</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">fill_in</span> <span class="s1">&#39;Email&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;&#39;</span>
+</span><span class='line'>        <span class="n">fill_in</span> <span class="s1">&#39;Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;x1234567&#39;</span>
+</span><span class='line'>        <span class="n">fill_in</span> <span class="s1">&#39;Confirm Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;x1234567&#39;</span>
+</span><span class='line'>        <span class="n">fill_in</span> <span class="s1">&#39;Full Name&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;Kornelije Sajler&#39;</span>
+</span><span class='line'>        <span class="n">click_button</span> <span class="s1">&#39;Sign Up&#39;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">current_path</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="n">signup_path</span>
+</span><span class='line'>        <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span> <span class="s2">&quot;Email can&#39;t be blank&quot;</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">it</span> <span class="s1">&#39;when password is blank&#39;</span> <span class="k">do</span>
+</span><span class='line'>        <span class="n">visit</span> <span class="n">new_user_path</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">fill_in</span> <span class="s1">&#39;Email&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;xajler@gmail.com&#39;</span>
+</span><span class='line'>        <span class="n">fill_in</span> <span class="s1">&#39;Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;&#39;</span>
+</span><span class='line'>        <span class="n">fill_in</span> <span class="s1">&#39;Confirm Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;&#39;</span>
+</span><span class='line'>        <span class="n">fill_in</span> <span class="s1">&#39;Full Name&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;Kornelije Sajler&#39;</span>
+</span><span class='line'>        <span class="n">click_button</span> <span class="s1">&#39;Sign Up&#39;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">current_path</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="n">signup_path</span>
+</span><span class='line'>        <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span> <span class="s2">&quot;Password digest can&#39;t be blank&quot;</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">it</span> <span class="s1">&#39;when full name is blank&#39;</span> <span class="k">do</span>
+</span><span class='line'>        <span class="n">visit</span> <span class="n">new_user_path</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">fill_in</span> <span class="s1">&#39;Email&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;xajler@gmail.com&#39;</span>
+</span><span class='line'>        <span class="n">fill_in</span> <span class="s1">&#39;Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;x1234567&#39;</span>
+</span><span class='line'>        <span class="n">fill_in</span> <span class="s1">&#39;Confirm Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;x1234567&#39;</span>
+</span><span class='line'>        <span class="n">fill_in</span> <span class="s1">&#39;Full Name&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;&#39;</span>
+</span><span class='line'>        <span class="n">click_button</span> <span class="s1">&#39;Sign Up&#39;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">current_path</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="n">signup_path</span>
+</span><span class='line'>        <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span> <span class="s2">&quot;Full name can&#39;t be blank&quot;</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">it</span> <span class="s1">&#39;when email is not unique&#39;</span> <span class="k">do</span>
+</span><span class='line'>        <span class="n">create</span> <span class="ss">:user</span>
+</span><span class='line'>        <span class="n">visit</span> <span class="n">new_user_path</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">fill_in</span> <span class="s1">&#39;Email&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;xajler@gmail.com&#39;</span>
+</span><span class='line'>        <span class="n">fill_in</span> <span class="s1">&#39;Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;x1234567&#39;</span>
+</span><span class='line'>        <span class="n">fill_in</span> <span class="s1">&#39;Confirm Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;x1234567&#39;</span>
+</span><span class='line'>        <span class="n">fill_in</span> <span class="s1">&#39;Full Name&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;Kornelije Sajler&#39;</span>
+</span><span class='line'>        <span class="n">click_button</span> <span class="s1">&#39;Sign Up&#39;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">current_path</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="n">signup_path</span>
+</span><span class='line'>        <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span> <span class="s1">&#39;Email has already been taken&#39;</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">it</span> <span class="s1">&#39;when password is less than 8 characters&#39;</span> <span class="k">do</span>
+</span><span class='line'>        <span class="n">visit</span> <span class="n">new_user_path</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">fill_in</span> <span class="s1">&#39;Email&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;xajler@gmail.com&#39;</span>
+</span><span class='line'>        <span class="n">fill_in</span> <span class="s1">&#39;Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;123&#39;</span>
+</span><span class='line'>        <span class="n">fill_in</span> <span class="s1">&#39;Confirm Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;123&#39;</span>
+</span><span class='line'>        <span class="n">fill_in</span> <span class="s1">&#39;Full Name&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;Kornelije Sajler&#39;</span>
+</span><span class='line'>        <span class="n">click_button</span> <span class="s1">&#39;Sign Up&#39;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">current_path</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="n">signup_path</span>
+</span><span class='line'>        <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span> <span class="s2">&quot;Password is too short (minimum is 8 characters)&quot;</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">context</span> <span class="s1">&#39;PUT users/:id&#39;</span> <span class="k">do</span>
+</span><span class='line'>    <span class="n">it</span> <span class="s1">&#39;valid user update&#39;</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">user</span> <span class="o">=</span> <span class="n">create</span> <span class="ss">:user</span>
+</span><span class='line'>      <span class="n">visit</span> <span class="n">edit_user_path</span> <span class="n">user</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">find_field</span><span class="p">(</span><span class="s1">&#39;Email&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="s1">&#39;xajler@gmail.com&#39;</span>
+</span><span class='line'>      <span class="n">find_field</span><span class="p">(</span><span class="s1">&#39;Full Name&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="s1">&#39;Kornelije Sajler&#39;</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">fill_in</span> <span class="s1">&#39;Email&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;xajler@gmail.com&#39;</span>
+</span><span class='line'>      <span class="n">fill_in</span> <span class="s1">&#39;Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;aoeuidht&#39;</span>
+</span><span class='line'>      <span class="n">fill_in</span> <span class="s1">&#39;Confirm Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;aoeuidht&#39;</span>
+</span><span class='line'>      <span class="n">fill_in</span> <span class="s1">&#39;Full Name&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;Kornelije Sajler - xajler&#39;</span>
+</span><span class='line'>      <span class="n">click_button</span> <span class="s1">&#39;Update User&#39;</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">current_path</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span> <span class="s1">&#39;The User is successfully updated!&#39;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">it</span> <span class="s1">&#39;invalid when passwords mismatch&#39;</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">user</span> <span class="o">=</span> <span class="n">create</span> <span class="ss">:user</span>
+</span><span class='line'>      <span class="n">visit</span> <span class="n">edit_user_path</span> <span class="n">user</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">fill_in</span> <span class="s1">&#39;Email&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;xajler@gmail.com&#39;</span>
+</span><span class='line'>      <span class="n">fill_in</span> <span class="s1">&#39;Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;aoeuidht&#39;</span>
+</span><span class='line'>      <span class="n">fill_in</span> <span class="s1">&#39;Confirm Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;aoeu&#39;</span>
+</span><span class='line'>      <span class="n">fill_in</span> <span class="s1">&#39;Full Name&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;Kornelije Sajler&#39;</span>
+</span><span class='line'>      <span class="n">click_button</span> <span class="s1">&#39;Update User&#39;</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">current_path</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span> <span class="s2">&quot;Password doesn&#39;t match confirmation&quot;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">it</span> <span class="s1">&#39;keeps the User Email intact while other fields do change&#39;</span> <span class="k">do</span>
+</span><span class='line'>      <span class="n">user</span> <span class="o">=</span> <span class="n">create</span> <span class="ss">:user</span>
+</span><span class='line'>      <span class="n">visit</span> <span class="n">edit_user_path</span> <span class="n">user</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">find_field</span><span class="p">(</span><span class="s1">&#39;Email&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="s1">&#39;xajler@gmail.com&#39;</span>
+</span><span class='line'>      <span class="n">find_field</span><span class="p">(</span><span class="s1">&#39;Full Name&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="s1">&#39;Kornelije Sajler&#39;</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">fill_in</span> <span class="s1">&#39;Email&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;xxx@example.com&#39;</span>
+</span><span class='line'>      <span class="n">fill_in</span> <span class="s1">&#39;Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;aoeuidht&#39;</span>
+</span><span class='line'>      <span class="n">fill_in</span> <span class="s1">&#39;Confirm Password&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;aoeuidht&#39;</span>
+</span><span class='line'>      <span class="n">fill_in</span> <span class="s1">&#39;Full Name&#39;</span><span class="p">,</span> <span class="n">with</span><span class="p">:</span> <span class="s1">&#39;Kornelije Sajler - xajler&#39;</span>
+</span><span class='line'>      <span class="n">click_button</span> <span class="s1">&#39;Update User&#39;</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="n">current_path</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="n">edit_user_path</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">find_field</span><span class="p">(</span><span class="s1">&#39;Email&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="s1">&#39;xajler@gmail.com&#39;</span>
+</span><span class='line'>      <span class="n">find_field</span><span class="p">(</span><span class="s1">&#39;Full Name&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="s1">&#39;Kornelije Sajler - xajler&#39;</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Conclusion</h2>
+
+<p>In this post we made sure that User Model Validation that is tested through actual User
+Sign Up and Update Views. And all aspects of Validation are tested in integration Broweser
+Tests simulated with <em>Capybara</em>.</p>
+
+<p>In next post we shall finally tackle the Login page and implementing Authentication for
+Application.</p>
+
+<h2>Code</h2>
+
+<p>The code is hosted on GitHub and can be cloned from the <a href="https://github.com/xajler/just-todo-it">xajler/just-todo-it</a>.</p>
+
+<blockquote><p>Github xajler/just-todo-it commit for this post:</p>
+
+<p><a href="https://github.com/xajler/just-todo-it/commit/ebbd2b0e48b3b6d94571f8d593d8d194bd6aec46">The User Create and Update Integration Tests, Users Controller and new Edit View Template.</a></p>
+
+<p><a href="https://github.com/xajler/just-todo-it/commit/4da7186bd475e6465f35ee404b2c50b4bbfdf996">A PUT tests are now top context, not child of POST context tests.</a></p></blockquote>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Kornelije Sajler</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-06T23:33:00+01:00" pubdate data-updated="true">Nov 6<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/categories/tdd/'>TDD</a>, <a class='category' href='/categories/authentication/'>authentication</a>, <a class='category' href='/categories/rails/'>rails</a>, <a class='category' href='/categories/rspec/'>rspec</a>, <a class='category' href='/categories/ruby/'>ruby</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://learnaholic.me/2012/11/06/rails-app-from-scratch-user-save-and-update/" data-via="xajler" data-counturl="http://learnaholic.me/2012/11/06/rails-app-from-scratch-user-save-and-update/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/2012/11/05/rails-app-from-scratch-user-validation/" title="Previous Post: Rails App from Scratch: User Validation">&laquo; Rails App from Scratch: User Validation</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/2012/11/06/rails-app-from-scratch-user-save-and-update/">Rails App from Scratch: User Save and Update</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2012/11/05/rails-app-from-scratch-user-validation/">Rails App from Scratch: User Validation</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2012/10/24/rails-app-from-scratch-user-signup-page/">Rails App from Scratch: User Sign Up page</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2012/10/19/rails-app-from-scratch-create-and-configure-testing/">Rails App from Scratch: Create and Configure for Testing</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2012/10/15/octopress-seo-and-disabling-the-blog-route/">Octopress SEO and disabling the blog route</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/xajler">@xajler</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'xajler',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("xajler", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/xajler" class="twitter-follow-button" data-show-count="false">Follow @xajler</a>
+  
+</section>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2012 - Kornelije Sajler -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'metaintellect-blog';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://learnaholic.me/2012/11/06/rails-app-from-scratch-user-save-and-update/';
+        var disqus_url = 'http://learnaholic.me/2012/11/06/rails-app-from-scratch-user-save-and-update/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-9867685-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+
+</body>
+</html>
