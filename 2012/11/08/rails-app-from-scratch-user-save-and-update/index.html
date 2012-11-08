@@ -194,6 +194,10 @@ action in <code>UsersController</code>:</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
+<p>First we storing a User to instance variable <code>@user</code> from the data given in User Sign Up
+Form as <code>params[:user]</code>. Then we try to save it, and on success, we assign the flash notice
+and redirect back to Sign Up Page.</p>
+
 <p>The test should pass:</p>
 
 <pre><code>Finished in 1.37 seconds
@@ -234,7 +238,7 @@ We shall crate the new <code>context</code> inside <code>POST /users</code> <cod
 </span><span class='line'>    <span class="n">click_button</span> <span class="s1">&#39;Sign Up&#39;</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="n">current_path</span><span class="o">.</span><span class="n">should</span> <span class="o">==</span> <span class="n">signup_path</span>
-</span><span class='line'>    <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span> <span class="s1">&#39;The User is successfully saved!&#39;</span>
+</span><span class='line'>    <span class="n">page</span><span class="o">.</span><span class="n">should</span> <span class="n">have_content</span> <span class="s2">&quot;Password doesn&#39;t match confirmation&quot;</span>
 </span><span class='line'>  <span class="k">end</span>
 </span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
@@ -255,7 +259,7 @@ We shall crate the new <code>context</code> inside <code>POST /users</code> <cod
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>We don&#8217;t need a new View Templet but rather change the <code>UserController</code> method <code>create</code>
+<p>We don&#8217;t need a new View Template but rather change the <code>UserController</code> method <code>create</code>
 to do something if the user is not saved. And when is not saved we shall flash an error message:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -283,14 +287,19 @@ to do something if the user is not saved. And when is not saved we shall flash a
 </span></code></pre></td></tr></table></div></figure>
 
 
+<p>We are setting as a flash message from a User instance errors and getting first <code>full_message</code>
+that will be set upon having problem saving user and in this case message will be
+&#8221;<em>Password doesn&#8217;t match confirmation</em>&#8221;.</p>
+
 <p>After applying the given code, the test should pass:</p>
 
 <pre><code>Finished in 1.54 seconds
 12 examples, 0 failures
 </code></pre>
 
-<p>We this code applied we also satisfy the tests that are yet to come, but we still need
-tests to prove that <code>create</code> method is working!</p>
+<p>With this code applied we also satisfy the tests that are yet to come, but we still need
+tests to prove that <code>create</code> method is working and proper error messages are thrown to
+guide the users of Application to resolve them!</p>
 
 <h3>Required Fields</h3>
 
@@ -387,6 +396,10 @@ to satisfy the previous test.</p>
 </span></code></pre></td></tr></table></div></figure>
 
 
+<p>So, in first test we test required Email, by sending blank one. In second the Passwords
+are blank and in third the Full Name is blank. And each test expect that meaningful messages
+are shown to the user of application!</p>
+
 <p>And if all was OK then all tests should pass:</p>
 
 <pre><code>Finished in 1.79 seconds
@@ -428,7 +441,8 @@ it:</p>
 
 
 <p>So, first we insert User from our created factory via <em>Factory Girl</em>. The factory of User
-inserted has the same email that we try to save it from the form.</p>
+inserted has the same email that we try to save it from the User Sign Up Form. And again
+we test to get meaningful message when email is not unique.</p>
 
 <p>The test should pass, because the code is implemented:</p>
 
@@ -466,6 +480,9 @@ inserted has the same email that we try to save it from the form.</p>
 </span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
+
+<p>The test applies the Passwords that are of 3 characters long and we expect to get right message
+that is telling the right expectations of Password in this case minimum of 8 characters.</p>
 
 <p>This was easy, all tests should pass still:</p>
 
@@ -528,7 +545,7 @@ new <code>context</code> called &#8221;<em>PUT users/:id</em>&#8221; and new <co
 so we need the User id when we want to edit him. This is why we pass the <code>user</code> variable to the
 <code>edit_user_path</code>.</p>
 
-<p>Before we fill in the Update User Form we shall test it if the Form fields are actually binded with
+<p>Before we fill in the User Update Form we shall test it if the Form fields are actually binded with
 data from User that will be updated.</p>
 
 <p>OK, same thing as for new/create it will fail, first, because there is no method <code>edit</code> in
@@ -576,7 +593,7 @@ User data.</p>
 
 
 <p>Long time ago when we are creating View Template for Sign Up we&#8217;ve created <code>new.html.haml</code>
-and also separated form to partial <code>_form.html.haml</code> so it can be shared witd edit View.</p>
+and also separated form to partial <code>_form.html.haml</code> so it can be shared with Edit User View.</p>
 
 <p>Lets create <code>edit.html.haml</code> View page that calls the Form partial and passing to it the
 <code>@user</code> so that the Form will display User data:</p>
@@ -591,7 +608,7 @@ and also separated form to partial <code>_form.html.haml</code> so it can be sha
 
 
 <p>The test will fail because there is no button &#8220;Update User&#8221;, and this is because we hard-coded
-the &#8220;Sign Up&#8221; text to submit element in the form partial <code>_form.html.haml</code>. We will fix
+the &#8220;Sign Up&#8221; text to submit element in the form partial <code>_form.html.haml</code>. We will fix it now,
 not very pretty but it will work:</p>
 
 <p>Change <code>submit</code> in <code>_form.html.haml</code> from:</p>
@@ -632,24 +649,20 @@ not very pretty but it will work:</p>
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
 </pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">update</span>
 </span><span class='line'>  <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span> <span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span>
 </span><span class='line'>
 </span><span class='line'>  <span class="k">if</span> <span class="vi">@user</span><span class="o">.</span><span class="n">update_attributes</span> <span class="n">params</span><span class="o">[</span><span class="ss">:user</span><span class="o">]</span>
 </span><span class='line'>    <span class="n">flash</span><span class="o">[</span><span class="ss">:notice</span><span class="o">]</span> <span class="o">=</span> <span class="s1">&#39;The User is successfully updated!&#39;</span>
 </span><span class='line'>    <span class="n">redirect_to</span> <span class="n">edit_user_path</span>
-</span><span class='line'>  <span class="k">else</span>
-</span><span class='line'>      <span class="n">flash</span><span class="o">[</span><span class="ss">:error</span><span class="o">]</span> <span class="o">=</span> <span class="vi">@user</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">full_messages</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span>
-</span><span class='line'>      <span class="n">redirect_to</span> <span class="n">signup_path</span>
 </span><span class='line'>  <span class="k">end</span>
 </span><span class='line'><span class="k">end</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>I</p>
+<p>First we getting User from the database from given User Id, and then call <code>update_atrributes</code>
+from the data send via Form as <code>params[:user]</code>. Set the flash notice that User is updated
+and redirect to Update User page where we can see that User is actually updated.</p>
 
 <p>And at last the test is passing:</p>
 
@@ -658,8 +671,8 @@ not very pretty but it will work:</p>
 </code></pre>
 
 <p>The only problem here is that to Update User the <code>password</code>s needed to be entered every
-time. There are better solutions, like, if they are blank to ignore them on update instead
-right now, it will be validated. And blank password is not allowed!</p>
+time. There are better solutions, like if they are blank, to ignore them on update, instead
+currently it will be validated. And blank password is not allowed!</p>
 
 <h2>Password Mismatch</h2>
 
@@ -781,6 +794,10 @@ User is created:</p>
 <p>The above test ensures that the <code>email</code> after creation will stay intact, while other fields
 will change, there will be no errors having different <code>email</code>. The <code>email</code> for update will
 be silently ignored.</p>
+
+<p>The implementation code of this validation is actually in User Model,
+making the <code>email</code> as <code>attr_readonly</code> that we did in previous post, this test only ensures
+that validation is implemented from View perspective.</p>
 
 <p>And now all 20 test should pass, and we use RSpec format to show them all:</p>
 
@@ -1308,7 +1325,7 @@ Application.</p>
 
 <p>The code is hosted on GitHub and can be cloned from the <a href="https://github.com/xajler/just-todo-it">xajler/just-todo-it</a>.</p>
 
-<blockquote><p>Github xajler/just-todo-it commit for this post:</p>
+<blockquote><p>Github xajler/just-todo-it commits for this post:</p>
 
 <p><a href="https://github.com/xajler/just-todo-it/commit/ebbd2b0e48b3b6d94571f8d593d8d194bd6aec46">The User Create and Update Integration Tests, Users Controller and new Edit View Template.</a></p>
 
