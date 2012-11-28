@@ -4,7 +4,7 @@
   <title><![CDATA[Learn-a-holic Geek Notes]]></title>
   <link href="http://learnaholic.me/atom.xml" rel="self"/>
   <link href="http://learnaholic.me/"/>
-  <updated>2012-11-28T11:35:13+01:00</updated>
+  <updated>2012-11-28T11:37:49+01:00</updated>
   <id>http://learnaholic.me/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -112,7 +112,7 @@ for <em>iOS</em> - <em>Empty Application</em>.</p>
 <ul>
 <li>For <em>Product Name</em> we will add, you guessed it: <em>Casa</em>.</li>
 <li>Add the <em>Organization Name</em> and <em>Company Identifier</em>.</li>
-<li>I tend to add <em>Class Prefix</em> (<code>MI</code>), because there is no namespacing in <code>Objective-C</code>.</li>
+<li>I tend to add <em>Class Prefix</em> (<code>MI</code> as <em>Metaintellect</em>), because there is no namespacing in <code>Objective-C</code>.</li>
 <li>Depending what are you targeting, you&#8217;ll choose <em>Devices</em>, I&#8217;m feeling lucky so I&#8217;m going with hardest <code>Universal</code> (iPhone and iPad support).</li>
 <li><em>ARC (Automatic Reference Counting)</em> should be left checked!</li>
 <li><em>Include Unit Test</em> should be unchecked, because we will set it later, from ground up!</li>
