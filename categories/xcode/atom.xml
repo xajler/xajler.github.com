@@ -4,7 +4,7 @@
   <title><![CDATA[Category: xcode | Learn-a-holic Geek Notes]]></title>
   <link href="http://learnaholic.me/categories/xcode/atom.xml" rel="self"/>
   <link href="http://learnaholic.me/"/>
-  <updated>2012-11-28T11:37:49+01:00</updated>
+  <updated>2012-11-28T11:39:08+01:00</updated>
   <id>http://learnaholic.me/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -122,7 +122,7 @@ for <em>iOS</em> - <em>Empty Application</em>.</p>
 <p><img src="/images/01-06.png"></p>
 
 <ul>
-<li>Hit <code>Finish</code> button and we have a target created</li>
+<li>Hit <code>Finish</code> button and we have a target created.</li>
 <li>Build it by <code>Project &gt; Build</code> or with <strong>⌘ B</strong> and we can ship it :)</li>
 </ul>
 
