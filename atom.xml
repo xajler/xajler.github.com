@@ -4,7 +4,7 @@
   <title><![CDATA[Learn-a-holic Geek Notes]]></title>
   <link href="http://learnaholic.me/atom.xml" rel="self"/>
   <link href="http://learnaholic.me/"/>
-  <updated>2012-11-08T10:24:57+01:00</updated>
+  <updated>2012-11-28T11:29:25+01:00</updated>
   <id>http://learnaholic.me/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -12,6 +12,175 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Xcode 4.5: Workspace, Project and Target Setup from Scratch]]></title>
+    <link href="http://learnaholic.me/2012/11/28/xcode-4-dot-5-workspace-project-and-target-from-scratch/"/>
+    <updated>2012-11-28T10:35:00+01:00</updated>
+    <id>http://learnaholic.me/2012/11/28/xcode-4-dot-5-workspace-project-and-target-from-scratch</id>
+    <content type="html"><![CDATA[<p>In aim to learn more about <em>Apple</em>&#8217;s Development stack and because I will be creating an
+<em>iPhone</em> and will include <em>iPad</em> App as <code>Universal</code> App. I&#8217;ll be going through creation of
+the minimal as possible project setup for current stable version of <em>Xcode 4.5.2</em> and <em>iOS 6</em>.</p>
+
+<h2>Workspace</h2>
+
+<p>So first, what exactly is a <em>Workspace</em>, as I remember it was introduced with <em>Xcode</em> 4, and it
+is a simply a container for combining multiple projects if they are needed, if not only <em>Project</em>
+will due. But in our case, we know that we shall have multiple projects, so the <em>Workspace</em> is way to go.</p>
+
+<blockquote><p><strong>Note</strong></p>
+
+<p>Maybe the desired workflow by <em>Apple</em> was first to create a <em>Project</em> and then if there is
+need for another project to bundle them into <em>Workspace</em>. But I wanted show the hierarchical
+structure of <em>Xcode</em> project, so on the top is a <em>Workspace</em> then <em>Project</em>.</p></blockquote>
+
+<p>Create it by:</p>
+
+<ul>
+<li>First create a folder (with Finder or Terminal), name it whatever the App will be called in my case <em>Casa</em>.</li>
+<li>Create <em>Workspace</em> by going to <code>File &gt; New &gt; Workspace...</code> or better with the keyboard key <strong>⌃ ⌘ N</strong>.</li>
+<li>Enter desired name, in my case <code>Casa</code> and save it to <em>Casa</em> folder already created.</li>
+</ul>
+
+
+<p><img src="http://learnaholic.me/images/01-01.png"></p>
+
+<ul>
+<li>It will create <em>Workspace</em> as folder named <code>Casa.xcworkspace</code>.</li>
+<li>Do not close the <em>Workspace</em> or <em>Xcode</em> for now.</li>
+</ul>
+
+
+<blockquote><p><strong>Geek Tip</strong></p>
+
+<p>For hard-core coders open <em>Xcode</em> and <em>Workspace</em> from <em>Terminal</em> with <code>open Casa.xcworkspace</code>.</p></blockquote>
+
+<h2>Empty Project</h2>
+
+<p>The <em>Xcode</em> project is the thing that is usually what it is created in most examples.
+This way <em>Project</em> and the <em>Target(s)</em> will be created together.</p>
+
+<p>But not to get the ahead of myself, we will not use this pattern, since we broke it with
+creation of <em>Workspace</em> in first place, we will broke it even more by creating empty project.</p>
+
+<p>Because when you start with the <em>Empty Project</em> you can actually see what <em>Project</em> is, basically
+nothing, just another container, that will hold <em>Targets</em>.</p>
+
+<ul>
+<li>Create <em>Empty Project</em> by going to <code>File &gt; New &gt; Project...</code> or by keyboard shortcut <strong>⇧ ⌘ N</strong>.</li>
+<li>Something strange will happen, another instance of <em>Xcode</em> will open!!!</li>
+<li>From <em>iOS</em> group choose <em>Other</em> in left pane and in right pane choose <em>Empty</em> as blue <em>Project</em> icon.</li>
+</ul>
+
+
+<p><img src="http://learnaholic.me/images/01-02.png"></p>
+
+<ul>
+<li>Hit the <code>Next</code> button, add <em>Product Name</em>, in my case, still <em>Casa</em>.</li>
+<li>Again hit <code>Next</code> button, go to <em>Casa</em> folder, because we want the project to be created here.</li>
+<li>If you want to get <em>Git</em> repository in one way, check the <em>Create local git repository for this project</em>.</li>
+<li>And for <em>Add to</em> we want to add it to <em>Casa Workspace</em> so choose <em>Casa</em>.</li>
+</ul>
+
+
+<p><img src="http://learnaholic.me/images/01-03.png"></p>
+
+<ul>
+<li>It will close this instance of <em>Xcode</em>, but second instance will have a <em>Workspace</em> and <em>Project</em> all together!</li>
+</ul>
+
+
+<p><img src="http://learnaholic.me/images/01-04.png"></p>
+
+<h2>Target (Empty Application)</h2>
+
+<p>So finally we&#8217;re getting to the meat of <em>Xcode</em>, the <em>Target</em> is what will hold all you code, resources,
+settings for build or deployment. If we had not chosen <em>Empty Project</em> in last part,
+it would create <em>Project</em> and <em>Target</em> all together, even if we chose the <em>Empty Application</em>.</p>
+
+<p>But we are learning all the parts so we shall in this case create a simple as possible <em>Target</em>
+for <em>iOS</em> - <em>Empty Application</em>.</p>
+
+<ul>
+<li>Make sure the <code>Casa</code> <em>Project</em> is selected and at bottom hit a big plus button <code>Add Target</code>.</li>
+<li>In <em>iOS</em> group choose <em>Application</em> on left and on the right choose <em>Empty Application</em>. Hit <code>Next</code>.</li>
+</ul>
+
+
+<p><img src="http://learnaholic.me/images/01-05.png"></p>
+
+<ul>
+<li>For <em>Product Name</em> we will add, you guessed it: <em>Casa</em>.</li>
+<li>Add the <em>Organization Name</em> and <em>Company Identifier</em>.</li>
+<li>I tend to add <em>Class Prefix</em> (<code>MI</code>), because there is no namespacing in <code>Objective-C</code>.</li>
+<li>Depending what are you targeting, you&#8217;ll choose <em>Devices</em>, I&#8217;m feeling lucky so I&#8217;m going with hardest <code>Universal</code> (iPhone and iPad support).</li>
+<li><em>ARC (Automatic Reference Counting)</em> should be left checked!</li>
+<li><em>Include Unit Test</em> should be unchecked, because we will set it later, from ground up!</li>
+</ul>
+
+
+<p><img src="http://learnaholic.me/images/01-06.png"></p>
+
+<ul>
+<li>Hit <code>Finish</code> button and we have a target created</li>
+<li>Build it by <code>Project &gt; Build</code> or with <strong>⌘ B</strong> and we can ship it :)</li>
+</ul>
+
+
+<p><img src="http://learnaholic.me/images/01-07.png"></p>
+
+<h2>My Thoughts on Objective-C</h2>
+
+<p>So there are many ways to get to <em>AppStore</em> and not using the default <em>Apple</em> language: <em>Objective-C</em>.
+One of many are <em>RubyMotion</em> (<em>Ruby</em>), <em>MonoTouch</em> (<em>C#</em>), <em>PhoneGap</em> (<em>HTML</em>, <em>CSS</em>, <em>JS</em>),&#8230;, but
+<em>Objective-C</em> is still used as preferred language.</p>
+
+<p>There is a lot of criticism on <em>Objective-C</em> language, even though it is a <em>C</em> based language,
+like <em>C++</em>, <em>Java</em> and <em>C#</em>. But those are kind of similar language where transition is very
+easy, but transition to <em>Objective-C</em> is awkward, even more than to <em>JavaScript</em>. And this
+is mostly because <em>Objective-C</em> has a not only strong legacy in <em>C</em> (static and procedural part) but
+also in one of the underestimated language <em>Smalltalk</em> (dynamic and object or better message driven part).</p>
+
+<p>And even though the <em>Objective-C</em> looks very awkward, but because it has a legacy from two great
+languages that are in my opinion pretty hard and crazy to merge, has my everlasting respect. And I
+find my self writing <em>Objective-C</em> better and with more joy than the <em>Java</em> or <em>C#</em>.</p>
+
+<p>What I dislike about the <em>Objective-C</em> is that code snippets, examples found on web are mostly so
+poorly written, and same for most paid Video Tutorials. So much repetitive code, huge methods,
+<strong>copy-paste driven development</strong> everywhere, same as in most <em>.NET</em> (especially VB.NET), <em>PHP</em>,
+and also in <em>Rails</em> (excluding pure <em>Ruby</em> programmers) examples!</p>
+
+<p>There is quite a lot resources how to create <em>iOS</em> apps but mainly focusing on the features
+like Table Views, MapKit, and so on. But it is really hard to find good source on
+Design Patterns, refactoring and best coding practices, or how to structure the <em>iOS</em>
+app into Groups (there are no Folders, files are all in root of <em>Target</em>),</p>
+
+<p>But there are quite neat features in <em>Objective-C</em> features like protocols and categories.
+I also like the progress or evolution of <em>Objective-C</em> for embracing properties, <em>ARC</em> (Automatic
+Reference Counting), Blocks, GCD (Grand Central Dispatch) and new literals for Arrays, Dictionaries,&#8230;</p>
+
+<p>And for the end abandoning the old <em>GCC</em> compiler and embracing and involving in creating
+<em>LLVM</em> compiler, much faster, and now with really great code inspection built in to <em>Xcode</em>&#8230;</p>
+
+<h2>My Thoughts on Xcode 4</h2>
+
+<p>And there is <em>Xcode</em>, the version 3 was too funky too me, especially separate <em>Interface Builder</em>
+and Apple old-school floating inspectors and controls all around the desktop.</p>
+
+<p>Bet then came the version 4 and even though I really dislike the IDEs, must admit that it is to me
+the best IDE. Especially comparing to <em>Eclipse</em> and <em>Visual Studio</em>. Responsiveness is great,
+integration with <em>Git</em> (even though I still prefer using it by Terminal) and diff viewer
+is really what was expected of Apple, also <em>StoryBoard</em> and integrated <em>Inerface Builder</em>.
+Multi monitor friendly, assistant editor, help integrated, I think you get it, the best IDE I&#8217;ve
+worked! Don&#8217;t get me wrong there is still place for improvements but in my opinion <em>Apple</em> is on the
+right track.</p>
+
+<h2>What&#8217;s Next</h2>
+
+<p>In next post we&#8217;ll examine <em>Xcode</em> SCM (Source Control Management) capabilities using built-in
+support for <em>Git</em>. Also we&#8217;ll push this project to <em>GitHub</em>, examine <em>Xcode</em> <em>Git</em> Diffing and History.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Rails App from Scratch: User Save and Update]]></title>
