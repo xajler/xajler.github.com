@@ -4,7 +4,7 @@
   <title><![CDATA[Category: xcode | Learn-a-holic Geek Notes]]></title>
   <link href="http://learnaholic.me/categories/xcode/atom.xml" rel="self"/>
   <link href="http://learnaholic.me/"/>
-  <updated>2012-11-28T11:29:25+01:00</updated>
+  <updated>2012-11-28T11:35:13+01:00</updated>
   <id>http://learnaholic.me/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -77,7 +77,7 @@ nothing, just another container, that will hold <em>Targets</em>.</p>
 
 <ul>
 <li>Hit the <code>Next</code> button, add <em>Product Name</em>, in my case, still <em>Casa</em>.</li>
-<li>Again hit <code>Next</code> button, go to <em>Casa</em> folder, because we want the project to be created here.</li>
+<li>Again hit <code>Next</code> button, go to <em>Casa</em> folder, because we want the project to be created there.</li>
 <li>If you want to get <em>Git</em> repository in one way, check the <em>Create local git repository for this project</em>.</li>
 <li>And for <em>Add to</em> we want to add it to <em>Casa Workspace</em> so choose <em>Casa</em>.</li>
 </ul>
