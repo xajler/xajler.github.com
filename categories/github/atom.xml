@@ -4,7 +4,7 @@
   <title><![CDATA[Category: github | Learn-a-holic Geek Notes]]></title>
   <link href="http://learnaholic.me/categories/github/atom.xml" rel="self"/>
   <link href="http://learnaholic.me/"/>
-  <updated>2012-11-28T11:41:12+01:00</updated>
+  <updated>2012-11-29T04:34:56+01:00</updated>
   <id>http://learnaholic.me/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -12,6 +12,151 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Xcode 4.5: Source Version Control wit Git and Github]]></title>
+    <link href="http://learnaholic.me/2012/11/29/xcode-4-dot-5-source-version-control-wit-git-and-github/"/>
+    <updated>2012-11-29T04:30:00+01:00</updated>
+    <id>http://learnaholic.me/2012/11/29/xcode-4-dot-5-source-version-control-wit-git-and-github</id>
+    <content type="html"><![CDATA[<p>OK, so we created the skeleton of App. While creating the <em>Xcode Project</em> we could add the project
+to <em>Git</em> repository, but we didn't, we shall do it manually and finally at the end we shall
+push it to the <em>Github</em> hosted repository.</p>
+
+<h2>Git Repository</h2>
+
+<p>Firstly we really want to add a proper <em>Xcode</em> and <em>Objective-C</em> <code>.gitignore</code> file. Here is the
+<em>Gist</em> link to one proper <a href="https://gist.github.com/3786883">.gitingnore</a>. Download and copy
+it to the App root, before doing the first commit or use <code>wget</code> as I did!</p>
+
+<p>Since we didn't create the <em>Git</em> repository when the <em>Xcode</em> was offering. We shall create
+repository, add <code>.gitignore</code> and create initial commit:</p>
+
+<p><code>
+wget https://raw.github.com/gist/3786883/93e8364b202f691abc4cf3e22001a45e799011cc/.gitignore
+git init .
+git add .
+git status
+git commit -m 'Initial commit'
+</code></p>
+
+<p><img src="/images/02-01.png"></p>
+
+<blockquote><p>Note</p>
+
+<p>I would recommend creating repository without <em>Xcode</em> help. Because it will create no <code>.gitignore</code>
+and by it will commit a lot of junk to repository.</p>
+
+<p>Folders like <code>xcuserdata</code> will change frequently and polluting your
+repository with not needed files and even more in teams, it can overwrite another developer's
+<code>xcuserdata</code>  every time with not wanted user data from other developer!</p></blockquote>
+
+<h2>XCode Organizer</h2>
+
+<p>The <em>Xcode Organizer</em> is where the <em>Repositories</em> can be viewed.</p>
+
+<blockquote><p>Note</p>
+
+<p>If you had a <em>Xcode</em> open during the creation of repository through Terminal, reopen the
+the <em>Xcode</em> because it will not detect the repository in <em>Organizer</em>.</p></blockquote>
+
+<p>To open <em>Organizer</em> go to <code>Window &gt; Organizer</code> or with keyboard shortcut <strong>⇧ ⌘ 2</strong>.
+There should be a repository <em>Casa</em>:</p>
+
+<p><img src="/images/02-02.png"></p>
+
+<h2>Add Github Remote</h2>
+
+<p>To add the <em>Github</em> remote so that we can push the commits to it, we first need to create
+a <em>Github</em> repository, I've already created repository <a href="https://github.com/xajler/casa-app-xcode">casa-app-xcode</a>.</p>
+
+<p>Let's add this remote with <em>Xcode</em>:</p>
+
+<ul>
+<li>Go to <em>Organizer Repositories</em>.</li>
+<li>Select <em>Casa</em> repository.</li>
+<li>In <em>Casa</em> repository select <em>Remotes</em>.</li>
+<li>Hit the <code>Add Remote</code> circled plus button.</li>
+<li>For <em>Remote Name</em> enter: <code>casa-app-xcode</code>.</li>
+<li>For <em>Location</em> enter: <code>https://github.com/xajler/casa-app-xcode</code>.</li>
+</ul>
+
+
+<p>Ignore the git username and password if you have <em>Github SSH</em> set up.</p>
+
+<p><img src="/images/02-03.png"></p>
+
+<h2>Push changes to Github</h2>
+
+<ul>
+<li>Choose <code>File &gt; Source Control &gt; Push...</code>.</li>
+<li>Wait availe for first time.</li>
+</ul>
+
+
+<p><img src="/images/02-04.png"></p>
+
+<p>The commit is pushed to <em>Githb</em>.</p>
+
+<p><img src="/images/02-05.png"></p>
+
+<h2>Commiting changes with Xcode</h2>
+
+<p>From the main app delegate <code>MIAppDelegate.m</code> we shall remove the generated comments and
+commit it with Xcode:</p>
+
+<ul>
+<li>Applay changes to the <code>MIAppDelegate.m</code> by removing commented code in methods.</li>
+<li>Commit it by going to <code>File &gt; Source Control &gt; Commit...</code> or use keyboard <strong>⌥ ⌘ C</strong>.</li>
+<li>Enter the commit message.</li>
+<li>Hit the <code>Commit 1 File</code> button.</li>
+</ul>
+
+
+<p><img src="/images/02-06.png"></p>
+
+<ul>
+<li>Push changes to <a href="https://github.com/xajler/casa-app-xcode">Github repository</a>.</li>
+</ul>
+
+
+<h2>Branching in Xcode</h2>
+
+<p>On commit it can be chosen to commit to branch with button <code>Commit to Branch...</code>. Where
+the branch can be chosen or even newly one created.</p>
+
+<p>Alternatively branches can be created in <em>Organizer Repositories</em> by selecting wanted
+repository and selecting <em>Branches</em>, and hitting <code>Add Branch</code> button.</p>
+
+<h2>Diff in Xcode</h2>
+
+<p>Anytime while coding the <em>Version editor</em> can be turned on to see changes with current <code>HEAD</code>
+but also it is possible to change to past revisions.</p>
+
+<p><em>Xcode Version editor</em> is really nice and with visuals that helping in better understanding of the code changes.</p>
+
+<p><img src="/images/02-07.png"></p>
+
+<h2>Conclusion</h2>
+
+<p>As I said in last post <em>Xcode 4</em> is great IDE, filled with lots of features. Respect to
+have <em>Git</em> as default Version control. The <em>SVN</em> is also supported, but who would want to use
+it in 21st Century. But in my opinion the Diff part is the greatest feature of it all!</p>
+
+<p>But with all of this, I'm still not impressed with managing <em>Git</em> with IDE, and I will
+still be using my favorite <em>iTerm2</em> to interact with <em>Git</em> and <em>Github</em>.</p>
+
+<h2>What's next</h2>
+
+<p>So we past the <em>Xcode</em> project creation (from ground up!) and in this post the Version Control
+as <em>Git</em> and creating remote to the <em>Github</em>.</p>
+
+<p>In next <em>Xcode</em> post we will have an broad overview of <em>Xcode</em> support of Testing. What
+Testing Frameworks are available, which is the default <em>Xcode</em> Testing Framework.</p>
+
+<p>Look for the <em>BDD</em> Testing Frameworks and picking one for more in depth examine of it. And also
+the available Mocking Frameworks and its usage.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Rails App from Scratch: Create and Configure for Testing]]></title>
