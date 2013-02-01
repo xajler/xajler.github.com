@@ -4,7 +4,7 @@
   <title><![CDATA[Learn-a-holic Geek Notes]]></title>
   <link href="http://learnaholic.me/atom.xml" rel="self"/>
   <link href="http://learnaholic.me/"/>
-  <updated>2013-02-01T18:40:02+01:00</updated>
+  <updated>2013-02-01T20:51:17+01:00</updated>
   <id>http://learnaholic.me/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -96,6 +96,14 @@ repository directory from where you want to convert from!</p></blockquote>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>git checkout HEAD
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Beware if you have a lots of branches, that pushing <code>master</code> will only push master. To push evrything to the remote
+use:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>git push --all origin
 </span></code></pre></td></tr></table></div></figure>
 
 

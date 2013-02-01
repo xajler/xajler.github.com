@@ -4,7 +4,7 @@
   <title><![CDATA[Category: git | Learn-a-holic Geek Notes]]></title>
   <link href="http://learnaholic.me/categories/git/atom.xml" rel="self"/>
   <link href="http://learnaholic.me/"/>
-  <updated>2013-02-01T18:40:02+01:00</updated>
+  <updated>2013-02-01T20:51:17+01:00</updated>
   <id>http://learnaholic.me/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -87,6 +87,13 @@ $ ./../fast-export/hg-fast-export.sh -r ../hg_repo --force
 
 <p><code>bash
 $ git checkout HEAD
+</code></p>
+
+<p>Beware if you have a lots of branches, that pushing <code>master</code> will only push master. To push evrything to the remote
+use:</p>
+
+<p><code>bash
+$ git push --all origin
 </code></p>
 
 <p>And now all commits and previous branches are converted to Git!</p>
