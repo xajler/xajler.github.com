@@ -4,7 +4,7 @@
   <title><![CDATA[Learn-a-holic Geek Notes]]></title>
   <link href="http://learnaholic.me/atom.xml" rel="self"/>
   <link href="http://learnaholic.me/"/>
-  <updated>2012-11-29T04:34:56+01:00</updated>
+  <updated>2013-02-01T14:56:28+01:00</updated>
   <id>http://learnaholic.me/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -12,6 +12,87 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Converting Mercurial (hg) to Git repository on Mac]]></title>
+    <link href="http://learnaholic.me/2013/02/01/converting-mercurial-hg-to-git-repository-on-mac/"/>
+    <updated>2013-02-01T14:16:00+01:00</updated>
+    <id>http://learnaholic.me/2013/02/01/converting-mercurial-hg-to-git-repository-on-mac</id>
+    <content type="html"><![CDATA[<p>I had to convert the <em>Mercurial</em> (hg) repository to <em>Git</em> repository, and by lot of advises
+on the Internet, I&#8217;ve decided to use <a href="http://repo.or.cz/w/fast-export.git">Fast Export</a>.</p>
+
+<h2>Clone Fast Export</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>git clone git://repo.or.cz/fast-export.git
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Create a new repository</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>mkdir git_repo
+</span><span class='line'><span class="nv">$ </span><span class="nb">cd </span>git_repo
+</span><span class='line'><span class="nv">$ </span>git init .
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Problems running Fast Export</h2>
+
+<h3>Getting to know Python with the Mercurial</h3>
+
+<p>By running <em>Fast Export</em> I got error message:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="s1">&#39;ImportError: No module named mercurial&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Essentially this means that <em>Python</em> does not know about <em>Mercurial</em>.
+The fix for that would be to install <em>Mercurial</em> as a <em>Python</em> module. I&#8217;ve used <code>easy_install</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>sudo easy_install -U mercurial
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Using &#8220;force&#8221; option</h3>
+
+<p>The next error was:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="s1">&#39;Error: repository has at least one unnamed head...&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>To fix it there was need to set <em>Fast Export</em> with parameter <code>--force</code>.</p>
+
+<h2>Starting Fast Export</h2>
+
+<p>Make sure you are in the <em>Git</em> repository that you want to convert to:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span><span class="nb">cd </span>git_repo
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Run from it a <em>Fast Export</em> like this:</p>
+
+<blockquote><p><em>Note</em>:</p>
+
+<p>Assumes that the <em>Fast Export</em> in directory up and the <code>hg_repo</code> is the <em>Mercurial</em>
+repository directory from where you want to convert from!</p></blockquote>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>./../fast-export/hg-fast-export.sh -r ../hg_repo --force
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>After few moments, your <em>Mercurial (hg)</em> repository will be converted to <em>Git</em> one!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Xcode 4.5: Source Version Control wit Git and Github]]></title>
