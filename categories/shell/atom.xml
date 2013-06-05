@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Powershell | Learn-a-holic Geek Notes]]></title>
-  <link href="http://learnaholic.me/categories/powershell/atom.xml" rel="self"/>
+  <title><![CDATA[Category: shell | Learn-a-holic Geek Notes]]></title>
+  <link href="http://learnaholic.me/categories/shell/atom.xml" rel="self"/>
   <link href="http://learnaholic.me/"/>
   <updated>2013-06-05T22:31:28+02:00</updated>
   <id>http://learnaholic.me/</id>

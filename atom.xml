@@ -4,7 +4,7 @@
   <title><![CDATA[Learn-a-holic Geek Notes]]></title>
   <link href="http://learnaholic.me/atom.xml" rel="self"/>
   <link href="http://learnaholic.me/"/>
-  <updated>2013-02-01T20:51:17+01:00</updated>
+  <updated>2013-06-05T22:31:28+02:00</updated>
   <id>http://learnaholic.me/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -12,6 +12,310 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Configuring TeamCity 7 with Git revision short hash, Uploading to Amazon S3 and sending email with release link and Developer commit details]]></title>
+    <link href="http://learnaholic.me/2013/06/05/configuring-teamcity-7-with-git-revisions-uploading-to-amazon-s3-and-sending-email-with-release-link/"/>
+    <updated>2013-06-05T20:37:00+02:00</updated>
+    <id>http://learnaholic.me/2013/06/05/configuring-teamcity-7-with-git-revisions-uploading-to-amazon-s3-and-sending-email-with-release-link</id>
+    <content type="html"><![CDATA[<p>Here is a short tutorial (with extra long title!) how to improve the <a href="http://www.jetbrains.com/">JetBrains</a>
+<a href="http://www.jetbrains.com/teamcity/">TeamCity</a> Build Server for <em>CI</em> (Continuos Integration).</p>
+
+<p>This is what wiill do to improve <em>TeamCity 7</em>:</p>
+
+<ul>
+<li>Change the Build version number to include Git short hash (7 chars) as Revison.</li>
+<li>Upload file to <a href="http://aws.amazon.com/s3/">Amazon S3</a>.</li>
+<li>Send email via Gmail with:
+
+<ul>
+<li>Latest downloadable link of release from <em>Amazon S3</em>.</li>
+<li>Developer commit message details.</li>
+</ul>
+</li>
+</ul>
+
+
+<blockquote><p>Note:</p>
+
+<p>This is not blog post how to set up <em>TeamCity</em>, this is usually really straight forward thing to do.
+So in this blog post I assume that there is <em>TeamCity</em> project and at least one <em>Build Configuration</em>
+already created!</p></blockquote>
+
+<h2>Setting Git Short Hash as Revision of TeamCity Build Number</h2>
+
+<ul>
+<li>In <em>TeamCity</em> go to desired named &#8221;<em>Build Configuration</em>&#8221; in our case &#8221;<em>aeon</em>&#8221;.</li>
+<li>Click somewhere on right side on <em>Edit Configuration Settings</em> to enter <em>aeon Configuration Steps</em>.</li>
+<li>In <em>(1) General Settings</em> set <em>Build format number</em> to something like 1.0.{0} and <em>Save</em>.</li>
+<li>In <em>(3) Build Steps</em> click <em>Add build step</em> choose <em>Powershell</em> in listbox.</li>
+<li>Set <em>Name</em> if you want like &#8221;<em>Get Build Number with short Git Hash</em>&#8221;.</li>
+<li>For <em>Script</em> choose &#8221;<em>Source code</em>&#8221; from drop down box.</li>
+<li>In <em>Script Source</em> add following <em>Powershell</em> code and click <em>Save</em>:</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='powershell'><span class='line'><span class="nv">$BuildNumber</span> <span class="p">=</span> <span class="s2">&quot;%build.number%&quot;</span>
+</span><span class='line'><span class="nv">$Hash</span> <span class="p">=</span> <span class="s2">&quot;%build.vcs.number%&quot;</span>
+</span><span class='line'><span class="nv">$ShortHash</span> <span class="p">=</span> <span class="nv">$Hash</span><span class="p">.</span><span class="n">substring</span><span class="p">(</span><span class="n">0</span><span class="p">,</span><span class="n">7</span><span class="p">)</span>
+</span><span class='line'><span class="nb">Write-Host</span> <span class="s2">&quot;##teamcity[buildNumber &#39;$BuildNumber.$ShortHash&#39;]&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><em>Script execution mode</em> should not matter, mine is &#8220;Execute .ps1 script&#8230;&#8221;.</li>
+<li>After save <strong>make sure that this <em>Build Step</em> is first</strong>!!!!</li>
+<li>Use <em>Reorder build steps</em> link, if you have existing build setps.</li>
+</ul>
+
+
+<blockquote><p>Note:</p>
+
+<p>When build starts by Agent, it will be 1.0.1 and at the end it will change to
+1.0.1.53e7986!</p></blockquote>
+
+<h3>Shell version (<em>Linux</em> or <em>Mac</em>)</h3>
+
+<ul>
+<li>All same as <em>Powershell</em> until <em>(3) Build Steps</em>.</li>
+<li>In <em>(3) Build Steps</em> click <em>Add build step</em> choose <em>Command line</em> in listbox.</li>
+<li>In <em>Custom Script</em> add following <em>shell</em> script and click <em>Save</em>:</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">BUILD_NUMBER</span><span class="o">=</span>%build.number%
+</span><span class='line'><span class="nv">GIT_HASH</span><span class="o">=</span>%build.vcs.number%
+</span><span class='line'><span class="nv">GIT_HASH_SHORT</span><span class="o">=</span><span class="k">${</span><span class="nv">GIT_HASH</span><span class="p">:</span><span class="nv">0</span><span class="p">:</span><span class="nv">7</span><span class="k">}</span>
+</span><span class='line'><span class="nb">echo</span> <span class="s2">&quot;##teamcity[buildNumber &#39;$BUILD_NUMBER.${GIT_HASH_SHORT}&#39;]&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<blockquote><p>Note:</p>
+
+<p>I didn&#8217;t test <em>shell</em> version, it should work, but maybe some tweaks are necessary!</p></blockquote>
+
+<h2>Powershell script for sending file to Amazon S3 and sending email via Gmail</h2>
+
+<ul>
+<li>Download and install <a href="http://aws.amazon.com/powershell">AWS Tools for Windows Powershell</a>.</li>
+<li>With this SDK is really easy to upload file to Amazon S3.</li>
+<li>Amazon S3 account is needed and also <em>Access Key</em> and <em>Secret Key</em>.</li>
+<li>Assumes that Amazon S3 <em>bucket</em> name is &#8221;<em>aeon</em>&#8221; and region is &#8221;<em>eu-west-1</em>&#8221;.</li>
+<li>This will produce <em>https://s3-eu-west-1.amazonaws.com/aeon/<release-file>&#8221;</em>.</li>
+<li>The script is lousy written, it should be better, especially when it is needed to be reused for multiple Builded apps.</li>
+<li>The thing needed to be entered will be inside &#8220;&lt;something-to-do&gt;&#8221;.</li>
+<li>In my case the uploaded file is &#8220;.exe&#8221; file so it is harcoded in Amazon S3 URL.</li>
+<li>Make sure that file name is not really crazy and there are no spaces in it (it is always easier this way)!</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+</pre></td><td class='code'><pre><code class='powershell'><span class='line'><span class="nv">$bucketName</span> <span class="p">=</span> <span class="s1">&#39;aeon&#39;</span>
+</span><span class='line'><span class="nv">$hasCredentials</span> <span class="p">=</span> <span class="nv">$false</span><span class="err">;</span>
+</span><span class='line'><span class="nv">$filePath</span> <span class="p">=</span> <span class="s1">&#39;&lt;absolute-path-to-folder-where-file-for-upload-is&gt;&#39;</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="k">function</span> <span class="n">GetLastGitLog</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nv">$sourcePath</span> <span class="p">=</span> <span class="s1">&#39;&lt;absolute-path-to-where-teamcity-pulls-repo&gt;&#39;</span>
+</span><span class='line'>    <span class="nv">$isSourcePathExist</span> <span class="p">=</span> <span class="nb">Test-Path</span> <span class="nv">$sourcePath</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(!</span><span class="nv">$isSourcePathExist</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="s2">&quot;source folder ($sourcePath) for file is not existent! Exiting...&quot;</span>
+</span><span class='line'>        <span class="n">exit</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nb">Set-Location</span> <span class="nv">$sourcePath</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">git</span> <span class="n">log</span> <span class="n">-n</span> <span class="n">1</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">function</span> <span class="n">MessageBody</span><span class="p">(</span><span class="nv">$version</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nv">$url</span> <span class="p">=</span> <span class="s2">&quot;https://s3-eu-west-1.amazonaws.com/{0}/{1}.exe&quot;</span> <span class="o">-f</span> <span class="nv">$bucketName</span><span class="p">,</span> <span class="nv">$version</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nv">$commitMessage</span> <span class="p">=</span> <span class="n">GetLastGitLog</span> <span class="p">|</span> <span class="nb">Out-String</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="s2">&quot;&lt;h2&gt;My Fabulos Product - New Version&lt;/h2&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="s2">     &lt;p&gt;&lt;strong&gt;Version:&lt;/strong&gt; {0}&lt;/p&gt;</span>
+</span><span class='line'><span class="s2">     &lt;p&gt;&lt;strong&gt;Download Link:&lt;/strong&gt; &lt;a href=&#39;{1}&#39;&gt;{2}.exe&lt;/a&gt;&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="s2">     &lt;p&gt;&lt;/p&gt;</span>
+</span><span class='line'><span class="s2">     &lt;p&gt;&lt;strong&gt;Developer Commit Details:&lt;/strong&gt;&lt;/p&gt;</span>
+</span><span class='line'><span class="s2">     &lt;pre&gt;{3}&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="s2">     &lt;p&gt;&lt;/p&gt;</span>
+</span><span class='line'><span class="s2">     &lt;p&gt;Regards,&lt;/p&gt;</span>
+</span><span class='line'><span class="s2">     &lt;p&gt;My Fabulous Team City Build Server (example.com)&lt;/p&gt;</span>
+</span><span class='line'><span class="s2">     &quot;</span> <span class="o">-f</span> <span class="nv">$version</span><span class="p">,</span> <span class="nv">$url</span><span class="p">,</span> <span class="nv">$version</span><span class="p">,</span> <span class="nv">$commitMessage</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">function</span> <span class="n">SendEmail</span><span class="p">(</span><span class="nv">$binaryName</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nv">$version</span> <span class="p">=</span> <span class="nv">$binaryName</span><span class="p">.</span><span class="n">TrimEnd</span><span class="p">(</span><span class="s1">&#39;.exe&#39;</span><span class="p">)</span>
+</span><span class='line'>    <span class="nv">$mailTo</span> <span class="p">=</span> <span class="s2">&quot;&lt;first-email&gt;,&lt;second-email&gt;&quot;</span>
+</span><span class='line'>    <span class="nv">$subject</span> <span class="p">=</span> <span class="s2">&quot;[New Version]: $version&quot;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nv">$smtp</span> <span class="p">=</span> <span class="nb">new-object</span> <span class="n">Net</span><span class="p">.</span><span class="n">Mail</span><span class="p">.</span><span class="n">SmtpClient</span><span class="p">(</span><span class="s1">&#39;smtp.gmail.com&#39;</span><span class="p">,</span> <span class="n">587</span><span class="p">)</span>
+</span><span class='line'>    <span class="nv">$smtp</span><span class="p">.</span><span class="n">EnableSsl</span> <span class="p">=</span> <span class="nv">$true</span>
+</span><span class='line'>    <span class="nv">$smtp</span><span class="p">.</span><span class="n">Credentials</span> <span class="p">=</span> <span class="nb">New-Object</span> <span class="n">System</span><span class="p">.</span><span class="n">Net</span><span class="p">.</span><span class="n">NetworkCredential</span><span class="p">(</span><span class="s2">&quot;&lt;my-gmail-username&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;my-gmail-password&gt;&quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nv">$message</span> <span class="p">=</span> <span class="nb">New-Object</span> <span class="n">Net</span><span class="p">.</span><span class="n">Mail</span><span class="p">.</span><span class="n">MailMessage</span>
+</span><span class='line'>    <span class="nv">$message</span><span class="p">.</span><span class="n">From</span> <span class="p">=</span> <span class="s2">&quot;&lt;my-gmail-username&gt;@gmail.com&quot;</span>
+</span><span class='line'>    <span class="nv">$message</span><span class="p">.</span><span class="n">IsBodyHtml</span> <span class="p">=</span> <span class="nv">$true</span>
+</span><span class='line'>    <span class="nv">$message</span><span class="p">.</span><span class="n">Subject</span> <span class="p">=</span> <span class="nv">$subject</span>
+</span><span class='line'>    <span class="nv">$message</span><span class="p">.</span><span class="n">Body</span> <span class="p">=</span> <span class="n">MessageBody</span><span class="p">(</span><span class="nv">$version</span><span class="p">)</span>
+</span><span class='line'>    <span class="nv">$message</span><span class="p">.</span><span class="n">To</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="nv">$mailTo</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nv">$smtp</span><span class="p">.</span><span class="n">Send</span><span class="p">(</span><span class="nv">$message</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">$credentials</span> <span class="p">=</span> <span class="nb">Get-AWSCredentials</span> <span class="n">-ListStoredCredentials</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nv">$currentCredentials</span> <span class="o">-and</span> <span class="nv">$currentCredentials</span><span class="p">.</span><span class="n">Count</span> <span class="o">-gt</span> <span class="n">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nv">$hasCredentials</span> <span class="p">=</span> <span class="nv">$true</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="p">(!</span><span class="nv">$hasCredentials</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>     <span class="n">Initialize-AWSDefaults</span> <span class="n">-AccessKey</span> <span class="p">&lt;</span><span class="n">your-amazon-access-key</span><span class="p">&gt;</span> <span class="n">-SecretKey</span> <span class="p">&lt;</span><span class="n">your-amazon-secret-key</span><span class="p">&gt;</span> <span class="n">-Region</span> <span class="n">eu-west</span><span class="p">-</span><span class="n">1</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">$isFilePathExist</span> <span class="p">=</span> <span class="nb">Test-Path</span> <span class="nv">$filePath</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="p">(!</span><span class="nv">$isFilePathExist</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="s2">&quot;Folder ($filePath) for file is not existent! Exiting...&quot;</span>
+</span><span class='line'>    <span class="n">exit</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Filename and extension of file.</span>
+</span><span class='line'><span class="nv">$key</span> <span class="p">=</span> <span class="p">(</span><span class="nb">Get-ChildItem</span> <span class="nv">$filePath</span><span class="p">)[</span><span class="n">0</span><span class="p">].</span><span class="n">Name</span><span class="err">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">$file</span> <span class="p">=</span> <span class="p">(</span><span class="nb">Get-ChildItem</span> <span class="nv">$filePath</span><span class="p">)[</span><span class="n">0</span><span class="p">].</span><span class="n">FullName</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nv">$key</span> <span class="o">-and</span> <span class="nv">$file</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nb">Write-S3Object</span> <span class="n">-BucketName</span> <span class="nv">$bucketName</span> <span class="o">-File</span> <span class="nv">$file</span> <span class="n">-Key</span> <span class="nv">$key</span> <span class="n">-PublicReadOnly</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">SendEmail</span><span class="p">(</span><span class="nv">$key</span><span class="p">)</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>Save this script to &lt;whatever-you-want-to-call-it&gt;.ps1.</li>
+<li>This <em>Powershell</em> script can be added to <em>TeamCity</em> as a final <em>Build Step</em>.</li>
+<li>In <em>(3) Build Steps</em> click <em>Add build step</em> choose <em>Powershell</em> in listbox.</li>
+<li>For <em>Script</em> choose <em>File</em> from drop down box.</li>
+<li>For <em>Script File</em> add absolute path to saved <em>Powershell</em> script saved as <em>ps1</em>.</li>
+</ul>
+
+
+<blockquote><p>Note:</p>
+
+<p>Sorry, no <em>Linux</em> or <em>Mac</em> <em>shell</em> version of this script.</p></blockquote>
+
+<h2>Conclusion</h2>
+
+<p>Having short <em>Git</em> hash for a <em>Revision</em> in your versioning is very helpful and seven chars
+are mostly always enough to uniquely identify this release build with commit in your <em>Git</em> repository.</p>
+
+<p>The amazon S3 upload + send email with developer commit deatails is not state of art
+<em>Powershell</em> script, it is very buggy and not that much flexible, but it can help a
+lot in communication with QA (or outside beta testers) and having release build version binary,
+right after Developer commit!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Converting Mercurial (hg) to Git repository on Mac]]></title>

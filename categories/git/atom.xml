@@ -4,7 +4,7 @@
   <title><![CDATA[Category: git | Learn-a-holic Geek Notes]]></title>
   <link href="http://learnaholic.me/categories/git/atom.xml" rel="self"/>
   <link href="http://learnaholic.me/"/>
-  <updated>2013-02-01T20:51:17+01:00</updated>
+  <updated>2013-06-05T22:31:28+02:00</updated>
   <id>http://learnaholic.me/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -12,6 +12,228 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Configuring TeamCity 7 with Git revision short hash, Uploading to Amazon S3 and sending email with release link and Developer commit details]]></title>
+    <link href="http://learnaholic.me/2013/06/05/configuring-teamcity-7-with-git-revisions-uploading-to-amazon-s3-and-sending-email-with-release-link/"/>
+    <updated>2013-06-05T20:37:00+02:00</updated>
+    <id>http://learnaholic.me/2013/06/05/configuring-teamcity-7-with-git-revisions-uploading-to-amazon-s3-and-sending-email-with-release-link</id>
+    <content type="html"><![CDATA[<p>Here is a short tutorial (with extra long title!) how to improve the <a href="http://www.jetbrains.com/">JetBrains</a>
+<a href="http://www.jetbrains.com/teamcity/">TeamCity</a> Build Server for <em>CI</em> (Continuos Integration).</p>
+
+<p>This is what wiill do to improve <em>TeamCity 7</em>:</p>
+
+<ul>
+<li>Change the Build version number to include Git short hash (7 chars) as Revison.</li>
+<li>Upload file to <a href="http://aws.amazon.com/s3/">Amazon S3</a>.</li>
+<li>Send email via Gmail with:
+
+<ul>
+<li>Latest downloadable link of release from <em>Amazon S3</em>.</li>
+<li>Developer commit message details.</li>
+</ul>
+</li>
+</ul>
+
+
+<blockquote><p>Note:</p>
+
+<p>This is not blog post how to set up <em>TeamCity</em>, this is usually really straight forward thing to do.
+So in this blog post I assume that there is <em>TeamCity</em> project and at least one <em>Build Configuration</em>
+already created!</p></blockquote>
+
+<h2>Setting Git Short Hash as Revision of TeamCity Build Number</h2>
+
+<ul>
+<li>In <em>TeamCity</em> go to desired named "<em>Build Configuration</em>" in our case "<em>aeon</em>".</li>
+<li>Click somewhere on right side on <em>Edit Configuration Settings</em> to enter <em>aeon Configuration Steps</em>.</li>
+<li>In <em>(1) General Settings</em> set <em>Build format number</em> to something like 1.0.{0} and <em>Save</em>.</li>
+<li>In <em>(3) Build Steps</em> click <em>Add build step</em> choose <em>Powershell</em> in listbox.</li>
+<li>Set <em>Name</em> if you want like "<em>Get Build Number with short Git Hash</em>".</li>
+<li>For <em>Script</em> choose "<em>Source code</em>" from drop down box.</li>
+<li>In <em>Script Source</em> add following <em>Powershell</em> code and click <em>Save</em>:</li>
+</ul>
+
+
+<p><code>powershell
+$BuildNumber = "%build.number%"
+$Hash = "%build.vcs.number%"
+$ShortHash = $Hash.substring(0,7)
+Write-Host "##teamcity[buildNumber '$BuildNumber.$ShortHash']"
+</code>
+* <em>Script execution mode</em> should not matter, mine is "Execute .ps1 script...".
+* After save <strong>make sure that this <em>Build Step</em> is first</strong>!!!!
+* Use <em>Reorder build steps</em> link, if you have existing build setps.</p>
+
+<blockquote><p>Note:</p>
+
+<p>When build starts by Agent, it will be 1.0.1 and at the end it will change to
+1.0.1.53e7986!</p></blockquote>
+
+<h3>Shell version (<em>Linux</em> or <em>Mac</em>)</h3>
+
+<ul>
+<li>All same as <em>Powershell</em> until <em>(3) Build Steps</em>.</li>
+<li>In <em>(3) Build Steps</em> click <em>Add build step</em> choose <em>Command line</em> in listbox.</li>
+<li>In <em>Custom Script</em> add following <em>shell</em> script and click <em>Save</em>:</li>
+</ul>
+
+
+<p><code>bash
+BUILD_NUMBER=%build.number%
+GIT_HASH=%build.vcs.number%
+GIT_HASH_SHORT=${GIT_HASH:0:7}
+echo "##teamcity[buildNumber '$BUILD_NUMBER.${GIT_HASH_SHORT}']"
+</code></p>
+
+<blockquote><p>Note:</p>
+
+<p>I didn't test <em>shell</em> version, it should work, but maybe some tweaks are necessary!</p></blockquote>
+
+<h2>Powershell script for sending file to Amazon S3 and sending email via Gmail</h2>
+
+<ul>
+<li>Download and install <a href="http://aws.amazon.com/powershell">AWS Tools for Windows Powershell</a>.</li>
+<li>With this SDK is really easy to upload file to Amazon S3.</li>
+<li>Amazon S3 account is needed and also <em>Access Key</em> and <em>Secret Key</em>.</li>
+<li>Assumes that Amazon S3 <em>bucket</em> name is "<em>aeon</em>" and region is "<em>eu-west-1</em>".</li>
+<li>This will produce <em>https://s3-eu-west-1.amazonaws.com/aeon/<release-file>"</em>.</li>
+<li>The script is lousy written, it should be better, especially when it is needed to be reused for multiple Builded apps.</li>
+<li>The thing needed to be entered will be inside "&lt;something-to-do&gt;".</li>
+<li>In my case the uploaded file is ".exe" file so it is harcoded in Amazon S3 URL.</li>
+<li>Make sure that file name is not really crazy and there are no spaces in it (it is always easier this way)!</li>
+</ul>
+
+
+<p>```powershell
+$bucketName = 'aeon'
+$hasCredentials = $false;
+$filePath = '<absolute-path-to-folder-where-file-for-upload-is>'</p>
+
+<p>function GetLastGitLog {</p>
+
+<pre><code>$sourcePath = '&lt;absolute-path-to-where-teamcity-pulls-repo&gt;'
+$isSourcePathExist = Test-Path $sourcePath
+
+if (!$isSourcePathExist) {
+    "source folder ($sourcePath) for file is not existent! Exiting..."
+    exit
+}
+
+Set-Location $sourcePath
+
+git log -n 1
+</code></pre>
+
+<p>}</p>
+
+<p>function MessageBody($version) {</p>
+
+<pre><code>$url = "https://s3-eu-west-1.amazonaws.com/{0}/{1}.exe" -f $bucketName, $version
+
+$commitMessage = GetLastGitLog | Out-String
+
+"&lt;h2&gt;My Fabulos Product - New Version&lt;/h2&gt;
+
+ &lt;p&gt;&lt;strong&gt;Version:&lt;/strong&gt; {0}&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;Download Link:&lt;/strong&gt; &lt;a href='{1}'&gt;{2}.exe&lt;/a&gt;&lt;/p&gt;
+
+ &lt;p&gt;&lt;/p&gt;
+ &lt;p&gt;&lt;strong&gt;Developer Commit Details:&lt;/strong&gt;&lt;/p&gt;
+ &lt;pre&gt;{3}&lt;/pre&gt;
+
+ &lt;p&gt;&lt;/p&gt;
+ &lt;p&gt;Regards,&lt;/p&gt;
+ &lt;p&gt;My Fabulous Team City Build Server (example.com)&lt;/p&gt;
+ " -f $version, $url, $version, $commitMessage
+</code></pre>
+
+<p>}</p>
+
+<p>function SendEmail($binaryName) {</p>
+
+<pre><code>$version = $binaryName.TrimEnd('.exe')
+$mailTo = "&lt;first-email&gt;,&lt;second-email&gt;"
+$subject = "[New Version]: $version"
+
+$smtp = new-object Net.Mail.SmtpClient('smtp.gmail.com', 587) 
+$smtp.EnableSsl = $true
+$smtp.Credentials = New-Object System.Net.NetworkCredential("&lt;my-gmail-username&gt;", "&lt;my-gmail-password&gt;")
+
+$message = New-Object Net.Mail.MailMessage
+$message.From = "&lt;my-gmail-username&gt;@gmail.com"
+$message.IsBodyHtml = $true
+$message.Subject = $subject
+$message.Body = MessageBody($version)
+$message.To.Add($mailTo)
+
+$smtp.Send($message)
+</code></pre>
+
+<p>}</p>
+
+<p>$credentials = Get-AWSCredentials -ListStoredCredentials</p>
+
+<p>if ($currentCredentials -and $currentCredentials.Count -gt 0) {</p>
+
+<pre><code>$hasCredentials = $true
+</code></pre>
+
+<p>}</p>
+
+<p>if (!$hasCredentials) {</p>
+
+<pre><code> Initialize-AWSDefaults -AccessKey &lt;your-amazon-access-key&gt; -SecretKey &lt;your-amazon-secret-key&gt; -Region eu-west-1
+</code></pre>
+
+<p>}</p>
+
+<p>$isFilePathExist = Test-Path $filePath</p>
+
+<p>if (!$isFilePathExist) {</p>
+
+<pre><code>"Folder ($filePath) for file is not existent! Exiting..."
+exit
+</code></pre>
+
+<p>}</p>
+
+<h1>Filename and extension of file.</h1>
+
+<p>$key = (Get-ChildItem $filePath)[0].Name;</p>
+
+<p>$file = (Get-ChildItem $filePath)[0].FullName</p>
+
+<p>if ($key -and $file) {</p>
+
+<pre><code>Write-S3Object -BucketName $bucketName -File $file -Key $key -PublicReadOnly
+
+SendEmail($key)
+</code></pre>
+
+<p>}
+```
+* Save this script to &lt;whatever-you-want-to-call-it&gt;.ps1.
+* This <em>Powershell</em> script can be added to <em>TeamCity</em> as a final <em>Build Step</em>.
+* In <em>(3) Build Steps</em> click <em>Add build step</em> choose <em>Powershell</em> in listbox.
+* For <em>Script</em> choose <em>File</em> from drop down box.
+* For <em>Script File</em> add absolute path to saved <em>Powershell</em> script saved as <em>ps1</em>.</p>
+
+<blockquote><p>Note:</p>
+
+<p>Sorry, no <em>Linux</em> or <em>Mac</em> <em>shell</em> version of this script.</p></blockquote>
+
+<h2>Conclusion</h2>
+
+<p>Having short <em>Git</em> hash for a <em>Revision</em> in your versioning is very helpful and seven chars
+are mostly always enough to uniquely identify this release build with commit in your <em>Git</em> repository.</p>
+
+<p>The amazon S3 upload + send email with developer commit deatails is not state of art
+<em>Powershell</em> script, it is very buggy and not that much flexible, but it can help a
+lot in communication with QA (or outside beta testers) and having release build version binary,
+right after Developer commit!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Converting Mercurial (hg) to Git repository on Mac]]></title>

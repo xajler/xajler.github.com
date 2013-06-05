@@ -58,14 +58,20 @@
         <loc>
             http://learnaholic.me/2013/02/01/converting-mercurial-hg-to-git-repository-on-mac/
         </loc>
-        <lastmod>2013-02-01T20:50:46+01:00</lastmod>
+        <lastmod>2013-06-05T20:38:54+02:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://learnaholic.me/2013/06/05/configuring-teamcity-7-with-git-revisions-uploading-to-amazon-s3-and-sending-email-with-release-link/
+        </loc>
+        <lastmod>2013-06-05T22:30:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://learnaholic.me/blog/archives/</loc>
-        <lastmod>2013-02-01T20:50:46+01:00</lastmod>
+        <lastmod>2013-06-05T22:30:20+02:00</lastmod>
     </url>
     <url>
         <loc>http://learnaholic.me/</loc>
-        <lastmod>2013-02-01T20:50:46+01:00</lastmod>
+        <lastmod>2013-06-05T22:30:20+02:00</lastmod>
     </url>
 </urlset>
