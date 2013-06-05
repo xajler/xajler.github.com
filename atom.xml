@@ -4,7 +4,7 @@
   <title><![CDATA[Learn-a-holic Geek Notes]]></title>
   <link href="http://learnaholic.me/atom.xml" rel="self"/>
   <link href="http://learnaholic.me/"/>
-  <updated>2013-06-05T22:31:28+02:00</updated>
+  <updated>2013-06-05T22:34:26+02:00</updated>
   <id>http://learnaholic.me/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -24,7 +24,7 @@
 <p>This is what wiill do to improve <em>TeamCity 7</em>:</p>
 
 <ul>
-<li>Change the Build version number to include Git short hash (7 chars) as Revison.</li>
+<li>Change the Build version number to include Git short hash (7 chars) as Revison e.g. <em>1.0.1.53e7986</em>.</li>
 <li>Upload file to <a href="http://aws.amazon.com/s3/">Amazon S3</a>.</li>
 <li>Send email via Gmail with:
 
