@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ArchLinux | Learn-a-holic Geek Notes]]></title>
+  <link href="http://learnaholic.me/categories/archlinux/atom.xml" rel="self"/>
+  <link href="http://learnaholic.me/"/>
+  <updated>2013-11-10T19:40:18+01:00</updated>
+  <id>http://learnaholic.me/</id>
+  <author>
+    <name><![CDATA[Kornelije Sajler]]></name>
+    <email><![CDATA[xajler@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[ArchLinux VirtualBox Install Notes]]></title>
+    <link href="http://learnaholic.me/2013/11/10/archlinux-virtualbox-install-notes/"/>
+    <updated>2013-11-10T14:54:00+01:00</updated>
+    <id>http://learnaholic.me/2013/11/10/archlinux-virtualbox-install-notes</id>
+    <content type="html"><![CDATA[<p>For a few years now I really wanted to get some time to learn/install and play around with <a href="https://www.archlinux.org/">ArchLinux</a>. <em>ArchLinux</em> is very minimal, highly customizable, but powerful distribution of <em>Linux</em> based on one of oldest distribution <em>Slackware</em> and <em>BSD</em> like Unix.</p>
+
+<p><em>ArchLinux</em> is not for everybody, if you want everything out-of-box, then probably <em>Ubuntu</em>, <em>Mint</em>, <em>Fedora</em> or like are for you. But for me, and I have <em>Mac</em>, I see no difference between <em>Ubuntu</em> and <em>Mac</em>. Because for both, out-of-box you'll get a predefined UI, apps. I'm not going into discussion that most of this can be change in <em>Ubuntu</em>, but how much of them really change?</p>
+
+<p><em>ArchLinux</em> is completely opposite, the install is not really easy (for average PC user), nor GUI like, and after install you are left with bare minimal packages needed for OS to run and configure, and without GUI too.</p>
+
+<p>This installation is not for Linux <em>n00bs</em>, some familiarity with console and Linux commands should be expected, because some of notes are really not in depth and there are thing assumed, like basic knowledge of <code>vim</code> (or you can replace <code>vim</code> with <code>nano</code>).</p>
+
+<p>This is all part of my learning <em>ArchLinux</em>, and then to dual boot it on my <em>Mac</em> with <em>Mac OS X</em>. And even though I really like <em>Mac</em>, I really have huge respect and likeness for <em>Linux</em>, and my minimalistic side was in real need of distribution like <em>ArchLinux</em>. Why <em>ArchLinux</em>?</p>
+
+<p>Just look into their <a href="https://wiki.archlinux.org/">wiki</a>, that much of content and expressiveness (sometimes maybe too much) it is really what it makes <em>ArchLinux</em> great, and second is the <a href="https://aur.archlinux.org/"><em>Arch User Repository</em> (<em>AUR</em>)</a> where you can search for packages, install and comment them (very helpful comments!).</p>
+
+<p>Another strength is that <em>ArchLinux</em> has no release versions, it is rolling released distribution, and if you update weekly or monthly, you'll always have latest versions of your applications and <em>ArchLinux</em> respectively. Another strength (that is for someone is weakness) is that mostly <em>ArchLinux</em> packages are latest stable releases of software, and even this can get you to <em>dependency hell</em>, in most cases, you'll end up with latest software with all new features and bug fixes immediately, and not waiting for next version release of OS distribution.</p>
+
+<blockquote><p>Note:</p>
+
+<p>I use <a href="http://en.wikipedia.org/wiki/Dvorak_Simplified_Keyboard">Dvorak keyboard layout</a> and it is throughout the installation, if you use <code>us</code> layout ignore all of it, but if you use some other layout e.g. <code>hr</code> then replace where <code>dvorak</code> to <code>hr</code>!</p></blockquote>
+
+<h2>VirtualBox Pre-installation</h2>
+
+<ul>
+<li><a href="https://www.virtualbox.org/wiki/Downloads">Download</a>, install and create new <em>VirtualBox</em> machine, for <em>ArchLinux</em> x64.</li>
+<li>Download "dual" ISO from <a href="https://www.archlinux.org/download/">ArchLinux mirrors</a>.</li>
+<li>Add <em>ISO</em> to <em>VirtualBox</em> and set it for CD/DVD.</li>
+</ul>
+
+
+<h2>Installation</h2>
+
+<p>Choose <code>x86_64</code> version.<br/>
+Change to <code>Dvorak</code> layout:</p>
+
+<p><code>
+loadkeys dvorak
+</code></p>
+
+<p>Ping <em>google.com</em> to see if there is Internet connection, if not run:</p>
+
+<p><code>
+dhcpcd
+</code></p>
+
+<p>Update <code>pacman</code> package manager repository:</p>
+
+<p><code>
+pacman -Sy
+</code></p>
+
+<p>Install <code>vim</code> as a default editor for installation (even though you can use installed plain old <code>vi</code> or <code>nano</code>):</p>
+
+<p><code>
+pacman -S vim
+</code></p>
+
+<p>See what disk structure there is:</p>
+
+<p><code>
+lsblk
+</code></p>
+
+<p>For <strong>MBR</strong> installation use <code>cfdisk</code>:</p>
+
+<p><code>
+cfdisk /dev/sda
+</code></p>
+
+<p>Create new partition with choosing <code>[ New ]</code> with 1024 Mb for <code>boot</code> directory (not necessary!).</p>
+
+<p>Make it bootable by choosing <code>[ Bootable ]</code>.</p>
+
+<p>Create new partition with choosing <code>[ New ]</code> with rest of your disk space for <code>root</code> folder.</p>
+
+<p>Create filesystems:</p>
+
+<p><code>
+mkfs.ext4 /dev/sda1
+mkfs.ext4 /dev/sda2
+</code></p>
+
+<p>Mount partitions and create <code>boot</code> dir, for boot partition:</p>
+
+<p><code>
+mount /dev/sda2 /mnt
+mkdir /mnt/boot
+mount /dev/sda1 /mnt/boot
+</code>
+Change mirror for <code>pacman</code>, I use anything in <em>Germany</em>, and paste to top of <code>mirrorlist</code>:</p>
+
+<p><code>
+vim /etc/pacman.d/mirrorlist
+</code></p>
+
+<p>Install base and devel system (this can take for while, so better choose good mirror to be fast as possible!):</p>
+
+<p>```</p>
+
+<p>pacstrap -i /mnt base base-devel
+```</p>
+
+<p>Generate <code>fstab</code> and check it:</p>
+
+<p><code>
+genfstab -U -p /mnt &gt;&gt; /mnt/etc/fstab
+vim /mnt/etc/fstab
+</code></p>
+
+<h3>Chroot and configure system</h3>
+
+<p>Chroot to <code>mnt</code>:</p>
+
+<p><code>
+arch-chroot /mnt
+</code></p>
+
+<p>Create custom Keyboard Layout in <code>vconsole.conf</code>, and and add keyboard map for <em>Dvorak</em>:</p>
+
+<p>```
+vim /etc/vconsole.conf</p>
+
+<p> # add content to it</p>
+
+<p>"KEYMAP=dvorak"
+```</p>
+
+<p>Update with <code>pacman</code> and install <code>vim</code> (again, omit if you're using <code>vi</code> or <code>nano</code>):</p>
+
+<p><code>
+pacman -Sy
+pacman -S vim
+</code></p>
+
+<p>Set up locale, for me uncomment <code>en_US UTF-8</code> in <code>locale.gen</code>:</p>
+
+<p><code>
+vim /etc/locale.gen
+locale-gen
+</code></p>
+
+<p>Create <code>locale.conf</code> and export locale:</p>
+
+<p><code>
+echo LANG=en_US.UTF-8 &gt; /etc/locale.conf
+export LANG=en_US.UTF-8
+</code></p>
+
+<p>Set Time Zone by linking to time zone info to <code>localtime</code>:</p>
+
+<p>```
+ # use to see all zone infos
+ls /usr/share/zoneinfo</p>
+
+<p> # use to see all zone sub infos
+ls /usr/share/zoneinfo/Europe</p>
+
+<p>ln -s /usr/share/zoneinfo/Europe/Zagreb /etc/localtime
+```</p>
+
+<p>Set Hardware Clock to UTC:</p>
+
+<p><code>
+hwclock --systohc --utc
+</code></p>
+
+<p>Set Hostname:</p>
+
+<p><code>
+echo vbox-arch &gt; /etc/hostname
+</code></p>
+
+<p>Configure Network:</p>
+
+<p><code>
+systemctl enable dhcpcd.service
+</code></p>
+
+<h3>Root passwd and new sudo user</h3>
+
+<p>Set <code>root</code> password:</p>
+
+<p><code>
+passwd
+</code></p>
+
+<p>Create new user that will be sudo:</p>
+
+<p><code>
+useradd -m -g users -G wheel,video -s /bin/bash &lt;username&gt;
+</code></p>
+
+<p>Install <code>sudo</code> with <code>pacman</code>:</p>
+
+<p><code>
+pacman -S sudo
+</code></p>
+
+<p>Uncomment <code>wheel</code> group from sudoers "<code>%wheel ALL=(ALL)</code>", so that user just created can be sudo:</p>
+
+<p><code>
+visudo
+</code></p>
+
+<p>Set password to created user:</p>
+
+<p><code>
+passwd &lt;username&gt;
+</code></p>
+
+<h3>Bootloader</h3>
+
+<p>Since we use <strong>MBR</strong> not <strong>GPT</strong> lets install <code>GRUB BIOS</code> bootloader:</p>
+
+<p><code>
+pacman -S grub-bios
+</code></p>
+
+<p>Install and configure <code>GRUB</code> to <code>/dev/sda</code>:</p>
+
+<p><code>
+grub-install --recheck /dev/sda
+grub-mkconfig -o /boot/grub/grub.cfg
+</code></p>
+
+<p>Exit <code>chroot</code>, unmount mounted partitions and reboot:</p>
+
+<p><code>
+exit
+umount -R /mnt/boot
+umount -R /mnt
+reboot
+</code></p>
+
+<h2>Post Install</h2>
+
+<p>Install <em>Yaourt</em> from <em>archlinuxfr</em>, for easier interaction/installation from <em>AUR</em>.<br/>
+Add <em>archlinuxfr</em> repository to <code>/etc/pacman.conf</code>:</p>
+
+<p><code>
+[archlinuxfr]
+SigLevel = Never
+Server = http://repo.archlinux.fr/$arch
+</code></p>
+
+<p>Update <code>pacman</code> and install <code>yaourt</code>:</p>
+
+<p><code>
+pacman -Sy yaourt
+</code></p>
+
+<h3>GUI</h3>
+
+<p>Install X server:</p>
+
+<p><code>
+pacman -S xorg-server xorg-server-utils xorg-xinit
+</code></p>
+
+<p>Install <code>mesa</code> for 3D support</p>
+
+<p><code>
+pacman -S mesa
+</code></p>
+
+<h3>VirtualBox</h3>
+
+<p>Install Guest additions:</p>
+
+<p><code>
+pacman -S virtualbox-guest-utils
+modprobe -a vboxguest vboxsf vboxvideo
+</code></p>
+
+<p>Create <code>virtualbox.conf</code> in <code>/etc/modules-load.d</code></p>
+
+<p><code>
+vim /etc/modules-load.d/virtualbox.conf
+</code></p>
+
+<p>Add modules guest and video to <code>virtualbox.conf</code>:</p>
+
+<p><code>
+vboxguest
+vboxsf
+vboxvideo
+</code></p>
+
+<p>Log or <code>su</code> as created user.
+Copy <code>.xinitrc</code> and add following content:</p>
+
+<p>```
+cp /etc/X11/xinit/xinitrc ~/.xinitrc
+vim ~/.xinitrc</p>
+
+<p> # add this inside .xinitrc (at the top!)</p>
+
+<p>/usr/bin/VBoxClient-all
+```</p>
+
+<h3>Setup keyboard (non US)</h3>
+
+<p>We did setup for console now we need to set up for X:</p>
+
+<p><code>
+localectl set-x11-keymap dvorak
+</code></p>
+
+<h3>Test X</h3>
+
+<p>Install <code>xterm</code>, <code>xclock</code> and <code>lwm</code>:</p>
+
+<p><code>
+pacman -S xorg-twm xorg-xclock xterm
+</code></p>
+
+<p>Start X</p>
+
+<p><code>
+startx
+</code></p>
+
+<p><img src="/images/arch-alsi.png"></p>
+
+<p>This is a first part of <em>ArchLinux</em> covering installation, configuration and testing that <em>X</em> or <em>GUI</em> is functioning properly.
+Next part is installing and configuring <em>Window Manager</em>. And since the <em>Gnome</em> and <em>KDE</em> are most popular, we will not use them at all!
+Intention is to use <em>Tiled Window Manager</em>...</p>
+]]></content>
+  </entry>
+  
+</feed>

@@ -1,0 +1,652 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>ArchLinux VirtualBox Install Notes - Learn-a-holic Geek Notes</title>
+  <meta name="author" content="Kornelije Sajler">
+
+  
+  <meta name="description" content="ArchLinux installation and post installation with installing xorg on VirtualBox Virtual Machine.">
+  <meta name="keywords" content="ArchLinux, Linux, VirtualBox, ArchLinux installation, ArchLinux configuration, dvorak">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://learnaholic.me/2013/11/10/archlinux-virtualbox-install-notes/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Learn-a-holic Geek Notes" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic' rel='stylesheet' type='text/css'>
+
+  
+
+</head>
+
+<body    class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Learn-a-holic Geek Notes</a></h1>
+  
+    <h2>Human compiled Brainwork by Kornelije Sajler.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:learnaholic.me" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Home</a></li>
+  <li><a href="http://metaintellect.com" target="_blank">Metaintellect</a></li>
+  <li><a href="http://caribou.arvixe.com/~ksajler" target="_blank">Old Blog</a></li>
+  <!-- <li><a href="/blog/archives">Archives</a></li> -->
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">ArchLinux VirtualBox Install Notes</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-10T14:54:00+01:00" pubdate data-updated="true">Nov 10<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>For a few years now I really wanted to get some time to learn/install and play around with <a href="https://www.archlinux.org/">ArchLinux</a>. <em>ArchLinux</em> is very minimal, highly customizable, but powerful distribution of <em>Linux</em> based on one of oldest distribution <em>Slackware</em> and <em>BSD</em> like Unix.</p>
+
+<p><em>ArchLinux</em> is not for everybody, if you want everything out-of-box, then probably <em>Ubuntu</em>, <em>Mint</em>, <em>Fedora</em> or like are for you. But for me, and I have <em>Mac</em>, I see no difference between <em>Ubuntu</em> and <em>Mac</em>. Because for both, out-of-box you&#8217;ll get a predefined UI, apps. I&#8217;m not going into discussion that most of this can be change in <em>Ubuntu</em>, but how much of them really change?</p>
+
+<p><em>ArchLinux</em> is completely opposite, the install is not really easy (for average PC user), nor GUI like, and after install you are left with bare minimal packages needed for OS to run and configure, and without GUI too.</p>
+
+<p>This installation is not for Linux <em>n00bs</em>, some familiarity with console and Linux commands should be expected, because some of notes are really not in depth and there are thing assumed, like basic knowledge of <code>vim</code> (or you can replace <code>vim</code> with <code>nano</code>).</p>
+
+<p>This is all part of my learning <em>ArchLinux</em>, and then to dual boot it on my <em>Mac</em> with <em>Mac OS X</em>. And even though I really like <em>Mac</em>, I really have huge respect and likeness for <em>Linux</em>, and my minimalistic side was in real need of distribution like <em>ArchLinux</em>. Why <em>ArchLinux</em>?</p>
+
+<p>Just look into their <a href="https://wiki.archlinux.org/">wiki</a>, that much of content and expressiveness (sometimes maybe too much) it is really what it makes <em>ArchLinux</em> great, and second is the <a href="https://aur.archlinux.org/"><em>Arch User Repository</em> (<em>AUR</em>)</a> where you can search for packages, install and comment them (very helpful comments!).</p>
+
+<p>Another strength is that <em>ArchLinux</em> has no release versions, it is rolling released distribution, and if you update weekly or monthly, you&#8217;ll always have latest versions of your applications and <em>ArchLinux</em> respectively. Another strength (that is for someone is weakness) is that mostly <em>ArchLinux</em> packages are latest stable releases of software, and even this can get you to <em>dependency hell</em>, in most cases, you&#8217;ll end up with latest software with all new features and bug fixes immediately, and not waiting for next version release of OS distribution.</p>
+
+<blockquote><p>Note:</p>
+
+<p>I use <a href="http://en.wikipedia.org/wiki/Dvorak_Simplified_Keyboard">Dvorak keyboard layout</a> and it is throughout the installation, if you use <code>us</code> layout ignore all of it, but if you use some other layout e.g. <code>hr</code> then replace where <code>dvorak</code> to <code>hr</code>!</p></blockquote>
+
+<h2>VirtualBox Pre-installation</h2>
+
+<ul>
+<li><a href="https://www.virtualbox.org/wiki/Downloads">Download</a>, install and create new <em>VirtualBox</em> machine, for <em>ArchLinux</em> x64.</li>
+<li>Download &#8220;dual&#8221; ISO from <a href="https://www.archlinux.org/download/">ArchLinux mirrors</a>.</li>
+<li>Add <em>ISO</em> to <em>VirtualBox</em> and set it for CD/DVD.</li>
+</ul>
+
+
+<h2>Installation</h2>
+
+<p>Choose <code>x86_64</code> version.<br/>
+Change to <code>Dvorak</code> layout:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>loadkeys dvorak</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ping <em>google.com</em> to see if there is Internet connection, if not run:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>dhcpcd</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Update <code>pacman</code> package manager repository:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pacman -Sy</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Install <code>vim</code> as a default editor for installation (even though you can use installed plain old <code>vi</code> or <code>nano</code>):</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pacman -S vim</span></code></pre></td></tr></table></div></figure>
+
+
+<p>See what disk structure there is:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>lsblk</span></code></pre></td></tr></table></div></figure>
+
+
+<p>For <strong>MBR</strong> installation use <code>cfdisk</code>:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cfdisk /dev/sda</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Create new partition with choosing <code>[ New ]</code> with 1024 Mb for <code>boot</code> directory (not necessary!).</p>
+
+<p>Make it bootable by choosing <code>[ Bootable ]</code>.</p>
+
+<p>Create new partition with choosing <code>[ New ]</code> with rest of your disk space for <code>root</code> folder.</p>
+
+<p>Create filesystems:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>mkfs.ext4 /dev/sda1
+</span><span class='line'>mkfs.ext4 /dev/sda2</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Mount partitions and create <code>boot</code> dir, for boot partition:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>mount /dev/sda2 /mnt
+</span><span class='line'>mkdir /mnt/boot
+</span><span class='line'>mount /dev/sda1 /mnt/boot</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Change mirror for <code>pacman</code>, I use anything in <em>Germany</em>, and paste to top of <code>mirrorlist</code>:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>vim /etc/pacman.d/mirrorlist</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Install base and devel system (this can take for while, so better choose good mirror to be fast as possible!):</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>
+</span><span class='line'>pacstrap -i /mnt base base-devel</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Generate <code>fstab</code> and check it:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>genfstab -U -p /mnt &gt;&gt; /mnt/etc/fstab
+</span><span class='line'>vim /mnt/etc/fstab</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Chroot and configure system</h3>
+
+<p>Chroot to <code>mnt</code>:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>arch-chroot /mnt</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Create custom Keyboard Layout in <code>vconsole.conf</code>, and and add keyboard map for <em>Dvorak</em>:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>vim /etc/vconsole.conf
+</span><span class='line'>
+</span><span class='line'> # add content to it 
+</span><span class='line'>
+</span><span class='line'>"KEYMAP=dvorak"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Update with <code>pacman</code> and install <code>vim</code> (again, omit if you&#8217;re using <code>vi</code> or <code>nano</code>):</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pacman -Sy
+</span><span class='line'>pacman -S vim</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Set up locale, for me uncomment <code>en_US UTF-8</code> in <code>locale.gen</code>:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>vim /etc/locale.gen
+</span><span class='line'>locale-gen</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Create <code>locale.conf</code> and export locale:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>echo LANG=en_US.UTF-8 &gt; /etc/locale.conf
+</span><span class='line'>export LANG=en_US.UTF-8</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Set Time Zone by linking to time zone info to <code>localtime</code>:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> # use to see all zone infos
+</span><span class='line'>ls /usr/share/zoneinfo
+</span><span class='line'>
+</span><span class='line'> # use to see all zone sub infos
+</span><span class='line'>ls /usr/share/zoneinfo/Europe
+</span><span class='line'>
+</span><span class='line'>ln -s /usr/share/zoneinfo/Europe/Zagreb /etc/localtime</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Set Hardware Clock to UTC:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>hwclock --systohc --utc</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Set Hostname:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>echo vbox-arch &gt; /etc/hostname</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Configure Network:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>systemctl enable dhcpcd.service</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Root passwd and new sudo user</h3>
+
+<p>Set <code>root</code> password:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>passwd</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Create new user that will be sudo:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>useradd -m -g users -G wheel,video -s /bin/bash &lt;username&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Install <code>sudo</code> with <code>pacman</code>:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pacman -S sudo</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Uncomment <code>wheel</code> group from sudoers &#8221;<code>%wheel ALL=(ALL)</code>&#8221;, so that user just created can be sudo:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>visudo</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Set password to created user:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>passwd &lt;username&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Bootloader</h3>
+
+<p>Since we use <strong>MBR</strong> not <strong>GPT</strong> lets install <code>GRUB BIOS</code> bootloader:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pacman -S grub-bios</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Install and configure <code>GRUB</code> to <code>/dev/sda</code>:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>grub-install --recheck /dev/sda
+</span><span class='line'>grub-mkconfig -o /boot/grub/grub.cfg</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Exit <code>chroot</code>, unmount mounted partitions and reboot:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>exit
+</span><span class='line'>umount -R /mnt/boot
+</span><span class='line'>umount -R /mnt
+</span><span class='line'>reboot</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Post Install</h2>
+
+<p>Install <em>Yaourt</em> from <em>archlinuxfr</em>, for easier interaction/installation from <em>AUR</em>.<br/>
+Add <em>archlinuxfr</em> repository to <code>/etc/pacman.conf</code>:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[archlinuxfr]
+</span><span class='line'>SigLevel = Never
+</span><span class='line'>Server = http://repo.archlinux.fr/$arch</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Update <code>pacman</code> and install <code>yaourt</code>:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pacman -Sy yaourt</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>GUI</h3>
+
+<p>Install X server:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pacman -S xorg-server xorg-server-utils xorg-xinit</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Install <code>mesa</code> for 3D support</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pacman -S mesa</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>VirtualBox</h3>
+
+<p>Install Guest additions:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pacman -S virtualbox-guest-utils
+</span><span class='line'>modprobe -a vboxguest vboxsf vboxvideo</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Create <code>virtualbox.conf</code> in <code>/etc/modules-load.d</code></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>vim /etc/modules-load.d/virtualbox.conf</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Add modules guest and video to <code>virtualbox.conf</code>:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>vboxguest
+</span><span class='line'>vboxsf
+</span><span class='line'>vboxvideo</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Log or <code>su</code> as created user.
+Copy <code>.xinitrc</code> and add following content:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cp /etc/X11/xinit/xinitrc ~/.xinitrc
+</span><span class='line'>vim ~/.xinitrc
+</span><span class='line'>
+</span><span class='line'> # add this inside .xinitrc (at the top!)
+</span><span class='line'>
+</span><span class='line'>/usr/bin/VBoxClient-all</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Setup keyboard (non US)</h3>
+
+<p>We did setup for console now we need to set up for X:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>localectl set-x11-keymap dvorak</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Test X</h3>
+
+<p>Install <code>xterm</code>, <code>xclock</code> and <code>lwm</code>:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pacman -S xorg-twm xorg-xclock xterm</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Start X</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>startx</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="/images/arch-alsi.png"></p>
+
+<p>This is a first part of <em>ArchLinux</em> covering installation, configuration and testing that <em>X</em> or <em>GUI</em> is functioning properly.
+Next part is installing and configuring <em>Window Manager</em>. And since the <em>Gnome</em> and <em>KDE</em> are most popular, we will not use them at all!
+Intention is to use <em>Tiled Window Manager</em>&#8230;</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Kornelije Sajler</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-10T14:54:00+01:00" pubdate data-updated="true">Nov 10<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/categories/archlinux/'>ArchLinux</a>, <a class='category' href='/categories/linux/'>Linux</a>, <a class='category' href='/categories/virtualbox/'>VirtualBox</a>, <a class='category' href='/categories/installation/'>installation</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://learnaholic.me/2013/11/10/archlinux-virtualbox-install-notes/" data-via="xajler" data-counturl="http://learnaholic.me/2013/11/10/archlinux-virtualbox-install-notes/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/2013/06/05/configuring-teamcity-7-with-git-revisions-uploading-to-amazon-s3-and-sending-email-with-release-link/" title="Previous Post: Configuring TeamCity 7 with Git revision short hash, Uploading to Amazon S3 and sending email with release link and Developer commit details">&laquo; Configuring TeamCity 7 with Git revision short hash, Uploading to Amazon S3 and sending email with release link and Developer commit details</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/2013/11/10/archlinux-virtualbox-install-notes/">ArchLinux VirtualBox Install Notes</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2013/06/05/configuring-teamcity-7-with-git-revisions-uploading-to-amazon-s3-and-sending-email-with-release-link/">Configuring TeamCity 7 with Git revision short hash, Uploading to Amazon S3 and sending email with release link and Developer commit details</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2013/02/01/converting-mercurial-hg-to-git-repository-on-mac/">Converting Mercurial (hg) to Git repository on Mac</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2012/11/29/xcode-4-dot-5-source-version-control-wit-git-and-github/">Xcode 4.5: Source Version Control wit Git and Github</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2012/11/28/xcode-4-dot-5-workspace-project-and-target-from-scratch/">Xcode 4.5: Workspace, Project and Target Setup from Scratch</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/xajler">@xajler</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'xajler',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("xajler", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/xajler" class="twitter-follow-button" data-show-count="false">Follow @xajler</a>
+  
+</section>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Kornelije Sajler -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'metaintellect-blog';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://learnaholic.me/2013/11/10/archlinux-virtualbox-install-notes/';
+        var disqus_url = 'http://learnaholic.me/2013/11/10/archlinux-virtualbox-install-notes/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-9867685-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+
+</body>
+</html>
