@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: OS X Mavericks | Learn-a-holic Geek Notes]]></title>
+  <link href="http://learnaholic.me/categories/os-x-mavericks/atom.xml" rel="self"/>
+  <link href="http://learnaholic.me/"/>
+  <updated>2013-11-11T17:26:25+01:00</updated>
+  <id>http://learnaholic.me/</id>
+  <author>
+    <name><![CDATA[Kornelije Sajler]]></name>
+    <email><![CDATA[xajler@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Enable NTFS write on Mac OS X Mavericks for free and geeky way]]></title>
+    <link href="http://learnaholic.me/2013/11/11/enable-ntfs-write-on-mac-os-x-mavericks/"/>
+    <updated>2013-11-11T16:03:00+01:00</updated>
+    <id>http://learnaholic.me/2013/11/11/enable-ntfs-write-on-mac-os-x-mavericks</id>
+    <content type="html"><![CDATA[<p>By default Mac OS X Mavericks (same goes for older distribution) has <em>Microsoft</em> file system <em>NTFS</em> read-only. There are proprietary software like <em>Tuxera</em> that can enable to write to NTFS. Interesting point is that you don't need to buy it is for free, you just need to geek a bit to make it writable.</p>
+
+<p>Are you geeky enough?</p>
+
+<p>Surely you guessed it, this will not go without console application in <em>Mac</em> this is <em>Terminal</em>, and some of us may us better one <em>iTerm2</em>, either way you'll need to know how to open it.</p>
+
+<p>Easiest way is to use <em>Spotlight</em> just hit <code>Cmd + Space</code> and write <em>Terminal</em> and here we go...
+The other way is in your <em>Finder</em> <code>Applications &gt; Utilities &gt; Terminal</code>. (Those who use <em>iTerm2</em>, I bet they know how to open it :D)</p>
+
+<p>Before we start on, <strong>MAKE SURE</strong> that your USB stick, external HDD, has single name to it, or better yet without spaces in name! e.g. "<code>MyPrecious</code>" is fine, "<code>My Precious</code>" is not!<br/>
+And what I mean by name is the label name that you get in <em>Finder</em> or <em>Desktop</em> when you plug your device, that is underneath the HDD icon, this is mostly set by manufacture, and if you know how to format on <em>Windows</em>, you can also set custom name!</p>
+
+<p>In <em>Terminal</em>  create <code>/etc/fstab</code> with <code>nano</code>, easier for most users, others can use <code>vim</code>, <code>emacs</code>... (it will ask you for your username password if you have it, write it, if not just hit enter):</p>
+
+<p><code>bash
+sudo nano /etc/fstab
+</code></p>
+
+<p>When is created enter this content inside of <code>/etc/fstab</code>, be sure that you know the name of your device:</p>
+
+<p><img src="/images/mounted_disk_label_name.png"></p>
+
+<p>In my case in image is <code>Elements</code>, be sure to change below "device-name" to name you got, and there is no spaces in name!!!</p>
+
+<p><code>
+LABEL=&lt;device-name&gt;  none    ntfs    rw,auto,nobrowse
+</code></p>
+
+<p>When you finished entering content, use <code>Ctrl + X</code> (it is lowercase x), it will prompt you to save it or not, enter <code>y</code>, you'll get another prompt to write to file, just hit enter.<br/>
+And that's essentially it, I will not even try to explain what we just did, it will melt brain for most users, just believe me... I know what I'm doing!</p>
+
+<p>The only problem is now, when you plug your device, you're not gonna get a icon on <em>Desktop</em> or <em>Finder</em>.<br/>
+Mac stores its mounted devices in hidden folder <code>/Volumes</code>, so while we have <em>Terminal</em> up and running, make symbolic link of it to the <em>Desktop</em>:</p>
+
+<p><code>bash
+sudo ln -s /Volumes ~/Desktop/Volumes
+</code></p>
+
+<p>Afterwards unmount your device (right click on device icon and choose <code>Eject</code>), sometimes is needed to reboot (restart) your Mac, so it is safe to do so!</p>
+
+<p>Now on your <em>Desktop</em>, you'll have a "folder" named <code>Volumes</code>, and when you plug your <em>NTFS</em> device, go into this folder, and you'll find there your device armed and ready!<br/>
+If you want to save from some other application, when the dialog is open, got to <code>Desktop &gt; Volumes &gt; [Name of Device]</code> and save it!</p>
+
+<p>And best thing is, if you are in no need to have support for NTFS anymore, remove <code>/etc/fstab</code>:</p>
+
+<p><code>bash
+sudo rm /etc/fstab
+</code></p>
+
+<p>... and everything is as before and live happily ever after!</p>
+
+<p>This is how you can have writable <em>NTFS</em> support on your <em>Mac</em>, totally for free, and for bonus feeling geeky :)</p>
+
+<p>But nevertheless, if you want to buy the software that does it for you, sure, be my guest... nobody is geek!</p>
+]]></content>
+  </entry>
+  
+</feed>

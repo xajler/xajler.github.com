@@ -1,0 +1,353 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Enable NTFS write on Mac OS X Mavericks for free and geeky way - Learn-a-holic Geek Notes</title>
+  <meta name="author" content="Kornelije Sajler">
+
+  
+  <meta name="description" content="Enable NTFS write for free on Mac OS X Mavericks, geeky way.">
+  <meta name="keywords" content="Mac, Mac OS X Mavericks, NTFS, writable NTFS">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://learnaholic.me/2013/11/11/enable-ntfs-write-on-mac-os-x-mavericks/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Learn-a-holic Geek Notes" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic' rel='stylesheet' type='text/css'>
+
+  
+
+</head>
+
+<body    class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Learn-a-holic Geek Notes</a></h1>
+  
+    <h2>Human compiled Brainwork by Kornelije Sajler.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:learnaholic.me" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Home</a></li>
+  <li><a href="http://metaintellect.com" target="_blank">Metaintellect</a></li>
+  <li><a href="http://caribou.arvixe.com/~ksajler" target="_blank">Old Blog</a></li>
+  <!-- <li><a href="/blog/archives">Archives</a></li> -->
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Enable NTFS Write on Mac OS X Mavericks for Free and Geeky Way</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-11T16:03:00+01:00" pubdate data-updated="true">Nov 11<span>th</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>By default Mac OS X Mavericks (same goes for older distribution) has <em>Microsoft</em> file system <em>NTFS</em> read-only. There are proprietary software like <em>Tuxera</em> that can enable to write to NTFS. Interesting point is that you don&#8217;t need to buy it is for free, you just need to geek a bit to make it writable.</p>
+
+<p>Are you geeky enough?</p>
+
+<p>Surely you guessed it, this will not go without console application in <em>Mac</em> this is <em>Terminal</em>, and some of us may us better one <em>iTerm2</em>, either way you&#8217;ll need to know how to open it.</p>
+
+<p>Easiest way is to use <em>Spotlight</em> just hit <code>Cmd + Space</code> and write <em>Terminal</em> and here we go&#8230;
+The other way is in your <em>Finder</em> <code>Applications &gt; Utilities &gt; Terminal</code>. (Those who use <em>iTerm2</em>, I bet they know how to open it :D)</p>
+
+<p>Before we start on, <strong>MAKE SURE</strong> that your USB stick, external HDD, has single name to it, or better yet without spaces in name! e.g. &#8221;<code>MyPrecious</code>&#8221; is fine, &#8221;<code>My Precious</code>&#8221; is not!<br/>
+And what I mean by name is the label name that you get in <em>Finder</em> or <em>Desktop</em> when you plug your device, that is underneath the HDD icon, this is mostly set by manufacture, and if you know how to format on <em>Windows</em>, you can also set custom name!</p>
+
+<p>In <em>Terminal</em>  create <code>/etc/fstab</code> with <code>nano</code>, easier for most users, others can use <code>vim</code>, <code>emacs</code>&#8230; (it will ask you for your username password if you have it, write it, if not just hit enter):</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo nano /etc/fstab
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>When is created enter this content inside of <code>/etc/fstab</code>, be sure that you know the name of your device:</p>
+
+<p><img src="/images/mounted_disk_label_name.png"></p>
+
+<p>In my case in image is <code>Elements</code>, be sure to change below &#8220;device-name&#8221; to name you got, and there is no spaces in name!!!</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">LABEL</span><span class="o">=</span>&lt;device-name&gt;  none    ntfs    rw,auto,nobrowse
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>When you finished entering content, use <code>Ctrl + X</code> (it is lowercase x), it will prompt you to save it or not, enter <code>y</code>, you&#8217;ll get another prompt to write to file, just hit enter.<br/>
+And that&#8217;s essentially it, I will not even try to explain what we just did, it will melt brain for most users, just believe me&#8230; I know what I&#8217;m doing!</p>
+
+<p>The only problem is now, when you plug your device, you&#8217;re not gonna get a icon on <em>Desktop</em> or <em>Finder</em>.<br/>
+Mac stores its mounted devices in hidden folder <code>/Volumes</code>, so while we have <em>Terminal</em> up and running, make symbolic link of it to the <em>Desktop</em>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo ln -s /Volumes ~/Desktop/Volumes
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Afterwards unmount your device (right click on device icon and choose <code>Eject</code>), sometimes is needed to reboot (restart) your Mac, so it is safe to do so!</p>
+
+<p>Now on your <em>Desktop</em>, you&#8217;ll have a &#8220;folder&#8221; named <code>Volumes</code>, and when you plug your <em>NTFS</em> device, go into this folder, and you&#8217;ll find there your device armed and ready!<br/>
+If you want to save from some other application, when the dialog is open, got to <code>Desktop &gt; Volumes &gt; [Name of Device]</code> and save it!</p>
+
+<p>And best thing is, if you are in no need to have support for NTFS anymore, remove <code>/etc/fstab</code>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>sudo rm /etc/fstab
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>&#8230; and everything is as before and live happily ever after!</p>
+
+<p>This is how you can have writable <em>NTFS</em> support on your <em>Mac</em>, totally for free, and for bonus feeling geeky :)</p>
+
+<p>But nevertheless, if you want to buy the software that does it for you, sure, be my guest&#8230; nobody is geek!</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Kornelije Sajler</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-11T16:03:00+01:00" pubdate data-updated="true">Nov 11<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/categories/mac/'>Mac</a>, <a class='category' href='/categories/ntfs/'>NTFS</a>, <a class='category' href='/categories/os-x-mavericks/'>OS X Mavericks</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://learnaholic.me/2013/11/11/enable-ntfs-write-on-mac-os-x-mavericks/" data-via="xajler" data-counturl="http://learnaholic.me/2013/11/11/enable-ntfs-write-on-mac-os-x-mavericks/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/2013/11/10/archlinux-virtualbox-install-notes/" title="Previous Post: ArchLinux VirtualBox Install Notes">&laquo; ArchLinux VirtualBox Install Notes</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/2013/11/11/enable-ntfs-write-on-mac-os-x-mavericks/">Enable NTFS write on Mac OS X Mavericks for free and geeky way</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2013/11/10/archlinux-virtualbox-install-notes/">ArchLinux VirtualBox Install Notes</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2013/06/05/configuring-teamcity-7-with-git-revisions-uploading-to-amazon-s3-and-sending-email-with-release-link/">Configuring TeamCity 7 with Git revision short hash, Uploading to Amazon S3 and sending email with release link and Developer commit details</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2013/02/01/converting-mercurial-hg-to-git-repository-on-mac/">Converting Mercurial (hg) to Git repository on Mac</a>
+      </li>
+    
+      <li class="post">
+        <a href="/2012/11/29/xcode-4-dot-5-source-version-control-wit-git-and-github/">Xcode 4.5: Source Version Control wit Git and Github</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/xajler">@xajler</a> on GitHub
+  
+  <script type="text/javascript">
+    $.domReady(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'xajler',
+            count: 5,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating...</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("xajler", 4, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/xajler" class="twitter-follow-button" data-show-count="false">Follow @xajler</a>
+  
+</section>
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Kornelije Sajler -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'metaintellect-blog';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://learnaholic.me/2013/11/11/enable-ntfs-write-on-mac-os-x-mavericks/';
+        var disqus_url = 'http://learnaholic.me/2013/11/11/enable-ntfs-write-on-mac-os-x-mavericks/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-9867685-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+
+</body>
+</html>
