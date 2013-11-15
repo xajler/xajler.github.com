@@ -4,7 +4,7 @@
   <title><![CDATA[Learn-a-holic Geek Notes]]></title>
   <link href="http://learnaholic.me/atom.xml" rel="self"/>
   <link href="http://learnaholic.me/"/>
-  <updated>2013-11-11T17:26:25+01:00</updated>
+  <updated>2013-11-15T17:55:31+01:00</updated>
   <id>http://learnaholic.me/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -44,7 +44,7 @@ And what I mean by name is the label name that you get in <em>Finder</em> or <em
 <p>In my case in image is <code>Elements</code>, be sure to change below &#8220;device-name&#8221; to name you got, and there is no spaces in name!!!</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">LABEL</span><span class="o">=</span>&lt;device-name&gt;  none    ntfs    rw,auto,nobrowse
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">LABEL</span><span class="o">=</span>device-name  none    ntfs    rw,auto,nobrowse
 </span></code></pre></td></tr></table></div></figure>
 
 

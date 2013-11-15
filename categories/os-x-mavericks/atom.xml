@@ -4,7 +4,7 @@
   <title><![CDATA[Category: OS X Mavericks | Learn-a-holic Geek Notes]]></title>
   <link href="http://learnaholic.me/categories/os-x-mavericks/atom.xml" rel="self"/>
   <link href="http://learnaholic.me/"/>
-  <updated>2013-11-11T17:26:25+01:00</updated>
+  <updated>2013-11-15T17:55:31+01:00</updated>
   <id>http://learnaholic.me/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -43,7 +43,7 @@ sudo nano /etc/fstab
 <p>In my case in image is <code>Elements</code>, be sure to change below "device-name" to name you got, and there is no spaces in name!!!</p>
 
 <p><code>
-LABEL=&lt;device-name&gt;  none    ntfs    rw,auto,nobrowse
+LABEL=device-name  none    ntfs    rw,auto,nobrowse
 </code></p>
 
 <p>When you finished entering content, use <code>Ctrl + X</code> (it is lowercase x), it will prompt you to save it or not, enter <code>y</code>, you'll get another prompt to write to file, just hit enter.<br/>
