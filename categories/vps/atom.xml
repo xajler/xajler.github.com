@@ -4,7 +4,7 @@
   <title><![CDATA[Category: VPS | Learn-a-holic Geek Notes]]></title>
   <link href="http://learnaholic.me/categories/vps/atom.xml" rel="self"/>
   <link href="http://learnaholic.me/"/>
-  <updated>2014-01-09T14:35:39+01:00</updated>
+  <updated>2014-01-09T14:40:03+01:00</updated>
   <id>http://learnaholic.me/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -14,10 +14,10 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Ubunt VPS Step-By-Step Configuration Notes]]></title>
-    <link href="http://learnaholic.me/2014/01/09/ubunt-vps-step-by-step-config-notes/"/>
+    <title type="html"><![CDATA[Ubuntu VPS Step-By-Step Configuration Notes]]></title>
+    <link href="http://learnaholic.me/2014/01/09/ubuntu-vps-step-by-step-config-notes/"/>
     <updated>2014-01-09T14:30:00+01:00</updated>
-    <id>http://learnaholic.me/2014/01/09/ubunt-vps-step-by-step-config-notes</id>
+    <id>http://learnaholic.me/2014/01/09/ubuntu-vps-step-by-step-config-notes</id>
     <content type="html"><![CDATA[<p>These are notes and step-by-step tutorial to configure <em>Ubuntu VPS</em> with installation of <em>nginx</em>, <em>node.js</em>, <em>ruby</em>, <em>PostgreSQL</em>, ...<br/>
 It should work for <em>Ubuntu</em> 12 and 13 versions, maybe even older.<br/>
 It assumes knowledge of <em>SSH</em> and connecting to your fresh VPS install.<br/>
