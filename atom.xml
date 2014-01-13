@@ -4,7 +4,7 @@
   <title><![CDATA[Learn-a-holic Geek Notes]]></title>
   <link href="http://learnaholic.me/atom.xml" rel="self"/>
   <link href="http://learnaholic.me/"/>
-  <updated>2014-01-09T14:40:03+01:00</updated>
+  <updated>2014-01-13T15:38:26+01:00</updated>
   <id>http://learnaholic.me/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -799,7 +799,7 @@ Change to <code>Dvorak</code> layout:</p>
 </pre></td><td class='code'><pre><code class=''><span class='line'>arch-chroot /mnt</span></code></pre></td></tr></table></div></figure>
 
 
-<p>Create custom Keyboard Layout in <code>vconsole.conf</code>, and and add keyboard map for <em>Dvorak</em>:</p>
+<p>Create custom Keyboard Layout in <code>vconsole.conf</code>, and add keyboard map for <em>Dvorak</em>:</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -3851,7 +3851,7 @@ visible within the View page!</p>
 <h2>TDD Step 3: Model</h2>
 
 <p>To make test green, we need to create a <code>User</code> model in <code>app/models</code> and it will have
-<code>email</code>, <code>passmord_digest</code> and <code>full_name</code>.</p>
+<code>email</code>, <code>password_digest</code> and <code>full_name</code>.</p>
 
 <p>Having a <code>password_digest</code> field is important as it&#8217;s the default name that&#8217;s used with Rails
 <code>has_secure_password</code> feature and we&#8217;ll be using this feature later.</p>
