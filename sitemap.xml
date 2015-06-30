@@ -2,84 +2,84 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>http://learnaholic.me/2012/10/10/installing-nginx-in-mac-os-x-mountain-lion/</loc>
-        <lastmod>2013-11-15T18:13:44+01:00</lastmod>
+        <lastmod>2015-06-29T16:56:01+02:00</lastmod>
     </url>
     <url>
         <loc>
             http://learnaholic.me/2012/10/10/backing-up-postgresql-with-backup-and-whatever-gems/
         </loc>
-        <lastmod>2013-11-15T18:13:44+01:00</lastmod>
+        <lastmod>2015-06-29T16:56:01+02:00</lastmod>
     </url>
     <url>
         <loc>
             http://learnaholic.me/2012/10/10/deploying-octopress-to-github-pages-and-setting-custom-subdomain-cname/
         </loc>
-        <lastmod>2013-11-15T18:13:44+01:00</lastmod>
+        <lastmod>2015-06-29T16:56:01+02:00</lastmod>
     </url>
     <url>
         <loc>http://learnaholic.me/2012/10/12/make-powershell-and-git-suck-less-on-windows/</loc>
-        <lastmod>2013-11-15T18:13:44+01:00</lastmod>
+        <lastmod>2015-06-29T16:56:01+02:00</lastmod>
     </url>
     <url>
         <loc>http://learnaholic.me/2012/10/15/octopress-seo-and-disabling-the-blog-route/</loc>
-        <lastmod>2013-11-15T18:13:44+01:00</lastmod>
+        <lastmod>2015-06-29T16:56:01+02:00</lastmod>
     </url>
     <url>
         <loc>
             http://learnaholic.me/2012/10/19/rails-app-from-scratch-create-and-configure-testing/
         </loc>
-        <lastmod>2013-11-15T18:13:44+01:00</lastmod>
+        <lastmod>2015-06-29T16:56:01+02:00</lastmod>
     </url>
     <url>
         <loc>http://learnaholic.me/2012/10/24/rails-app-from-scratch-user-signup-page/</loc>
-        <lastmod>2014-01-13T15:37:23+01:00</lastmod>
+        <lastmod>2015-06-29T16:56:01+02:00</lastmod>
     </url>
     <url>
         <loc>http://learnaholic.me/2012/11/05/rails-app-from-scratch-user-validation/</loc>
-        <lastmod>2013-11-15T18:13:44+01:00</lastmod>
+        <lastmod>2015-06-29T16:56:01+02:00</lastmod>
     </url>
     <url>
         <loc>http://learnaholic.me/2012/11/08/rails-app-from-scratch-user-save-and-update/</loc>
-        <lastmod>2013-11-15T18:13:44+01:00</lastmod>
+        <lastmod>2015-06-29T16:56:01+02:00</lastmod>
     </url>
     <url>
         <loc>
             http://learnaholic.me/2012/11/28/xcode-4-dot-5-workspace-project-and-target-from-scratch/
         </loc>
-        <lastmod>2013-11-15T18:13:44+01:00</lastmod>
+        <lastmod>2015-06-29T16:56:01+02:00</lastmod>
     </url>
     <url>
         <loc>
             http://learnaholic.me/2012/11/29/xcode-4-dot-5-source-version-control-wit-git-and-github/
         </loc>
-        <lastmod>2013-11-15T18:13:44+01:00</lastmod>
+        <lastmod>2015-06-29T16:56:01+02:00</lastmod>
     </url>
     <url>
         <loc>
             http://learnaholic.me/2013/02/01/converting-mercurial-hg-to-git-repository-on-mac/
         </loc>
-        <lastmod>2013-11-15T18:13:44+01:00</lastmod>
+        <lastmod>2015-06-29T16:56:01+02:00</lastmod>
     </url>
     <url>
         <loc>
             http://learnaholic.me/2013/06/05/configuring-teamcity-7-with-git-revisions-uploading-to-amazon-s3-and-sending-email-with-release-link/
         </loc>
-        <lastmod>2013-11-15T18:13:44+01:00</lastmod>
+        <lastmod>2015-06-29T16:56:01+02:00</lastmod>
     </url>
     <url>
         <loc>http://learnaholic.me/2013/11/10/archlinux-virtualbox-install-notes/</loc>
-        <lastmod>2014-01-13T15:37:59+01:00</lastmod>
+        <lastmod>2015-06-29T16:56:01+02:00</lastmod>
     </url>
     <url>
         <loc>http://learnaholic.me/2013/11/11/enable-ntfs-write-on-mac-os-x-mavericks/</loc>
-        <lastmod>2013-11-15T18:14:53+01:00</lastmod>
+        <lastmod>2015-06-29T16:56:01+02:00</lastmod>
     </url>
     <url>
         <loc>http://learnaholic.me/2014/01/09/ubuntu-vps-step-by-step-config-notes/</loc>
-        <lastmod>2014-01-09T14:39:56+01:00</lastmod>
+        <lastmod>2015-06-30T03:59:55+02:00</lastmod>
     </url>
     <url>
         <loc>http://learnaholic.me/</loc>
-        <lastmod>2014-01-13T15:37:59+01:00</lastmod>
+        <lastmod>2015-06-30T03:59:55+02:00</lastmod>
     </url>
 </urlset>

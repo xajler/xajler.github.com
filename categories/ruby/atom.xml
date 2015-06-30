@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ruby | Learn-a-holic Geek Notes]]></title>
   <link href="http://learnaholic.me/categories/ruby/atom.xml" rel="self"/>
   <link href="http://learnaholic.me/"/>
-  <updated>2014-04-07T19:33:56+02:00</updated>
+  <updated>2015-06-30T04:04:00+02:00</updated>
   <id>http://learnaholic.me/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -1560,7 +1560,7 @@ visible within the View page!</p>
 <h2>TDD Step 3: Model</h2>
 
 <p>To make test green, we need to create a <code>User</code> model in <code>app/models</code> and it will have
-<code>email</code>, <code>password_digest</code> and <code>full_name</code>.</p>
+<code>email</code>, <code>passmord_digest</code> and <code>full_name</code>.</p>
 
 <p>Having a <code>password_digest</code> field is important as it's the default name that's used with Rails
 <code>has_secure_password</code> feature and we'll be using this feature later.</p>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ubuntu | Learn-a-holic Geek Notes]]></title>
   <link href="http://learnaholic.me/categories/ubuntu/atom.xml" rel="self"/>
   <link href="http://learnaholic.me/"/>
-  <updated>2014-04-07T19:33:56+02:00</updated>
+  <updated>2015-06-30T04:04:00+02:00</updated>
   <id>http://learnaholic.me/</id>
   <author>
     <name><![CDATA[Kornelije Sajler]]></name>
@@ -16,12 +16,37 @@
   <entry>
     <title type="html"><![CDATA[Ubuntu VPS Step-By-Step Configuration Notes]]></title>
     <link href="http://learnaholic.me/2014/01/09/ubuntu-vps-step-by-step-config-notes/"/>
-    <updated>2014-01-09T14:30:00+01:00</updated>
+    <updated>2014-01-09T14:54:00+01:00</updated>
     <id>http://learnaholic.me/2014/01/09/ubuntu-vps-step-by-step-config-notes</id>
-    <content type="html"><![CDATA[<p>These are notes and step-by-step tutorial to configure <em>Ubuntu VPS</em> with installation of <em>nginx</em>, <em>node.js</em>, <em>ruby</em>, <em>PostgreSQL</em>, ...<br/>
-It should work for <em>Ubuntu</em> 12 and 13 versions, maybe even older.<br/>
-It assumes knowledge of <em>SSH</em> and connecting to your fresh VPS install.<br/>
-Throughout the install process for editing I'm using <em>vi</em>, you can use what ever makes you happy: <em>emacs</em>, <em>nano</em>, ...</p>
+    <content type="html"><![CDATA[<p><strong>UPDATED</strong> (June 30th, 2015)</p>
+
+<p><strong>Changes</strong>:</p>
+
+<p><em>June 30th, 2015</em></p>
+
+<ul>
+<li>Covering <em>Ubuntu 14.04 LTS</em>.</li>
+<li>Adde extra <em>SSH</em> security, using <em>Public Keys</em> and some more tweaks in <code>sshd_config</code>.</li>
+<li>Added usual <em>PHP</em> &amp; <em>MySQL</em> install and configure.</li>
+<li>Using <code>service &lt;COMMAND&gt; &lt;ACTION&gt;</code> seems <em>Ubuntu</em> nowdays have problem with <code>/etc/init.d</code>, it is old school, but I've liked it. (Thanks to <em>Rapha</em> for mention it in comments).</li>
+<li>Latest Ruby <code>2.2.2</code></li>
+</ul>
+
+
+<p><em>January 9th, 2014</em></p>
+
+<ul>
+<li>First version covering <em>Ubuntu 13</em>.</li>
+</ul>
+
+
+<p>Here are notes and step-by-step tutorial to set <em>Ubuntu VPS</em> secure and with <em>nginx</em>, <em>node.js</em>, <em>ruby</em>, <em>PostgreSQL</em>, ...</p>
+
+<p>It should work for <em>Ubuntu</em> 12 or 13 or 14 versions. My <em>VPS</em> provider still doesn't have support <em>Ubuntu</em> 15, but I don't think that there would be any problem using this for <em>Ubuntu</em> 15.</p>
+
+<p>It assumes knowledge of <em>SSH</em> and connecting to your fresh VPS install.</p>
+
+<p>Throughout the install process for editing I’m using <em>vi</em>, you can use what ever makes you happy: <em>emacs</em>, <em>nano</em>, ...</p>
 
 <p>Those are just my notes, if someone has something better or can improve it please do comment!</p>
 
@@ -29,441 +54,439 @@ Throughout the install process for editing I'm using <em>vi</em>, you can use wh
 
 <h3>Update and installing essential software</h3>
 
-<p><code>bash
-sudo apt-get -y update
+<pre><code>sudo apt-get -y update
 sudo apt-get -y install curl git-core python-software-properties software-properties-common
-</code></p>
+</code></pre>
+
+<h3>Locale problem</h3>
+
+<p>Very annoying error in apt: <em>locale: Cannot set LC_CTYPE</em>. It is probably due to your local machine, add this to your <code>.bashrc</code> or <code>.zshrc</code>:</p>
+
+<pre><code>export LANGUAGE=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+</code></pre>
 
 <h3>User - Admin Group &amp; SSH</h3>
 
-<p><code>bash
-sudo groupadd admin
+<pre><code>sudo groupadd admin
 sudo adduser &lt;USERNAME&gt;
 sudo usermod -a -G admin &lt;USERNAME&gt;
 sudo dpkg-statoverride --update --add root admin 4750 /bin/su
-</code></p>
+</code></pre>
 
 <p>Test new user and test that has <code>sudo</code> privileges:</p>
 
-<p><code>bash
-su &lt;USERNAME&gt;
-</code></p>
+<pre><code>su &lt;USERNAME&gt;
+</code></pre>
 
-<p>Use this new user from now on.</p>
+<p>Secure SSH:</p>
 
-<p>Securing SSH:</p>
-
-<p><code>bash
-sudo vi /etc/ssh/sshd_config
-</code></p>
+<pre><code>sudo vi /etc/ssh/sshd_config
+</code></pre>
 
 <p>Make these changes:</p>
 
 <ul>
-<li>Port <DESIRED PORT NUMBER> (Don't use default 22)</li>
-<li>PermitRootLogin no</li>
-<li>X11Forwarding no</li>
+<li><code>Port</code> <DESIRED_PORT_NUMBER> (Don't use default 22)</li>
+<li><code>PermitRootLogin</code> <code>no</code></li>
+<li><code>X11Forwarding</code> <code>no</code></li>
+<li><code>AllowTcpForwarding</code> <code>no</code></li>
+<li><code>AllowUsers</code> USERNAME USERNAME2</li>
 </ul>
 
 
 <p>If your SSH is very slow setting <code>X11Forwarding</code> to <code>no</code> can really help in this case!</p>
 
-<p><code>bash  
-sudo /etc/init.d/ssh restart
-</code></p>
+<pre><code>sudo service ssh restart
+</code></pre>
 
-<p>Connecting to VPS SSH:</p>
+<p>Connect to <em>VPS SSH</em>:</p>
 
-<p><code>bash
-ssh &lt;USERNAME&gt;@&lt;VPS_DOMAIN_OR_IP&gt; -p &lt;PORT&gt;
-</code></p>
+<pre><code>ssh &lt;USERNAME&gt;@&lt;VPS_DOMAIN_OR_IP&gt; -p &lt;PORT&gt;
+</code></pre>
 
-<h3>Locale problem</h3>
+<h3>SSH Extra Security</h3>
 
-<p>Very annoying error in apt: <em>locale: Cannot set LC_CTYPE</em></p>
+<p>The idea is to not permit passwords and use <em>SSH</em> keys for authentication, and some other tweaks to <em>SSH</em>.</p>
 
-<p><code>bash
-export LANGUAGE=en_US.UTF-8
-export LANG=en_US.UTF-8
-sudo locale-gen en_US.UTF-8
-sudo dpkg-reconfigure locales
-sudo update-locale en_US.UTF-8
-</code>
-If you get error <code>-bash: warning: setlocale: LC_ALL: cannot change locale (en_US.UTF-8)</code> runnig this,
-I found out that logging out from SSH and again connecting agian will not longer show the error:</p>
+<pre><code>mkdir ~/.ssh
+vi ~/.ssh/authorized_keys
+</code></pre>
 
-<p><code>bash
-export LC_ALL=en_US.UTF-8
-</code></p>
+<p>And paste the content of your local machine <em>Public Key</em> file: <code>.ssh/id_rsa.pub</code> and make it <code>rw</code> only for current user:</p>
+
+<pre><code>chmod 600 ~/.ssh/authorized_keys
+</code></pre>
+
+<p>Or use <code>ssh-copy-id</code> from your local machine, which isn't on <em>Mac</em>, and can be installed with <code>brew</code> but I have no luck:</p>
+
+<pre><code>brew install ssh-copy-id
+ssh-copy-id "&lt;USERNAME&gt;@&lt;VPS_DOMAIN_OR_IP&gt; -p &lt;PORT&gt;"
+</code></pre>
+
+<p>Try to connect to <em>SSH</em> and it should not ask you for password, it should be instant login:</p>
+
+<pre><code>ssh &lt;USERNAME&gt;@&lt;VPS_DOMAIN_OR_IP&gt; -p &lt;PORT&gt;
+</code></pre>
+
+<p>Open <em>SSH</em> config file, uncomment <code>PasswordAuthentication</code> which is by default set to <code>yes</code>:</p>
+
+<pre><code>sudo vi /etc/ssh/sshd_config
+</code></pre>
+
+<p>Change it to <code>no</code>:</p>
+
+<pre><code>PasswordAuthentication no
+</code></pre>
+
+<p>Restart <em>SSH</em> and try to connect again:</p>
+
+<pre><code>sudo service ssh restart
+</code></pre>
+
+<p>Exit the VPS shell and try to connect to VPS <em>SSH</em>.</p>
 
 <h3>Firewall</h3>
 
-<p>Before installing <em>ufw</em> firewall, to make <code>ping</code> and <code>apt-get</code> working, add the following into <em>iptables</em>, as <em>ufw</em> just interfaces with it.</p>
+<p>To have <code>ping</code> and <code>apt-get</code> working, add the following into <em>iptables</em>, as <em>ufw</em> just interfaces with it.</p>
 
-<p><code>bash
-sudo iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-</code></p>
+<pre><code>sudo iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-<p><code>bash
 sudo apt-get -y install ufw
 sudo vi /etc/default/ufw
-</code></p>
+</code></pre>
 
 <p>Make this change:</p>
 
 <pre><code>IPV6=no
 </code></pre>
 
-<p><code>bash
-sudo ufw allow &lt;PORT_NUMBER_CHANGED_TO_SSH&gt;
-sudo ufw allow out http
+<p>Allow some ports and services:</p>
+
+<pre><code>sudo ufw allow &lt;PORT_NUMBER_CHANGED_TO_SSH&gt;
+sudo ufw limit ssh
+sudo ufw allow 80/tcp
 sudo ufw allow out 53
 sudo ufw logging on
-</code></p>
+</code></pre>
 
-<p>Be sure that you allowed the port for SSH because otherwise, you'll be unable to get into VPS!!!</p>
+<p>Be sure that you allowed the changed port for <em>SSH</em> because otherwise, you’ll be unable to get into VPS!!!</p>
 
-<p><code>bash
-sudo ufw enable
-</code></p>
-
-<p>If you get bunch of errors while enabling <em>ufw</em> firewall, just ignore it?!</p>
+<pre><code>sudo ufw enable
+</code></pre>
 
 <p>Check the Firewall status with:</p>
 
-<p><code>bash
-sudo ufw status verbose
-</code></p>
-
-<h3>Get Ubuntu Version Info</h3>
-
-<p>If the <em>Ubuntu</em> version info is needed, and what codename the current <em>Ubuntu</em> is use this command:</p>
-
-<p>```bash
-lsb_release -a</p>
-
-<p>No LSB modules are available.
-Distributor ID: Ubuntu
-Description:    Ubuntu 13.04
-Release:    13.04
-Codename:   raring
-```</p>
+<pre><code>sudo ufw status verbose
+</code></pre>
 
 <h3>sysctl</h3>
 
-<p><code>bash
-sudo mv /etc/sysctl.conf /etc/sysctl.conf.orig
+<pre><code>sudo mv /etc/sysctl.conf /etc/sysctl.conf.orig
 sudo vi /etc/sysctl.conf
-</code></p>
+</code></pre>
 
 <p>Add this to a <code>sysctl.conf</code>:</p>
 
-<p>```</p>
+<pre><code># IP Spoofing protection
+net.ipv4.conf.all.rp_filter = 1
+net.ipv4.conf.default.rp_filter = 1
 
-<h1>IP Spoofing protection</h1>
+# Ignore ICMP broadcast requests
+net.ipv4.icmp_echo_ignore_broadcasts = 1
 
-<p>net.ipv4.conf.all.rp_filter = 1
-net.ipv4.conf.default.rp_filter = 1</p>
-
-<h1>Ignore ICMP broadcast requests</h1>
-
-<p>net.ipv4.icmp_echo_ignore_broadcasts = 1</p>
-
-<h1>Disable source packet routing</h1>
-
-<p>net.ipv4.conf.all.accept_source_route = 0
+# Disable source packet routing
+net.ipv4.conf.all.accept_source_route = 0
 net.ipv6.conf.all.accept_source_route = 0
 net.ipv4.conf.default.accept_source_route = 0
-net.ipv6.conf.default.accept_source_route = 0</p>
+net.ipv6.conf.default.accept_source_route = 0
 
-<h1>Ignore send redirects</h1>
+# Ignore send redirects
+net.ipv4.conf.all.send_redirects = 0
+net.ipv4.conf.default.send_redirects = 0
 
-<p>net.ipv4.conf.all.send_redirects = 0
-net.ipv4.conf.default.send_redirects = 0</p>
-
-<h1>Block SYN attacks</h1>
-
-<p>net.ipv4.tcp_syncookies = 1
+# Block SYN attacks
+net.ipv4.tcp_syncookies = 1
 net.ipv4.tcp_max_syn_backlog = 2048
 net.ipv4.tcp_synack_retries = 2
-net.ipv4.tcp_syn_retries = 5</p>
+net.ipv4.tcp_syn_retries = 5
 
-<h1>Log Martians</h1>
+# Log Martians
+net.ipv4.conf.all.log_martians = 1
+net.ipv4.icmp_ignore_bogus_error_responses = 1
 
-<p>net.ipv4.conf.all.log_martians = 1
-net.ipv4.icmp_ignore_bogus_error_responses = 1</p>
-
-<h1>Ignore ICMP redirects</h1>
-
-<p>net.ipv4.conf.all.accept_redirects = 0
+# Ignore ICMP redirects
+net.ipv4.conf.all.accept_redirects = 0
 net.ipv6.conf.all.accept_redirects = 0
 net.ipv4.conf.default.accept_redirects = 0
-net.ipv6.conf.default.accept_redirects = 0</p>
+net.ipv6.conf.default.accept_redirects = 0
 
-<h1>Ignore Directed pings</h1>
+# Ignore Directed pings
+net.ipv4.icmp_echo_ignore_all = 1
+</code></pre>
 
-<p>net.ipv4.icmp_echo_ignore_all = 1
-```</p>
+<p>  Then run, there can be possible some errors, especially on <em>VPS</em> with <em>OpenVZ</em>...</p>
 
-<p><code>bash
-sudo sysctl -p
-</code></p>
+<pre><code>sudo sysctl -p
+</code></pre>
 
-<h3>Denyhost</h3>
+<h3>Denyhost or Fail2Ban</h3>
 
-<p><code>bash
-sudo apt-get -y install denyhosts
-</code></p>
+<p>Before <em>Denyhost</em> was uset but it seems it is no longer maintained and there is no Ubuntu package anymore so the <em>Fail2Ban</em> is alternative, but since the SSH is set to permit only <em>SSH</em> keys, both of those are redundant.</p>
 
 <h3>Remove Samba File Sharing</h3>
 
-<p>If for some reason you have completely unnecessary Samba installed by default on VPS you can remove it with:</p>
+<p>If for some reason you have completely unnecessary <em>Samba</em> installed by default on VPS you can remove it with:</p>
 
-<p><code>bash
-sudo apt-get -y remove --purge samba
-</code></p>
+<pre><code>sudo apt-get -y remove --purge samba
+</code></pre>
 
 <h3>Remove Bind DNS Server</h3>
 
-<p>Same with Bind, if you don't need it, remove it!</p>
+<p>Same with Bind, if you don’t need it, remove it!</p>
 
-<p><code>bash
-sudo apt-get -y remove --purge bind9
+<pre><code>sudo apt-get -y remove --purge bind9
 sudo rm -rf /var/cache/bind
 sudo rm -rf /usr/share/bind9
 sudo rm -rf /etc/bind
-</code></p>
+</code></pre>
 
 <h2>SSH Key and GitHub</h2>
 
-<p>Check if ~/.ssh has *.pub files, if not generate the SSH key.</p>
+<p>Check if <code>~/.ssh</code> has <code>*.pub</code> files, if not generate the <em>SSH</em> key:</p>
 
-<p><code>bash
-ssh-keygen -t rsa -C "&lt;YOUR_EMAIL&gt;"
-</code></p>
+<pre><code>ssh-keygen -t rsa -C "&lt;YOUR_EMAIL&gt;"
+</code></pre>
 
-<ul>
-<li>Use default place to store: ~/.ssh.</li>
-<li>Do not use passphrase, unless you want to type every time you commit to <em>GitHub</em>.</li>
-</ul>
+<p>Use default place to store: <code>~/.ssh</code></p>
 
+<p>Do not use passphrase, unless you want to type every time you commit to <em>GitHub</em>. <em>(Or anyone knows better way?).</em></p>
 
-<p><code>bash
-cat ~/.ssh/id_rsa.pub
-</code></p>
+<pre><code>cat ~/.ssh/id_rsa.pub
+</code></pre>
 
-<p>Copy the contents to clipboard.<br/>
-Go to <em>GitHub</em> > Account Settings > SSH Keys.<br/>
+<p>Copy the contents to clipboard.
+Go to <em>GitHub</em> > Account Settings > SSH Keys.
 Hit <code>Add SSH Key</code> give title and in <code>Key</code> paste public key from clipboard.</p>
 
-<p><code>bash
-ssh git@github.com
+<pre><code>ssh git@github.com
 eval `ssh-agent -s`
 ssh-add -k
-</code></p>
+</code></pre>
 
 <h2>Software Install</h2>
 
-<p>Pick and choose what software do you need to install!</p>
-
 <h3>Instal nginx</h3>
 
-<p><code>bash
-sudo add-apt-repository ppa:nginx/stable
+<pre><code>sudo add-apt-repository ppa:nginx/stable
 sudo apt-get -y update
 sudo apt-get -y install nginx
-sudo /etc/init.d/nginx start
-</code></p>
+sudo service start nginx
+</code></pre>
 
-<p>If error is <code>nginx: [emerg] bind() to [::]:80 failed (98: Address already in use)</code> then probably <em>Apache</em> might be installed beforehand:</p>
+<p>If error is <code>nginx: [emerg] bind() to [::]:80 failed (98: Address already in use)</code> then probably <em>Apache</em> is installed beforehand:</p>
 
-<p><code>bash
-sudo apt-get remove apache2-mpm-prefork
+<pre><code>sudo apt-get remove apache2-mpm-prefork
 sudo apt-get remove apache2-mpm-worker
 sudo apt-get remove apache2
-sudo dpkg --purge apache2.2-common
-sudo /etc/init.d/nginx start
-</code></p>
+</code></pre>
+
+<p>You can check and purge installed <em>Apache</em>:</p>
+
+<pre><code>sudo dpkg --get-selections | grep  apache
+# Purge others that are given as result from above command
+sudo dpkg --purge apache2
+sudo service nginx start
+</code></pre>
 
 <p>If something is wrong look for nginx logs:</p>
 
-<p><code>bash
-vi /var/log/nginx/error.log
-</code></p>
+<pre><code>sudo vi /var/log/nginx/error.log
+</code></pre>
 
-<h3>Install node.js</h3>
+<h3>Install and configure PostgreSQL, create DB and DB User</h3>
 
-<p><code>bash
-sudo add-apt-repository ppa:chris-lea/node.js
-sudo apt-get -y update
-sudo apt-get install -y nodejs
-</code></p>
-
-<h3>Install and Configure redis</h3>
-
-<p><code>bash
-sudo apt-get -y install redis-server
-sudo cp /etc/redis/redis.conf /etc/redis/redis.conf.default
-</code></p>
-
-<p>Pidfile: /var/run/redis-server.pid
-Logfile: /var/log/redis-server.log</p>
-
-<h3>Install and configure PostgreSQL, create db and db user</h3>
-
-<p><code>bash
-sudo add-apt-repository ppa:pitti/postgresql
+<pre><code>sudo add-apt-repository ppa:pitti/postgresql
 sudo apt-get -y update
 sudo apt-get install -y postgresql libpq-dev
-</code></p>
+</code></pre>
 
 <p>Log into <code>postgres</code> change main password, create db user with password and create new database with previously created user as owner:</p>
 
-<p><code>
-sudo -u postgres psql
+<pre><code>sudo -u postgres psql
 \password  "&lt;PASSWORD&gt;"
 create user &lt;USERNAME&gt; with password '&lt;USER_PASSWORD&gt;';
 create database &lt;DB_NAME&gt; owner &lt;USERNAME&gt;;
 \q
-</code></p>
+</code></pre>
+
+<h3>Install MySQL, create DB and DB User</h3>
+
+<pre><code>sudo apt-get install mysql-server
+</code></pre>
+
+<p>The install will prompt you for <code>root</code> user password that needs to be re-entered, choose password wisely and try to remember it! After install log into <em>MySQL</em>:</p>
+
+<pre><code>mysql -u root -p # After enter there is need to write password and hit enter again
+</code></pre>
+
+<p>Use mysql command line app for interacting with <em>MySQL</em>, lets create user and DB with user granted on this DB:</p>
+
+<pre><code>mysql&gt; CREATE DATABASA &lt;DB_NAME&gt;;
+mysql&gt; SHOW DATABASES;  # The new db should be listed.
+mysql&gt; CREATE USER '&lt;DB_USERNAME&gt;'@'localhost';
+mysql&gt; SELECT User,Host FROM mysql.user; # The new user should be listed on host localhost.
+mysql&gt; GRANT ALL ON &lt;DB_NAME&gt;.* to '&lt;DB_USERNAME&gt;'@'localhost' identified by '&lt;DB_PASSWORD&gt;'; # It will grant all on this DB by this user.
+mysql&gt; exit # Or new command \q
+</code></pre>
+
+<p>If you need to run <em>SQL</em> script for database, use this from command line:</p>
+
+<pre><code>mysql -u &lt;DB_USERNAME&gt; -p &lt;DB_NAME&gt; &lt; &lt;SCRIPT_NAME&gt;.sql
+</code></pre>
 
 <h3>Install Ruby with rbenv and rbenv-installer</h3>
 
-<p><code>bash
-cd
+<pre><code>cd
 curl https://raw.github.com/fesplugas/rbenv-installer/master/bin/rbenv-installer | bash
 vi .bashrc
-</code></p>
+</code></pre>
 
 <p>At top add:</p>
 
-<p>```bash
-export RBENV_ROOT="${HOME}/.rbenv"</p>
+<pre><code>export RBENV_ROOT="${HOME}/.rbenv"
 
-<p>if [ -d "${RBENV_ROOT}" ]; then
-  export PATH="${RBENV_ROOT}/bin:${PATH}"
+if [ -d "${RBENV_ROOT}" ]; then
+  export P
+  ATH="${RBENV_ROOT}/bin:${PATH}"
   eval "$(rbenv init -)"
 fi
-<code>``
-Reset</code>.bashrc`</p>
+</code></pre>
 
-<p><code>bash
-. ~/.bashrc
-</code></p>
+<p>Reset <code>.bashrc</code>:</p>
 
-<p>Note that <code>bootstrap-ubuntu-12-04</code> works fine for Ubuntu 13.</p>
+<pre><code>. ~/.bashrc
+</code></pre>
 
-<p><code>bash
-rbenv bootstrap-ubuntu-12-04
-</code></p>
+<p>Note that <code>bootstrap-ubuntu-12-04</code> works fine for <em>Ubuntu</em> 13 &amp; 14 (probably 15 too):</p>
+
+<pre><code>rbenv bootstrap-ubuntu-12-04
+</code></pre>
 
 <p>Firstly list <em>rbenv</em> available <em>Ruby</em> versions and pick one to install:</p>
 
-<p><code>bash
-rbenv install -l
-rbenv install 2.1.0
-</code></p>
+<pre><code>rbenv install -l
+rbenv install 2.2.2
+</code></pre>
 
-<p>Set chosen <em>Ruby</em> version to be global, and test it:</p>
+<p>Set chosen <em>Ruby</em> version to be "global", and test it:</p>
 
-<p><code>
-rbenv global 2.1.0
+<pre><code>rbenv global 2.2.2
 ruby -v
-</code></p>
+</code></pre>
 
-<p>You should ge something like: <code>ruby 2.1.0p0 (2013-12-25 revision 44422) [x86_64-linux]</code>.</p>
+<h3>Install PHP &amp; friends</h3>
 
-<p>Install bundler then <code>rehash</code> the <em>rbenv</em> and thest the <code>bundle</code> version:</p>
+<p>The long list of <em>PHP</em> packages covering <em>Imagemagick</em>, <em>MySQL</em>, <em>bcrypt</em>,...:</p>
 
-<p><code>bash
-gem install bundler --no-ri --no-rdoc
-rbenv rehash
-bundle -v
-</code></p>
+<pre><code>sudo apt-get install imagemagick php5-fpm php5-mysql php5-curl php5-gd php5-intl php-pear php5-imagick php5-imap php5-mcrypt php5-memcache php5-ming php5-ps php5-pspell php5-recode php5-snmp php5-sqlite php5-tidy php5-xmlrpc php5-xsl php5-xcache
+</code></pre>
 
-<h3>Install ØMQ (ZeroMQ)</h3>
+<p>Change usaul suspects of <code>php.ini</code> properties:</p>
 
-<p><code>bash
-sudo apt-get install -y uuid uuid-dev uuid-runtime
-sudo add-apt-repository ppa:chris-lea/zeromq
-sudo add-apt-repository ppa:chris-lea/libpgm (there is no "quantal" repository so change repository source to "precise")
+<pre><code>sudo vi /etc/php5/fpm/php.ini
+</code></pre>
+
+<ul>
+<li><code>upload_max_filesize</code> = (SOME_NUMBER)M (Default 2Mb - safe to use 25M)</li>
+<li><code>post_max_size</code> = (SOME_NUMBER)M (Default 8Mb - safe to use 25M)</li>
+<li><code>memory_limit</code> = (SOME_NUMBER)M (Default 128Mb - safe to use 512M)</li>
+</ul>
+
+
+<p>Restart <em>PHP-FPM</em> and <em>Nginx</em>:</p>
+
+<pre><code>sudo pkill php5-fpm; service php5-fpm start
+sudo service nginx restart
+</code></pre>
+
+<h3>Install node.js</h3>
+
+<pre><code>sudo add-apt-repository ppa:chris-lea/node.js
 sudo apt-get -y update
-sudo apt-get -y install libzmq-dbg libzmq-dev libzmq1
-</code></p>
+sudo apt-get install -y nodejs
+</code></pre>
+
+<h3>Install and Configure redis</h3>
+
+<pre><code>sudo apt-get -y install redis-server
+sudo cp /etc/redis/redis.conf /etc/redis/redis.conf.default
+</code></pre>
+
+<ul>
+<li><code>pidfile /var/run/redis-server.pid</code></li>
+<li><code>logfile /var/log/redis-server.log</code></li>
+</ul>
+
+
+<h2>Esoteric Installments</h2>
 
 <h3>Install erlang</h3>
 
-<p><code>
-sudo apt-get -y install erlang-nox
-</code></p>
+<pre><code>sudo apt-get -y install erlang-nox
+</code></pre>
 
 <h3>Install and Configure riak</h3>
 
-<p><code>bash
-curl http://apt.basho.com/gpg/basho.apt.key | sudo apt-key add -
-</code></p>
-
-<p>If <em>Ubuntu</em> is not LTS instead of <code>lsb_release -sc</code> use <em>Ubuntu</em> codename of previous LTS, e.g. Ubuntu 13.04 (Raring) is not LTS use 12.04 codename <code>precise</code> instead.</p>
-
-<p>Here is the list of <a href="https://wiki.ubuntu.com/DevelopmentCodeNames">Ubuntu codenames</a>.</p>
-
-<p>For LTS:</p>
-
-<p><code>bash
+<pre><code>curl http://apt.basho.com/gpg/basho.apt.key | sudo apt-key add -
 sudo bash -c "echo deb http://apt.basho.com $(lsb_release -sc) main &gt; /etc/apt/sources.list.d/basho.list"
-</code></p>
+</code></pre>
 
-<p>For non LTS, in this case Ubuntu 13.04 use Ubuntu 12.10 codename <code>precise</code>:</p>
+<p>If <em>Ubuntu</em> is not <em>LTS</em> instead of <code>lsb_release -sc</code> use name of <em>LTS</em>, eg. <em>Ubuntu</em> 14.10 (<em>Utopic</em>) is not LTS use 14.04 codename <em>trusty</em> instead. Use this <a href="https://en.wikipedia.org/wiki/List_of_Ubuntu_releases#Table_of_versions">Wikipedia table</a> to help with names for particular <em>Ubuntu</em> version(s).</p>
 
-<p><code>bash
-sudo bash -c "echo deb http://apt.basho.com precise  main &gt; /etc/apt/sources.list.d/basho.list"
-</code></p>
-
-<p>Now finally install <em>riak</em>:</p>
-
-<p><code>bash
-sudo apt-get -y update
-sudo apt-get -y install riak --force-yes
-</code></p>
+<pre><code>sudo apt-get -y update
+sudo apt-get -y install riak
+</code></pre>
 
 <h4>Change PAM Based Limits for riak</h4>
 
-<p><code>bash
-sudo vi /etc/pam.d/common-session
-</code></p>
+<pre><code>sudo vi /etc/pam.d/common-session
+</code></pre>
 
-<p>Add at the end:</p>
+<p>Add at the end of file:</p>
 
-<p><code>
-session required    pam_limits.so
-</code></p>
+<pre><code>session required    pam_limits.so
+</code></pre>
 
-<p><code>bash
-sudo vi /etc/security/limits.conf
-</code></p>
+<p>Update <code>limits.conf</code>:</p>
 
-<p>Add this to the <code>limits.conf</code>:</p>
+<pre><code>sudo vi /etc/security/limits.conf
 
-<p><code>
+# Add this to limits.conf
 *               soft     nofile          65536
 *               hard     nofile          65536
-</code></p>
+</code></pre>
 
-<p>If accessing riak nodes via SSH:</p>
+<p>If accessing riak nodes via <em>SSH</em>:</p>
 
-<p><code>bash
-sudo vi /etc/ssh/sshd_config
-</code>
-Change <code>UseLogin</code> to  <code>yes</code> and reboot machine!</p>
+<pre><code>sudo vi /etc/ssh/sshd_config
+UseLogin yes
+</code></pre>
 
-<p>Test that limit of open files is <code>65536</code> with:</p>
+<p>Reboot machine and test that limit of open files is <code>65536</code> with:</p>
 
-<p><code>bash
-ulimit -n
- 65536
-</code></p>
+<pre><code>ulimit -a
+&gt; open files                      (-n) 65536
+</code></pre>
 
-<p>Hope it helps, please give feedback and comments with any missing/wrong parts to this Ubunt VPS install!</p>
+<p>or with:</p>
+
+<pre><code>ulimit -n
+</code></pre>
+
+<p>Hope it helps, please give feedback and comments with any missing/wrong parts to this
+<em>Ubunt VPS</em> install, because I'm far from <em>Linux</em> guru, but appreciate secure and stable <em>Linux</em> machine!</p>
 ]]></content>
   </entry>
   
